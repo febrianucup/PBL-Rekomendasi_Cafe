@@ -67,7 +67,7 @@
 
             <p class="text-sm text-center mt-6">
                 New here?
-                <a href="#" class="text-[#6B4F3B] font-medium">Create account</a>
+                <a href="register" class="text-[#6B4F3B] font-medium">Create account</a>
             </p>
 
         </div>
