@@ -65,6 +65,7 @@
             <div class="w-full h-48 bg-gray-800 rounded-lg mb-6" id="map"></div>
             <div class="flex justify-between items-center border-t pt-6">
                 <div><span class="text-gray-500">Opening Hours:</span> 09:00 – 00:00</div>
+                 <a href="https://nakoa.id/location.html" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold">Search</a>
             </div>
         </section>
 
