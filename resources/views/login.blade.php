@@ -18,7 +18,7 @@
 
         <div class="absolute bottom-20 left-10 text-white max-w-md">
             <h1 class="text-5xl font-bold leading-tight mb-4">
-                The Sensory Editorial
+                SAFE (Saran Cafe)
             </h1>
             <p class="text-lg">
                 Curating the world's most evocative coffee spaces.
