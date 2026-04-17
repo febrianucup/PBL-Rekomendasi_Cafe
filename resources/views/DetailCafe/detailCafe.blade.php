@@ -65,7 +65,7 @@
             <div class="w-full h-48 bg-gray-800 rounded-lg mb-6" id="map"></div>
             <div class="flex justify-between items-center border-t pt-6">
                 <div><span class="text-gray-500">Opening Hours:</span> 09:00 – 00:00</div>
-                 <a href="" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold">View in Gmaps</a>
+                 <a href="https://maps.app.goo.gl/HMQB1dnCmBDjsr5H9" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold rounded-lg">View in Gmaps</a>
             </div>
         </section>
 

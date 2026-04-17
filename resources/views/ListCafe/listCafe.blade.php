@@ -9,7 +9,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #FAF9F6; }
         h1, h2 { font-family: 'Playfair Display', serif; }
-        header {background-color: #FEF9F3}
+        header {background-color: #F5F1EC}
     </style>
 </head>
 <body class="text-gray-900">
