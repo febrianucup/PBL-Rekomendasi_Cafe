@@ -1,3 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #F5F1EC;
+  --color-dark-brown: #4B2E2B;
+  --color-light-beige: #D6CFC7;
+  --color-soft-green: #A3B18A;
+  --color-soft-red: #E57373;
+
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+}
