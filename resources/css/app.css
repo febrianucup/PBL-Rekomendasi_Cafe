@@ -1,3 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #F5F1EC;
+  --color-dark-brown: #4B2E2B;
+  --color-light-beige: #D6CFC7;
+  --color-soft-green: #A3B18A;
+  --color-soft-red: #E57373;
+
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
