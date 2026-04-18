@@ -12,7 +12,7 @@ Route::get('/detail/1', function () {
 
 Route::get('/login', function () {
     return view('login');
-});
+})->name('login');
 
 Route::prefix('admin')->group(function () {
     Route::get('/', function () {
