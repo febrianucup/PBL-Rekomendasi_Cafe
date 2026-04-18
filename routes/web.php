@@ -31,7 +31,6 @@ Route::prefix('admin')->group(function () {
         return view('admin.comments');
     });
 });
-})->name('login');
 
 Route::get('/register', function () {
     return view('auth.register');
