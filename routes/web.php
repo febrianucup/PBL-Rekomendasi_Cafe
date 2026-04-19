@@ -12,3 +12,7 @@ Route::get('/detail/1', function () {
 Route::get('/login', function () {
     return view('login');
 });
+
+Route::get('/dashboard', function () {
+    return view('Owner.Dashboard');
+});
