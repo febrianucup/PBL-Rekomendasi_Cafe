@@ -34,6 +34,9 @@ Route::prefix('admin')->group(function () {
     });
 });
 
+Route::get('/dashboard', function () {
+    return view('Owner.Dashboard');
+});
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
