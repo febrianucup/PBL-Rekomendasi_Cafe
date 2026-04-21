@@ -65,6 +65,7 @@
             <div class="w-full h-48 bg-gray-800 rounded-lg mb-6" id="map"></div>
             <div class="flex justify-between items-center border-t pt-6">
                 <div><span class="text-gray-500">Opening Hours:</span> 09:00 – 00:00</div>
+                 <a href="https://maps.app.goo.gl/HMQB1dnCmBDjsr5H9" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold rounded-lg">View in Gmaps</a>
             </div>
         </section>
 
@@ -79,7 +80,7 @@
                     <div class="w-10 h-10 rounded-full bg-gray-300"></div>
                     <div class="flex-1">
                         <p class="font-bold">Muhammad Dwi Febrian <span class="text-xs font-normal text-gray-500">• 3D AGO</span></p>
-                        <p class="text-gray-700 mt-1">Tempat ini sangar minimalis dan nyaman untuk work from cafe ataupun nongkrong santai dengan teman-teman, menu nya juga banyak dan enak</p>
+                        <p class="text-gray-700 mt-1">Tempat ini sangat minimalis dan nyaman untuk work from cafe ataupun nongkrong santai dengan teman-teman, menu nya juga banyak dan enak</p>
                         <div class="mt-3 bg-gray-50 p-4 rounded-lg border-l-4 border-[#D4A373]">
                             <p class="font-bold text-sm">KING BARCA<span class="text-xs font-normal text-gray-500">• 1D AGO</span></p>
                             <p class="text-sm text-gray-600">Iya lagi, baru kemarin gw kesana emang enak banget tempatnya apalagi buat gw yang lagi fokus skripsian dan sterss BARCA kalah di UCL</p>

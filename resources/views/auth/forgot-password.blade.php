@@ -51,14 +51,6 @@
         </header>
 
         <!-- Session Status -->
-        @if (session('status'))
-          <div class="mb-4 text-sm text-green-600 bg-green-100 p-3 rounded">
-            {{ session('status') }}
-          </div>
-        @endif
-
-        <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
-          @csrf
 
           <div class="space-y-1.5">
             <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Email Address</label>
@@ -71,9 +63,6 @@
               required
               autofocus
             >
-            @error('email')
-              <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-            @enderror
           </div>
 
           <button type="submit" class="w-full py-4 mt-4 bg-[#5D4037] text-white text-xs font-bold tracking-[0.15em] uppercase rounded-full hover:bg-[#4E342E] transition-colors shadow-lg">

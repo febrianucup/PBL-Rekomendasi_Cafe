@@ -9,7 +9,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #FAF9F6; }
         h1, h2 { font-family: 'Playfair Display', serif; }
-        header {background-color: #FEF9F3}
+        header {background-color: #F5F1EC}
     </style>
 </head>
 <body class="text-gray-900">
@@ -45,6 +45,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @for ($i = 0; $i < 6; $i++)
             <div class="group">
+                <a href="detail/1">
                 <div class="aspect-[4/3] bg-gray-300 mb-4 overflow-hidden">
                     <div class="w-full h-full bg-gray-200 animate-pulse"></div>
                 </div>
@@ -55,6 +56,7 @@
                     </div>
                     <div class="text-sm font-semibold">★ 4.8</div>
                 </div>
+                </a>
             </div>
             @endfor
         </div>
