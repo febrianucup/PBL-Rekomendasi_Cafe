@@ -36,7 +36,6 @@
             <div class="flex gap-1">
                 <a href="#" class="text-sm font-semibold text-dark border-b-2 border-dark pb-0.5 px-2">My Cafes</a>
                 <a href="#" class="text-sm text-muted px-2">Inventory</a>
-                <a href="#" class="text-sm text-muted px-2">Staff</a>
             </div>
         </div>
         <div class="flex items-center gap-5">
