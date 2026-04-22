@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SignUpController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
@@ -12,9 +14,11 @@ Route::get('/detail/1', function () {
     return view('DetailCafe.detailcafe');
 });
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+Route::redirect('/login', '/login/form');
+
+Route::get('/login/form', [LoginController::class, 'loginForm'])->name('login/form');
+
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::prefix('admin')->group(function () {
     Route::get('/', function () {
@@ -37,9 +41,15 @@ Route::prefix('admin')->group(function () {
 Route::get('/dashboard', function () {
     return view('Owner.Dashboard');
 });
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+
+Route::get('/register', [SignUpController::class, 'showRegistrationForm']
+)->name('register');
+
+Route::post('/register/guest', [SignUpController::class, 'guestRegister']
+)->name('register/guest');
+
+Route::post('/register/owner', [SignUpController::class, 'ownerRegister']
+)->name('register/owner');
 
 Route::get('/forgot-password', function () {
     return view('auth.forgot-password');
