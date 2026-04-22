@@ -65,15 +65,15 @@
           </button>
         </div>
 
-        <form id="guest-form" method="POST" action="{{ route('register') }}" class="tab-content space-y-5">
+        <form id="guest-form" method="POST" action="{{ route('register/guest') }}" class="tab-content space-y-5">
           
-          <input type="hidden" name="account_type" value="guest">
+          @csrf <input type="hidden" name="account_type" value="guest">
 
           <div class="space-y-1.5">
             <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Username</label>
             <input
               type="text"
-              name="name"
+              name="username"
               value="{{ old('name') }}"
               placeholder="espresso_lover"
               class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @error('name') ring-2 ring-red-500 @enderror"
@@ -118,14 +118,14 @@
           </button>
         </form>
 
-        <form id="owner-form" method="POST" action="{{ route('register') }}" class="tab-content hidden space-y-5">
-          <input type="hidden" name="account_type" value="owner">
+        <form id="owner-form" method="POST" action="{{ route('register/owner') }}" class="tab-content hidden space-y-5">
+          @csrf <input type="hidden" name="account_type" value="owner">
 
           <div class="space-y-1.5">
             <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Username</label>
             <input
               type="text"
-              name="name"
+              name="username"
               placeholder="espresso_lover"
               class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all"
               required>
@@ -145,7 +145,7 @@
             <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Location</label>
             <input
               type="text"
-              name="location"
+              name="address"
               placeholder="Street, City, Country"
               class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all"
               required>
@@ -189,7 +189,7 @@
         <div class="mt-12 text-center">
           <p class="text-xs text-gray-500">
             Already have an account?
-            <a href="{{ route('login') }}" class="text-[#3E2723] font-bold hover:underline ml-1 cursor-pointer">Sign in</a>
+            <a href="{{ route('login/form') }}" class="text-[#3E2723] font-bold hover:underline ml-1 cursor-pointer">Sign in</a>
           </p>
         </div>
 
