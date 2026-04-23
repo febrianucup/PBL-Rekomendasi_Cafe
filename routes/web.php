@@ -35,8 +35,21 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('Owner.Dashboard');
+    return view('owner.dashboard');
 });
+
+Route::get('/add-cafe', function () {
+    return view('owner.profile.add-cafe');
+})->name('add-cafe');
+
+Route::get('/cafe', function () {
+    return view('owner.profile.index');
+})->name('cafe');       
+
+Route::get('/cafe/edit', function () {
+    return view('owner.profile.edit');
+})->name('cafe.edit');
+
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
