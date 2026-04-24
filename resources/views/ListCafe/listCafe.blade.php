@@ -21,9 +21,14 @@
         </nav>
         <div class="space-x-4">
             <form>   
-                <label for="voice-search" class="sr-only">Search</label>
-                <input type="text" id="voice-search" class="border-b border border-black-4 py-2 px-5" required>
-                <button type="submit" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold">Search</button>
+                <div class="relative w-full max-w-md">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="text" placeholder="Search the collection..." class="w-full pl-11 pr-4 py-3.5 bg-white/70 backdrop-blur-md border border-light-beige/30 rounded-3xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] text-sm focus:ring-2 focus:ring-dark-brown/20 focus:bg-white focus:outline-none transition-all placeholder-gray-400 text-dark-brown" />
+                </div>
             </form>
         </div>
     </header>
