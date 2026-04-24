@@ -39,19 +39,19 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('owner.dashboard');
+    return view('Owner.dashboard');
 });
 
 Route::get('/add-cafe', function () {
-    return view('owner.profile.add-cafe');
+    return view('Owner.profile.add-cafe');
 })->name('add-cafe');
 
 Route::get('/cafe', function () {
-    return view('owner.profile.index');
+    return view('Owner.profile.index');
 })->name('cafe');       
 
 Route::get('/cafe/edit', function () {
-    return view('owner.profile.edit');
+    return view('Owner.profile.edit');
 })->name('cafe.edit');
 Route::get('/register', [SignUpController::class, 'showRegistrationForm']
 )->name('register');

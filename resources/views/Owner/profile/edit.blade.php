@@ -35,8 +35,6 @@
             <span class="font-semibold text-sm">Sensory Editorial</span>
             <div class="flex gap-1">
                 <a href="#" class="text-sm font-semibold text-dark border-b-2 border-dark pb-0.5 px-2">Branches</a>
-                <a href="#" class="text-sm text-muted px-2">Inventory</a>
-                <a href="#" class="text-sm text-muted px-2">Staff</a>
             </div>
         </div>
         <div class="flex items-center gap-4">
@@ -146,13 +144,17 @@
         </section>
 
         <!-- BOTTOM ACTIONS -->
-        <div class="flex items-center gap-3 pb-12">
-            <button class="bg-darkbrown text-white text-sm font-semibold rounded-full px-8 py-3.5 hover:bg-[#1e1a16] transition-colors">
-                Establish Branch
-            </button>
-            <button class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-8 py-3.5 hover:bg-stat transition-colors">
-                Save Draft
-            </button>
+        <div class="flex justify-between pb-12">
+            <div>
+                <a class="bg-darkbrown text-white text-sm font-semibold rounded-full px-8 py-3.5 hover:bg-[#1e1a16] transition-colors">
+                    Save Draft
+                </a>
+            </div>
+            <div class="flex justify-end">
+                <a class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-8 py-3.5 hover:bg-stat transition-colors">
+                    Back
+                </a>
+            </div>
         </div>
 
     </div>

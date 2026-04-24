@@ -35,7 +35,6 @@
             <span class="font-semibold text-sm">Sensory Editorial</span>
             <div class="flex gap-1">
                 <a href="#" class="text-sm font-semibold text-dark border-b-2 border-dark pb-0.5 px-2">My Cafes</a>
-                <a href="#" class="text-sm text-muted px-2">Inventory</a>
             </div>
         </div>
         <div class="flex items-center gap-5">
@@ -52,22 +51,19 @@
         <aside class="w-[200px] min-w-[200px] border-r border-border bg-cream flex flex-col justify-between px-4 py-6">
             <div>
                 <div class="mb-5">
-                    <p class="text-sm font-semibold text-dark leading-snug">The Sensory<br>Editorial</p>
+                    <p class="text-sm font-semibold text-dark leading-snug">SAFE<br>Saran Kafe</p>
                     <p class="text-[10px] uppercase tracking-widest text-muted mt-1">Owner Dashboard</p>
                 </div>
                 <nav class="flex flex-col gap-1 mt-2">
-                    <a href="#" class="flex items-center gap-1.5 text-[11px] font-medium text-muted px-2.5 py-2 rounded-lg">
-                        <span class="text-[10px] text-[#A39B92]">dashboard</span> DASHBOARD
-                    </a>
                     <a href="#" class="flex items-center gap-1.5 text-[11px] font-medium text-white bg-dark px-2.5 py-2 rounded-lg">
                         <span class="text-[10px] text-[#888]">storefront</span> MY CAFES
                     </a>
                 </nav>
             </div>
             <div>
-                <button class="w-full bg-darkbrown text-white text-[11px] font-bold uppercase tracking-wider rounded-full py-2.5 px-4">
+                <a href="{{ route('add-cafe') }}" class="w-full bg-darkbrown text-white text-[11px] font-bold uppercase tracking-wider rounded-full py-2.5 px-4">
                     ADD NEW BRANCH
-                </button>
+                </a>
             </div>
         </aside>
 
@@ -80,9 +76,9 @@
                     <h2 class="text-2xl font-semibold text-dark">My Branches</h2>
                     <p class="text-xs text-muted mt-1.5 max-w-sm">Managing the physical heartbeat of <em>Velvet &amp; Vine</em> across the city's finest postcodes.</p>
                 </div>
-                <button class="bg-darkbrown text-white text-xs font-semibold rounded-full px-5 py-2.5">
+                <a href="{{ route('add-cafe') }}" class="bg-darkbrown text-white text-xs font-semibold rounded-full px-5 py-2.5">
                     add New Branch
-                </button>
+                </a>
             </div>
 
             <!-- SECTION LABEL -->
@@ -112,8 +108,8 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3">
-                        <button class="text-xs font-semibold text-dark">edit Edit</button>
-                        <button class="text-xs font-semibold text-red-600">delete</button>
+                        <a href="{{ route('cafe.edit') }}" class="text-xs font-semibold text-dark">edit Edit</a>
+                        <a class="text-xs font-semibold text-red-600">delete</a>
                     </div>
                 </div>
             </div>
