@@ -74,14 +74,6 @@
             </div>
         </div>
     </main>
-
-    <footer class="max-w-6xl mx-auto px-6 py-12 text-center text-xs text-gray-400 uppercase tracking-widest space-x-6 border-t border-gray-100">
-        <a href="#">About</a>
-        <a href="#">Editorial</a>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Contact</a>
-    </footer>
-
+    
 </body>
 </html>
