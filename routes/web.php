@@ -3,6 +3,7 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SignUpController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 
@@ -42,7 +43,7 @@ Route::prefix('admin')->group(function () {
     })->name('admin.settings');
 
     Route::post('/settings', function (\Illuminate\Http\Request $request) {
-        $user = auth()->user();
+        $user = Auth::user();
         if (!$user) {
             // For testing if not logged in
             return back()->with('error', 'You must be logged in to update profile. (Currently testing without auth)');
@@ -86,7 +87,7 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::post('/logout', function () {
-    auth()->logout();
+    Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
     return redirect('/login');
