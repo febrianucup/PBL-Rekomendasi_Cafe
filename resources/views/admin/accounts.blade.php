@@ -14,11 +14,6 @@
                     <p class="text-gray-500 font-medium text-xs uppercase tracking-wider mb-1">Total Users</p>
                     <p class="font-serif text-2xl font-bold text-dark-brown">2,845</p>
                 </div>
-                <div class="h-10 w-px bg-light-beige"></div>
-                <div>
-                    <p class="text-gray-500 font-medium text-xs uppercase tracking-wider mb-1">New This Week</p>
-                    <p class="font-serif text-2xl font-bold text-soft-green">+124</p>
-                </div>
             </div>
             <button class="bg-white border border-light-beige/50 text-dark-brown px-6 py-3.5 rounded-full font-bold shadow-sm hover:shadow-md hover:bg-cream transition-all duration-300">
                 Export Ledger
