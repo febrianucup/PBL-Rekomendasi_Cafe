@@ -19,6 +19,7 @@
         <nav class="space-x-8 text-sm uppercase tracking-widest text-gray-500">
             <a href="#" class="text-black border-b border-black">Beranda</a>
         </nav>
+<<<<<<< HEAD
         <div class="flex items-center space-x-4">
             @auth
                 <!-- Dropdown for User/Profile, Settings, Logout -->
@@ -48,6 +49,19 @@
                 </form>
                 <a class="bg-transparent border border-black text-black px-5 py-3 uppercase text-xs font-bold hover:bg-black hover:text-white transition" href="{{ route('login') }}">Login</a>
             @endauth
+=======
+        <div class="space-x-4">
+            <form>   
+                <div class="relative w-full max-w-md">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="text" placeholder="Search the collection..." class="w-full pl-11 pr-4 py-3.5 bg-white/70 backdrop-blur-md border border-light-beige/30 rounded-3xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] text-sm focus:ring-2 focus:ring-dark-brown/20 focus:bg-white focus:outline-none transition-all placeholder-gray-400 text-dark-brown" />
+                </div>
+            </form>
+>>>>>>> 66c61feddaf6a16eabaae116942f249d078ef3f0
         </div>
     </header>
 
