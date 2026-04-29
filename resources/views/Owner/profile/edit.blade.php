@@ -96,6 +96,34 @@
             </div>
         </section>
 
+        <!-- SECTION 02B: Location & Maps -->
+        <section class="mb-8">
+            <div class="flex items-center gap-3 mb-5">
+                <span class="w-7 h-7 rounded-full bg-active text-white text-[11px] font-semibold flex items-center justify-center">02B</span>
+                <h2 class="text-base font-semibold text-dark">Location & Maps</h2>
+            </div>
+            <div class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
+                        <input type="text" placeholder="e.g., 47.6062"
+                            class="w-full bg-white border border-border rounded-xl px-4 py-2.5 text-sm text-dark placeholder-[#B5AFA9] focus:outline-none focus:border-muted" />
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Longitude</label>
+                        <input type="text" placeholder="e.g., -122.3321"
+                            class="w-full bg-white border border-border rounded-xl px-4 py-2.5 text-sm text-dark placeholder-[#B5AFA9] focus:outline-none focus:border-muted" />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
+                    <input type="url" placeholder="https://maps.google.com/maps?q=..."
+                        class="w-full bg-white border border-border rounded-xl px-4 py-2.5 text-sm text-dark placeholder-[#B5AFA9] focus:outline-none focus:border-muted" />
+                    <p class="text-[10px] text-muted mt-2">Get this link from Google Maps by right-clicking on your location and selecting "Copy link"</p>
+                </div>
+            </div>
+        </section>
+
         <!-- SECTION 03: The Narrative -->
         <section class="mb-8">
             <div class="flex items-center gap-3 mb-5">
