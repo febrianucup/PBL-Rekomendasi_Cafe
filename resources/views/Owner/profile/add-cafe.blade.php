@@ -173,40 +173,70 @@
             </div>
         </section>
 
+        <!-- SECTION: Location & Maps -->
+        <section class="mb-8">
+            <h2 class="text-base font-semibold text-dark mb-4">Location & Maps</h2>
+            <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
+                        <input type="text" placeholder="e.g., 47.6062" value="47.6062"
+                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Longitude</label>
+                        <input type="text" placeholder="e.g., -122.3321" value="-122.3321"
+                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
+                    <input type="url" placeholder="https://maps.google.com/maps?q=..." value="https://maps.google.com/maps?q=47.6062,-122.3321"
+                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                    <p class="text-[10px] text-muted mt-2">Get this link from Google Maps by right-clicking on your location and selecting "Copy link"</p>
+                </div>
+
+            </div>
+        </section>
+
         <!-- SECTION: Photo Gallery -->
         <section class="mb-8">
             <h2 class="text-base font-semibold text-dark mb-4">Photo Gallery</h2>
             <div class="bg-white border border-border rounded-2xl p-5">
-                <div class="grid grid-cols-4 gap-3">
+                <div class="grid grid-cols-4 gap-3" id="photo-gallery">
+
+                    <!-- Upload Area -->
+                    <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" onclick="document.getElementById('photo-input').click()" id="upload-area">
+                        <span class="text-lg text-muted">⊕</span>
+                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
+                        <input type="file" id="photo-input" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)" />
+                    </div>
 
                     <!-- Photo 1 -->
                     <div class="relative group rounded-xl overflow-hidden aspect-square">
                         <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=300&q=80"
                             alt="cafe" class="w-full h-full object-cover" />
-                        <button class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
                     </div>
 
                     <!-- Photo 2 -->
                     <div class="relative group rounded-xl overflow-hidden aspect-square">
                         <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80"
                             alt="latte" class="w-full h-full object-cover" />
-                        <button class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
                     </div>
 
                     <!-- Photo 3 -->
                     <div class="relative group rounded-xl overflow-hidden aspect-square">
                         <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=300&q=80"
                             alt="coffee grinder" class="w-full h-full object-cover" />
-                        <button class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
-                    </div>
-
-                    <!-- Upload More -->
-                    <div class="rounded-xl aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors">
-                        <span class="text-lg text-muted">⊕</span>
-                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
+                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
                     </div>
 
                 </div>
+                <p class="text-[10px] text-muted mt-3">Upload multiple images (recommended: at least 4-6 photos). Maximum 12 images.</p>
             </div>
         </section>
 
@@ -270,6 +300,42 @@
         </div>
 
     </div>
+
+    <script>
+        function handlePhotoUpload(event) {
+            const files = Array.from(event.target.files);
+            const gallery = document.getElementById('photo-gallery');
+            const uploadArea = document.getElementById('upload-area');
+            const currentPhotos = gallery.querySelectorAll('[class*="group"]').length - 1; // Exclude upload area
+            
+            // Limit to 12 photos total
+            if (currentPhotos + files.length > 12) {
+                alert('Maximum 12 photos allowed. You already have ' + currentPhotos + ' photos.');
+                return;
+            }
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.className = 'relative group rounded-xl overflow-hidden aspect-square';
+                    photoDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="cafe photo" class="w-full h-full object-cover" />
+                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                    `;
+                    gallery.insertBefore(photoDiv, uploadArea.nextSibling);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Reset input
+            event.target.value = '';
+        }
+
+        function removePhoto(button) {
+            button.closest('.relative').remove();
+        }
+    </script>
 
 </body>
 </html>
