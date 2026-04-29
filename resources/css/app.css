@@ -1,12 +1,27 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
+/* 1. Tempatkan semua @source di level utama (di luar blok lain) */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source "../**/*.blade.php";
 @source "../**/*.js";
 @source "../**/*.vue";
 
+/* 2. Gabungkan semua variabel ke dalam SATU blok @theme saja */
 @theme {
+  /* Warna */
+  --color-cream: #F5F1EC;
+  --color-dark-brown: #4B2E2B;
+  --color-light-beige: #D6CFC7;
+  --color-soft-green: #A3B18A;
+  --color-soft-red: #E57373;
+  --color-main: 254 249 243;
+
+  /* Font */
+  --font-serif: "Playfair Display", serif;
+  /* Menggunakan versi Instrument Sans yang Anda tentukan terakhir */
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-main: 254 249 243;
 }

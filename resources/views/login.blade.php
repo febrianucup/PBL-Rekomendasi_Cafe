@@ -16,6 +16,8 @@
             font-family: 'Playfair Display', serif;
         }
     </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body class="h-screen">
@@ -30,7 +32,7 @@
 
         <div class="absolute bottom-20 left-10 text-white max-w-md">
             <h1 class="text-5xl font-bold leading-tight mb-4">
-                The Sensory Editorial
+                SAFE (Saran Cafe)
             </h1>
             <p class="text-lg">
                 Curating the world's most evocative coffee spaces.
@@ -60,7 +62,7 @@
                 <div class="mb-4">
                     <div class="flex justify-between text-sm text-gray-600">
                         <label>Password</label>
-                        <a href="#" class="text-[#6B4F3B]">Forgot?</a>
+                        <a href="forgot-password" class="text-[#6B4F3B]">Forgot?</a>
                     </div>
                     <input type="password"
                         class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#A67C52] outline-none"
@@ -79,7 +81,7 @@
 
             <p class="text-sm text-center mt-6">
                 New here?
-                <a href="#" class="text-[#6B4F3B] font-medium">Create account</a>
+                <a href="register" class="text-[#6B4F3B] font-medium">Create account</a>
             </p>
 
         </div>
