@@ -79,8 +79,6 @@
             <p class="text-center text-sm uppercase tracking-widest text-gray-400">Lokasi & Kontak</p>
             <h3 class="text-center text-2xl mt-2 mb-6">Nakoa, Suhat-Malang</h3>
             <div class="w-full h-48 bg-gray-800 rounded-lg mb-6" id="map"></div>
-<<<<<<< HEAD
-            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center border-t border-b py-6 mb-6">
                 <div>
                     <h4 class="font-bold text-sm text-gray-500 uppercase">Contact</h4>
@@ -132,12 +130,6 @@
                     </div>
                     <span class="font-bold text-[#D4A373]">Rp 45.000</span>
                 </div>
-=======
-            <div class="flex justify-between items-center border-t pt-6">
-                <div><span class="text-gray-500">Opening Hours:</span> 09:00 – 00:00</div>
-                <a href="https://maps.app.goo.gl/HMQB1dnCmBDjsr5H9" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold rounded-lg">View in Gmaps</a>
->>>>>>> 66c61feddaf6a16eabaae116942f249d078ef3f0
-            </div>
         </section>
 
         <section class="mt-16">
