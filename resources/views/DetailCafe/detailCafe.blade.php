@@ -25,7 +25,7 @@
 
 <body class="bg-[#FDFBF7] text-[#333]">
 
-    <nav class="flex justify-between items-center px-8 py-6">
+    <nav class="flex justify-between items-center px-8 py-6 w-100">
         <div class="text-xl font-bold italic">SAFE</div>
         <div class="flex gap-6 text-sm font-semibold">
             {{-- <a href="#">Journals</a> --}}
