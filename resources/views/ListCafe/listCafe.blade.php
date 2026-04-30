@@ -20,6 +20,11 @@
             <a href="#" class="text-black border-b border-black">Beranda</a>
         </nav>
         <div class="flex items-center space-x-4">
+            <form class="flex items-center">   
+                    <label for="voice-search" class="sr-only">Search</label>
+                    <input type="text" id="voice-search" class="border-b border-black py-2 px-5 bg-transparent" placeholder="Search..." required>
+                    <button type="submit" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold ml-2">Search</button>
+                </form>
             @auth
                 <!-- Dropdown for User/Profile, Settings, Logout -->
                 <div class="relative group">
@@ -41,11 +46,6 @@
                     </div>
                 </div>
             @else
-                <form class="flex items-center">   
-                    <label for="voice-search" class="sr-only">Search</label>
-                    <input type="text" id="voice-search" class="border-b border-black py-2 px-5 bg-transparent" placeholder="Search..." required>
-                    <button type="submit" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold ml-2">Search</button>
-                </form>
                 <a class="bg-transparent border border-black text-black px-5 py-3 uppercase text-xs font-bold hover:bg-black hover:text-white transition" href="{{ route('login') }}">Login</a>
             @endauth
     </header>
