@@ -56,7 +56,6 @@
                     <p class="text-gray-700 leading-relaxed font-serif text-lg tracking-wide bg-cream/30 p-6 rounded-2xl">"The ambiance here is absolutely unmatched. However, I felt the service was a bit slow during the weekend rush. Would love to see an improvement there!"</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-3 mt-6 pt-6 border-t border-light-beige/30">
-                    <button class="px-8 py-3 bg-soft-green text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-md hover:shadow-lg hover:bg-[#8e9c76] transition-all">Approve</button>
                     <button class="px-8 py-3 bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider rounded-full hover:bg-gray-200 transition-all font-medium">Hide</button>
                     <button class="px-8 py-3 bg-white border-2 border-soft-red/20 text-soft-red text-xs font-bold uppercase tracking-wider rounded-full hover:bg-soft-red/5 transition-all ml-auto">Delete</button>
                 </div>
@@ -86,8 +85,8 @@
                     <p class="text-gray-700 leading-relaxed font-serif text-lg tracking-wide bg-soft-red/5 p-6 rounded-2xl border border-soft-red/10">"I found a bug in my coffee. Worst experience ever. Do NOT recommend this place to anyone!!!"</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-3 mt-6 pt-6 border-t border-light-beige/30">
-                    <button class="px-8 py-3 bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider rounded-full hover:bg-gray-200 transition-all font-medium">Dismiss Report</button>
-                    <button class="px-8 py-3 bg-white border-2 border-soft-red/20 text-soft-red text-xs font-bold uppercase tracking-wider rounded-full hover:bg-soft-red/5 transition-all ml-auto">Delete Comment</button>
+                    <button class="px-8 py-3 bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider rounded-full hover:bg-gray-200 transition-all font-medium">Hide</button>
+                    <button class="px-8 py-3 bg-white border-2 border-soft-red/20 text-soft-red text-xs font-bold uppercase tracking-wider rounded-full hover:bg-soft-red/5 transition-all ml-auto">Delete</button>
                 </div>
             </div>
         </div>

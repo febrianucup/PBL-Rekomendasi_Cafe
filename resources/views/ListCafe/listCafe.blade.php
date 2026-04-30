@@ -19,13 +19,35 @@
         <nav class="space-x-8 text-sm uppercase tracking-widest text-gray-500">
             <a href="#" class="text-black border-b border-black">Beranda</a>
         </nav>
-        <div class="space-x-4">
-            <form>   
-                <label for="voice-search" class="sr-only">Search</label>
-                <input type="text" id="voice-search" class="border-b border border-black-4 py-2 px-5" required>
-                <button type="submit" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold">Search</button>
-            </form>
-        </div>
+        <div class="flex items-center space-x-4">
+            @auth
+                <!-- Dropdown for User/Profile, Settings, Logout -->
+                <div class="relative group">
+                    <button class="flex items-center gap-2 font-bold focus:outline-none">
+                        {{ auth()->user()->name ?? 'User Profile' }}
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <!-- Dropdown menu -->
+                    <div class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-md shadow-lg hidden group-hover:block z-50">
+                        <div class="py-1">
+                            <span class="block px-4 py-2 text-xs text-gray-400 uppercase tracking-wider">Profile</span>
+                            <a href="{{ route('admin.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black">Settings</a>
+                            <div class="border-t border-gray-100 mt-1"></div>
+                            <form action="{{ route('logout') }}" method="POST" class="block">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <form class="flex items-center">   
+                    <label for="voice-search" class="sr-only">Search</label>
+                    <input type="text" id="voice-search" class="border-b border-black py-2 px-5 bg-transparent" placeholder="Search..." required>
+                    <button type="submit" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold ml-2">Search</button>
+                </form>
+                <a class="bg-transparent border border-black text-black px-5 py-3 uppercase text-xs font-bold hover:bg-black hover:text-white transition" href="{{ route('login') }}">Login</a>
+            @endauth
     </header>
 
     <main class="max-w-6xl mx-auto px-6 py-12">
@@ -60,23 +82,6 @@
             </div>
             @endfor
         </div>
-
-        <div class="mt-24 border-t border-gray-200 pt-16 text-center">
-            <h2 class="text-3xl font-bold mb-4">JOIN</h2>
-            <p class="text-gray-600 mb-6">Join untuk mendaftarkan cafemu!</p>
-            <div class="max-w-md mx-auto flex flex-col items-center gap-4">
-                <a class="bg-black text-white px-8 py-3 uppercase text-xs font-bold flex items-center justify-center" href="../login">Join</a>
-            </div>
-        </div>
-    </main>
-
-    <footer class="max-w-6xl mx-auto px-6 py-12 text-center text-xs text-gray-400 uppercase tracking-widest space-x-6 border-t border-gray-100">
-        <a href="#">About</a>
-        <a href="#">Editorial</a>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Contact</a>
-    </footer>
-
+    
 </body>
 </html>
