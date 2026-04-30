@@ -80,9 +80,9 @@
                     <h2 class="text-2xl font-semibold text-dark">My Branches</h2>
                     <p class="text-xs text-muted mt-1.5 max-w-sm">Managing the physical heartbeat of <em>Velvet &amp; Vine</em> across the city's finest postcodes.</p>
                 </div>
-                <button class="bg-darkbrown text-white text-xs font-semibold rounded-full px-5 py-2.5">
-                    add New Branch
-                </button>
+                <a href="{{ route('add-cafe') }}" class="inline-block bg-darkbrown text-white text-xs font-semibold rounded-full px-5 py-2.5">
+                    add New Cafe
+                </a>
             </div>
 
             <!-- SECTION LABEL -->
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3">
-                        <button class="text-xs font-semibold text-dark">edit Edit</button>
+                        <a href="{{ route('cafe.edit') }}" class="text-xs font-semibold text-dark">edit</a>
                         <button class="text-xs font-semibold text-red-600">delete</button>
                     </div>
                 </div>
@@ -141,7 +141,7 @@
                         </div>
                     </div>
                     <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3">
-                        <button class="text-xs font-semibold text-dark">edit Edit</button>
+                        <a href="{{ route('cafe.edit') }}" class="text-xs font-semibold text-dark">edit</a>
                         <button class="text-xs font-semibold text-red-600">delete</button>
                     </div>
                 </div>
