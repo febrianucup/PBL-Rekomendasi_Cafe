@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit Cafe - Velvet & Vine</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -89,60 +90,104 @@
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Atmospheric Tag</label>
-                        <div class="flex flex-wrap items-center gap-2 mt-1">
-                            <span class="bg-[#E8E4DE] text-dark text-[11px] font-medium px-3 py-1 rounded-full">Quiet Study</span>
-                            <span class="bg-active text-white text-[11px] font-medium px-3 py-1 rounded-full">Garden View</span>
-                            <button class="text-[11px] text-muted border border-border rounded-full px-2.5 py-1 hover:bg-stat transition-colors">+ Add</button>
-                        </div>
+                    <!-- Ubah selectedTag dari null menjadi array [] -->
+                    <div x<div x-data="{ 
+                    /* Data Dummy Tags */
+                    tags: [
+                        { id: 1, tag_name: 'Cozy' },
+                        { id: 2, tag_name: 'Minimalist' },
+                        { id: 3, tag_name: 'Industrial' },
+                        { id: 4, tag_name: 'Vintage' },
+                        { id: 5, tag_name: 'Modern' }
+                    ],
+                    /* Array untuk menampung banyak pilihan */
+                    selectedTags: [] 
+                }">
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">
+                        Atmospheric Tags (Multi-select)
+                    </label>
+
+                    <div class="flex flex-wrap items-center gap-2 mt-1">
+                        <!-- Looping menggunakan Alpine.js x-for -->
+                        <template x-for="tag in tags" :key="tag.id">
+                            <label class="cursor-pointer">
+                                <!-- Checkbox tersembunyi -->
+                                <input type="checkbox" 
+                                    :value="tag.id" 
+                                    class="hidden" 
+                                    x-model="selectedTags">
+                                
+                                <!-- Tampilan Chip -->
+                                <span 
+                                    :class="selectedTags.includes(tag.id) ? 'bg-active text-white' : 'bg-[#E8E4DE] text-dark'"
+                                    class="text-[11px] font-medium px-4 py-1.5 rounded-full transition-all duration-200 inline-block border border-transparent"
+                                    x-text="tag.tag_name">
+                                </span>
+                            </label>
+                        </template>
                     </div>
+
+                    <!-- Info untuk Developer (Bisa dihapus nanti) -->
+                    <div class="mt-4 p-3 bg-cream rounded-xl border border-border">
+                        <p class="text-[10px] text-muted uppercase tracking-wider mb-1">Data Terpilih (ID):</p>
+                        <code class="text-xs text-active font-bold" x-text="selectedTags.length > 0 ? selectedTags.join(', ') : 'Belum ada yang dipilih'"></code>
+                    </div>
+                </div>
                 </div>
 
             </div>
         </section>
 
         <!-- SECTION: Opening Hours -->
-        <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Opening Hours</h2>
+        <section class="mb-8" x-data="{ 
+            schedules: [
+                { day_range: 'Mon - Fri', open: '07:00', close: '19:00' },
+                { day_range: 'Saturday', open: '08:00', close: '21:00' },
+                { day_range: 'Sunday', open: '09:00', close: '17:00' }
+            ],
+            addSchedule() {
+                this.schedules.push({ day_range: '', open: '00:00', close: '00:00' });
+            },
+            removeSchedule(index) {
+                this.schedules.splice(index, 1);
+            }
+        }">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-base font-semibold text-dark">Opening Hours</h2>
+                <button type="button" @click="addSchedule()" 
+                    class="text-[11px] text-active border border-active rounded-full px-3 py-1 hover:bg-active hover:text-white transition-colors">
+                    + Add Schedule
+                </button>
+            </div>
+
             <div class="bg-white border border-border rounded-2xl overflow-hidden">
+                <template x-for="(schedule, index) in schedules" :key="index">
+                    <div class="flex items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group">
+                        <!-- Input Nama Hari -->
+                        <div class="w-32">
+                            <input type="text" x-model="schedule.day_range" placeholder="e.g. Monday"
+                                name="opening_hours[][day_range]"
+                                class="text-sm font-semibold text-dark bg-transparent border-b border-transparent focus:border-active focus:outline-none w-full" />
+                        </div>
 
-                <!-- Mon-Fri -->
-                <div class="flex items-center justify-between px-5 py-4 border-b border-border">
-                    <span class="text-sm font-semibold text-dark w-24">Mon - Fri</span>
-                    <div class="flex items-center gap-3 flex-1">
-                        <input type="time" value="07:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                        <span class="text-muted text-sm">—</span>
-                        <input type="time" value="19:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
+                        <!-- Input Jam -->
+                        <div class="flex items-center gap-3 flex-1">
+                            <input type="time" x-model="schedule.open" name="opening_hours[][open]"
+                                class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
+                            <span class="text-muted text-sm">—</span>
+                            <input type="time" x-model="schedule.close" name="opening_hours[][close]"
+                                class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
+                        </div>
+
+                        <!-- Tombol Hapus -->
+                        <button type="button" @click="removeSchedule(index)" 
+                            class="ml-4 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
                     </div>
-                </div>
-
-                <!-- Saturday -->
-                <div class="flex items-center justify-between px-5 py-4 border-b border-border">
-                    <span class="text-sm font-semibold text-dark w-24">Saturday</span>
-                    <div class="flex items-center gap-3 flex-1">
-                        <input type="time" value="08:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                        <span class="text-muted text-sm">—</span>
-                        <input type="time" value="21:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                    </div>
-                </div>
-
-                <!-- Sunday -->
-                <div class="flex items-center justify-between px-5 py-4">
-                    <span class="text-sm font-semibold text-dark w-24">Sunday</span>
-                    <div class="flex items-center gap-3 flex-1">
-                        <input type="time" value="09:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                        <span class="text-muted text-sm">—</span>
-                        <input type="time" value="17:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                    </div>
-                </div>
-
+                </template>
             </div>
         </section>
 
@@ -208,7 +253,7 @@
                 <div class="grid grid-cols-4 gap-3" id="photo-gallery">
 
                     <!-- Upload Area -->
-                    <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" onclick="document.getElementById('photo-input').click()" id="upload-area">
+                    <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" onclick="document.getElementById('photo-input').click()" id="photo-upload-area">
                         <span class="text-lg text-muted">⊕</span>
                         <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
                         <input type="file" id="photo-input" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)" />
@@ -238,6 +283,24 @@
                 </div>
                 <p class="text-[10px] text-muted mt-3">Upload multiple images (recommended: at least 4-6 photos). Maximum 12 images.</p>
             </div>
+        </section>
+       <section class="mb-8">
+            <h2 class="text-base font-semibold text-dark mb-4">Thumbnail</h2>
+            <div class="bg-white border border-border rounded-2xl p-5">
+                <!-- Container Utama Galeri -->
+                <div class="grid grid-cols-4 gap-3" id="tumbnail-gallery">
+
+                    <!-- Upload Area (HARUS di dalam tumbnail-gallery) -->
+                    <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" 
+                        onclick="document.getElementById('tumbnail-input').click()" 
+                        id="tumbnail-upload-area">
+                        <span class="text-lg text-muted">⊕</span>
+                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
+                        <input type="file" id="tumbnail-input" accept="image/*" multiple style="display: none;" onchange="handleTumbnailInput(event)" />
+                    </div>
+
+                </div> <!-- Penutup tumbnail-gallery -->
+            </div> <!-- Penutup bg-white -->
         </section>
 
         <!-- SECTION: Featured Menu -->
@@ -345,12 +408,42 @@
         function handlePhotoUpload(event) {
             const files = Array.from(event.target.files);
             const gallery = document.getElementById('photo-gallery');
-            const uploadArea = document.getElementById('upload-area');
+            const uploadArea = document.getElementById('photo-upload-area');
             const currentPhotos = gallery.querySelectorAll('[class*="group"]').length - 1; // Exclude upload area
             
             // Limit to 12 photos total
             if (currentPhotos + files.length > 12) {
                 alert('Maximum 12 photos allowed. You already have ' + currentPhotos + ' photos.');
+                return;
+            }
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.className = 'relative group rounded-xl overflow-hidden aspect-square';
+                    photoDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="cafe photo" class="w-full h-full object-cover" />
+                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                    `;
+                    gallery.insertBefore(photoDiv, uploadArea.nextSibling);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Reset input
+            event.target.value = '';
+        }
+
+        function handleTumbnailInput(event) {
+            const files = Array.from(event.target.files);
+            const gallery = document.getElementById('tumbnail-gallery');
+            const uploadArea = document.getElementById('tumbnail-upload-area');
+            const currentPhotos = gallery.querySelectorAll('[class*="group"]').length - 1; // Exclude upload area
+            
+            // Limit to 12 photos total
+            if (currentPhotos + files.length > 1) {
+                alert('Maximum 1 photos allowed. You already have ' + currentPhotos + ' photos.');
                 return;
             }
 
