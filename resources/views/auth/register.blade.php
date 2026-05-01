@@ -17,14 +17,15 @@
   </style>
 </head>
 
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body class="m-0 p-0 overflow-x-hidden bg-white">
 
-  <div class="flex flex-col md:flex-row w-full min-h-screen bg-white overflow-hidden">
+  <div class="flex flex-col md:flex-row w-full h-screen bg-white">
 
-    <div class="relative w-full md:w-1/2 bg-[#515744] overflow-hidden">
+    <div class="relative w-full md:w-1/2 h-screen bg-[#515744] overflow-hidden group">
       <img
         src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop"
-        class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay"
+        class="absolute inset-0 opacity-60 mix-blend-overlay transition-transform duration-[2000ms] group-hover:scale-105"
+        style="object-fit: cover; width: 100%; height: 100vh;"
         alt="Interior Cafe">
 
       <div class="relative z-10 h-full p-12 flex flex-col justify-center">
@@ -46,7 +47,7 @@
       </div>
     </div>
 
-    <div class="w-full md:w-1/2 bg-[#F9F8F3] p-8 md:p-16 flex flex-col justify-center">
+    <div class="w-full md:w-1/2 h-screen overflow-y-auto bg-[#F9F8F3] p-8 md:p-16 flex flex-col justify-center">
       <div class="max-w-sm mx-auto w-full">
 
         <header class="mb-10">
@@ -56,16 +57,19 @@
           </p>
         </header>
 
-        <div class="grid grid-cols-2 gap-3 mb-8 rounded-3xl bg-[#F3EEE5] p-1">
-          <button type="button" onclick="switchTab('guest')" id="guest-tab" class="text-sm font-semibold rounded-3xl py-3 transition duration-200 bg-white text-[#2d1e13] shadow-sm">
+        <div class="relative grid grid-cols-2 mb-8 rounded-3xl bg-[#F3EEE5] p-1">
+          <!-- Background Indicator -->
+          <div id="tab-indicator" class="absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] bg-white rounded-3xl shadow-sm transition-transform duration-300 ease-out"></div>
+          
+          <button type="button" onclick="switchTab('guest')" id="guest-tab" class="relative z-10 text-sm font-semibold py-3 transition-colors duration-300 text-[#2d1e13]">
             GUEST
           </button>
-          <button type="button" onclick="switchTab('owner')" id="owner-tab" class="text-sm font-semibold rounded-3xl py-3 transition duration-200 text-gray-500 hover:text-[#2d1e13]">
+          <button type="button" onclick="switchTab('owner')" id="owner-tab" class="relative z-10 text-sm font-semibold py-3 transition-colors duration-300 text-gray-500 hover:text-[#2d1e13]">
             OWNER
           </button>
         </div>
 
-        <form id="guest-form" method="POST" action="{{ route('register/guest') }}" class="tab-content space-y-5">
+        <form id="guest-form" method="POST" action="{{ route('register/guest') }}" class="tab-content space-y-5 transition-all duration-300 opacity-100 translate-y-0">
           
           @csrf <input type="hidden" name="account_type" value="guest">
 
@@ -118,7 +122,7 @@
           </button>
         </form>
 
-        <form id="owner-form" method="POST" action="{{ route('register/owner') }}" class="tab-content hidden space-y-5">
+        <form id="owner-form" method="POST" action="{{ route('register/owner') }}" class="tab-content hidden space-y-5 transition-all duration-300 opacity-0 translate-y-4">
           @csrf <input type="hidden" name="account_type" value="owner">
 
           <div class="space-y-1.5">
@@ -209,21 +213,53 @@
       const ownerTab = document.getElementById('owner-tab');
       const guestForm = document.getElementById('guest-form');
       const ownerForm = document.getElementById('owner-form');
+      const tabIndicator = document.getElementById('tab-indicator');
 
       if (tab === 'guest') {
-        guestTab.classList.add('bg-white', 'text-[#2d1e13]');
+        // Update Indicator and Texts
+        tabIndicator.style.transform = 'translateX(0)';
         guestTab.classList.remove('text-gray-500');
-        ownerTab.classList.remove('bg-white', 'text-[#2d1e13]');
+        guestTab.classList.add('text-[#2d1e13]');
+        ownerTab.classList.remove('text-[#2d1e13]');
         ownerTab.classList.add('text-gray-500');
-        guestForm.classList.remove('hidden');
-        ownerForm.classList.add('hidden');
+        
+        // Hide Owner Form
+        ownerForm.classList.remove('opacity-100', 'translate-y-0');
+        ownerForm.classList.add('opacity-0', 'translate-y-4');
+        
+        setTimeout(() => {
+          ownerForm.classList.add('hidden');
+          guestForm.classList.remove('hidden');
+          
+          // Slight delay for rendering before starting animation
+          setTimeout(() => {
+            guestForm.classList.remove('opacity-0', 'translate-y-4');
+            guestForm.classList.add('opacity-100', 'translate-y-0');
+          }, 20);
+        }, 300);
+        
       } else {
-        ownerTab.classList.add('bg-white', 'text-[#2d1e13]');
+        // Update Indicator and Texts
+        tabIndicator.style.transform = 'translateX(100%)';
         ownerTab.classList.remove('text-gray-500');
-        guestTab.classList.remove('bg-white', 'text-[#2d1e13]');
+        ownerTab.classList.add('text-[#2d1e13]');
+        guestTab.classList.remove('text-[#2d1e13]');
         guestTab.classList.add('text-gray-500');
-        ownerForm.classList.remove('hidden');
-        guestForm.classList.add('hidden');
+
+        // Hide Guest Form
+        guestForm.classList.remove('opacity-100', 'translate-y-0');
+        guestForm.classList.add('opacity-0', 'translate-y-4');
+        
+        setTimeout(() => {
+          guestForm.classList.add('hidden');
+          ownerForm.classList.remove('hidden');
+          
+          // Slight delay for rendering before starting animation
+          setTimeout(() => {
+            ownerForm.classList.remove('opacity-0', 'translate-y-4');
+            ownerForm.classList.add('opacity-100', 'translate-y-0');
+          }, 20);
+        }, 300);
       }
     }
   </script>
