@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('operational_hours', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cafe_id')->references('id')->on('cafes');
+            $table->foreignId('cafe_id')->references('id')->on('cafes')->onDelete('cascade');
             $table->string('day_range');
             $table->time('open_time');
             $table->time('close_time');

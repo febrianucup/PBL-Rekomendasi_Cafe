@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cafe_id')->references('id')->on('cafes');
+            $table->foreignId('cafe_id')->references('id')->on('cafes')->onDelete('cascade');
             $table->string('name');
             $table->text('description');
             $table->bigInteger('price');
