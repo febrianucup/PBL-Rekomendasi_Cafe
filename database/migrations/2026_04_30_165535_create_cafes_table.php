@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->foreignId('type_id')->references('id')->on('types');
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->string('num_phone');
             $table->string('email');
             $table->text('address');

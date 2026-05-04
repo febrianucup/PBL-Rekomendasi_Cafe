@@ -65,22 +65,26 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @for ($i = 0; $i < 6; $i++)
-            <div class="group">
-                <a href="detail/1">
-                <div class="aspect-[4/3] bg-gray-300 mb-4 overflow-hidden">
-                    <div class="w-full h-full bg-gray-200 animate-pulse"></div>
+            @forelse($cafes as $cafe)
+                <div class="group">
+                    <a href="{{ route('cafes.show', $cafe->id) }}">
+                        <div class="aspect-[4/3] bg-gray-300 mb-4 overflow-hidden rounded-3xl shadow-sm">
+                            <img src="{{ $cafe->thumbnail ? asset('storage/'.$cafe->thumbnail->photo_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=80' }}" alt="{{ $cafe->name }}" class="w-full h-full object-cover" />
+                        </div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg">{{ $cafe->name }}</h3>
+                                <p class="text-sm text-gray-500">{{ $cafe->address }}</p>
+                            </div>
+                            <div class="text-sm font-semibold">★ 4.8</div>
+                        </div>
+                    </a>
                 </div>
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="font-bold text-lg">Nama Cafe {{$i+1}}</h3>
-                        <p class="text-sm text-gray-500">Lokasi, Kota</p>
-                    </div>
-                    <div class="text-sm font-semibold">★ 4.8</div>
+            @empty
+                <div class="col-span-3 text-center py-16 text-gray-500">
+                    Belum ada cafe yang tersedia.
                 </div>
-                </a>
-            </div>
-            @endfor
+            @endforelse
         </div>
     
 </body>

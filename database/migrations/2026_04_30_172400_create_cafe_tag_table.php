@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cafe_tag', function (Blueprint $table) {
-            $table->foreignId('cafe_id')->references('id')->on('cafes');
-            $table->foreignId('tag_id')->references('id')->on('tags');
+            $table->foreignId('cafe_id')->references('id')->on('cafes')->onDelete('cascade');
+            $table->foreignId('tag_id')->references('id')->on('tags')->onDelete('cascade');;
             $table->primary(['cafe_id', 'tag_id']);
             $table->timestamps();
         });

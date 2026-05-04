@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'active', 'rejected'])->default('active');
+        Schema::create('thumbnail_photo', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('cafe_id')->references('id')->on('cafes')->onDelete('cascade');
+            $table->text('photo_url')->isNotEmpty();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('thumbnail_photo');
     }
 };
