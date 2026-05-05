@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cafe_id')->references('id')->on('cafes')->onDelete('cascade');
             $table->text('photo_url')->isNotEmpty();
-            $table->boolean('is_primary')->default(false);
             $table->timestamps();
         });
     }

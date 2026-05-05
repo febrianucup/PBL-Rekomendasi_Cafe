@@ -7,24 +7,35 @@ use App\Models\OperationalTime;
 use App\Models\Tags;
 use App\Models\Type;
 use Faker\Provider\id_ID\PhoneNumber;
+use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class CafeController extends Controller
 {
     public function index(){
-        $cafes = Cafes::with(['type', 'thumbnail'])->get();
+        $cafe=Cafes::with(['type', 'thumbnail', 'photos'])->get();
+        $user=Auth::user();
 
-        return view('ListCafe.listCafe', compact('cafes'));
+        return view('ListCafe.listCafe', compact('cafe', 'user'));
     }
 
     public function show($id){
-        $cafe = Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
+        $cafe=Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
             ->findOrFail($id);
+        $user=Auth::user();
 
-        return view('DetailCafe.detailCafe', compact('cafe'));
+        return view('DetailCafe.detailCafe', compact('cafe', 'user'));
+    }
+
+    public function edit(){
+        return view('Owner.profile.edit', [
+            'types' => Type::all(),
+            'tags' => Tags::all(),
+        ]);
     }
 
     public function create(){
@@ -41,25 +52,29 @@ class CafeController extends Controller
             'type_id'=>'required|exists:types,id',
             'latitude'=>'required|numeric',
             'longitude'=>'required|numeric',
-            'tags'=>'array',
-            'thumbnail' => 'required|image|mimes:jpeg,png,jpg|max:20048',
-            'photos.*' => 'image|mimes:jpeg,png,jpg|max:20048',
-            'open_time'=>'array',
-            'phone_number'=>['required'],
+            'tags'=>'nullable|array',
+            'tags.*'=>'exists:tags,id',
+            'thumbnail'=>'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'photos.*'=>'image|mimes:jpeg,png,jpg|max:2048',
+            'open_time'=>'nullable|array',
+            'open_time.*.day_range'=>'required_with:open_time|string|max:255',
+            'open_time.*.open_time'=>'required_with:open_time|date_format:H:i',
+            'open_time.*.close_time'=>'required_with:open_time|date_format:H:i',
+            'phone_number'=>['required', 'phone:ID'],
             'email'=>'required|email:rfc,dns',
             'address'=>'required',
             'maps'=>'required|url',
-            'menu_items'=>'required',
-            'menu_items' => 'required|array',
-            'menu_items.*.name' => 'required|string|max:255',
-            'menu_items.*.description' => 'nullable|string',
-            'menu_items.*.price' => 'required|numeric',
+            'menu_items'=>'nullable|array',
+            'menu_items.*.name'=>'required_with:menu_items|string|max:255',
+            'menu_items.*.description'=>'nullable|string',
+            'menu_items.*.price'=>'required_with:menu_items|numeric',
+            'menu_items.*.image'=>'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         try{
             DB::transaction(function() use ($credentials, $request){
                 $cafe=Cafes::create([
-                    'user_id' => Auth::id(),
+                    'user_id'=>Auth::id(),
                     'name'=>$credentials['name'],
                     'description'=>$credentials['description'],
                     'type_id'=>$credentials['type_id'],
@@ -90,7 +105,6 @@ class CafeController extends Controller
                         $path=$file->store('cafes/gallery', 'public');
                         $cafe->photos()->create([
                             'photo_url'=>$path,
-                            'is_primary'=>false
                         ]);
                     }
                 }
@@ -129,28 +143,28 @@ class CafeController extends Controller
 
     public function updateCafe(Request $request, $id){
         $credentials = $request->validate([
-            'name' => 'required|max:255|string',
-            'description' => 'required',
-            'type_id' => 'required|exists:types,id',
-            'latitude' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tags,id',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'photos.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'open_time' => 'nullable|array',
-            'open_time.*.day_range' => 'required_with:open_time|string|max:255',
-            'open_time.*.open_time' => 'required_with:open_time|date_format:H:i',
-            'open_time.*.close_time' => 'required_with:open_time|date_format:H:i',
-            'phone_number' => ['required', 'phone:ID'],
-            'email' => 'required|email:rfc,dns',
-            'address' => 'required',
-            'maps' => 'required|url',
-            'menu_items' => 'nullable|array',
-            'menu_items.*.name' => 'required_with:menu_items|string|max:255',
-            'menu_items.*.description' => 'nullable|string',
-            'menu_items.*.price' => 'required_with:menu_items|numeric',
-            'menu_items.*.image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'name'=>'required|max:255|string',
+            'description'=>'required',
+            'type_id'=>'required|exists:types,id',
+            'latitude'=>'required|numeric',
+            'longitude'=>'required|numeric',
+            'tags'=>'nullable|array',
+            'tags.*'=>'exists:tags,id',
+            'thumbnail'=>'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'photos.*'=>'image|mimes:jpeg,png,jpg|max:2048',
+            'open_time'=>'nullable|array',
+            'open_time.*.day_range'=>'required_with:open_time|string|max:255',
+            'open_time.*.open_time'=>'required_with:open_time|date_format:H:i',
+            'open_time.*.close_time'=>'required_with:open_time|date_format:H:i',
+            'phone_number'=>['required', 'phone:ID'],
+            'email'=>'required|email:rfc,dns',
+            'address'=>'required',
+            'maps'=>'required|url',
+            'menu_items'=>'nullable|array',
+            'menu_items.*.name'=>'required_with:menu_items|string|max:255',
+            'menu_items.*.description'=>'nullable|string',
+            'menu_items.*.price'=>'required_with:menu_items|numeric',
+            'menu_items.*.image'=>'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         try {
@@ -189,7 +203,6 @@ class CafeController extends Controller
                         $path = $file->store('cafes/gallery', 'public');
                         $cafe->photos()->create([
                             'photo_url' => $path,
-                            'is_primary' => false,
                         ]);
                     }
                 }
