@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\CafeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SignUpController;
@@ -28,9 +29,7 @@ Route::middleware(['auth'])->group(function(){
             return view('admin.cafes');
         });
         
-        Route::get('/accounts', function () {
-            return view('admin.accounts');
-        });
+        Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
         
         Route::get('/comments', function () {
             return view('admin.comments');
@@ -39,6 +38,11 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/settings', function () {
             return view('admin.settings');
         })->name('admin.settings');
+
+        Route::get('/accounts/{id}', [AccountController::class, 'show'])->name('accounts.show');
+        Route::get('/accounts/{id}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
+        Route::put('/accounts/{id}', [AccountController::class, 'update'])->name('accounts.update');
+        Route::delete('/accounts/{id}', [AccountController::class, 'destroy'])->name('accounts.destroy');
 
         Route::post('/settings', function (\Illuminate\Http\Request $request) {
             $user = Auth::user();

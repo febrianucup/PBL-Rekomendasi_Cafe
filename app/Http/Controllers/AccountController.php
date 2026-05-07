@@ -7,10 +7,20 @@ use App\Models\User;
 
 class AccountController extends Controller
 {
+    // List all user accounts
+    public function index()
+    {
+        $users = User::with('role')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.accounts', compact('users'));
+    }
+
     // View profile account
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('role')->findOrFail($id);
 
         return view('admin.viewAccount', compact('user'));
     }
