@@ -20,7 +20,7 @@ Route::get('/login/form', [LoginController::class, 'loginForm'])->name('login/fo
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::middleware(['auth'])->group(function(){
-    Route::prefix('admin')->group(function () {
+    Route::middleware(['isAdmin'])->prefix('admin')->group(function(){
         Route::get('/', function () {
             return redirect('/admin/cafes');
         });
@@ -88,22 +88,25 @@ Route::middleware(['auth'])->group(function(){
         })->name('admin.settings.update');
     });
 
-    Route::get('/dashboard', function () {
-        return view('Owner.dashboard');
+    Route::middleware('isAdmin')->group(function(){
+         Route::get('/dashboard', function () {
+            return view('Owner.dashboard');
+        });
+
+        Route::get('/add-cafe', [CafeController::class, 'create'])->name('add-cafe');
+        Route::post('/add-cafe', [CafeController::class, 'addCafe'])->name('add-cafe.submit');
+
+        Route::get('/cafe', function () {
+            return view('Owner.profile.index');
+        })->name('cafe');       
+
+        Route::delete('/cafe/{id}', [CafeController::class, 'delete'])->name('cafe.delete');
+
+        Route::get('/cafe/edit', function () {
+            return view('Owner.profile.edit');
+        })->name('cafe.edit'); 
+
     });
-
-    Route::get('/add-cafe', [CafeController::class, 'create'])->name('add-cafe');
-    Route::post('/add-cafe', [CafeController::class, 'addCafe'])->name('add-cafe.submit');
-
-    Route::get('/cafe', function () {
-        return view('Owner.profile.index');
-    })->name('cafe');       
-
-    Route::delete('/cafe/{id}', [CafeController::class, 'delete'])->name('cafe.delete');
-
-    Route::get('/cafe/edit', function () {
-        return view('Owner.profile.edit');
-    })->name('cafe.edit'); 
 });
 
 Route::post('/logout', function () {
@@ -125,3 +128,7 @@ Route::post('/register/owner', [SignUpController::class, 'ownerRegister']
 Route::get('/forgot-password', function () {
     return view('auth.forgot-password');
 })->name('forgot-password');
+
+Route::get('/permission-denied', function(){
+    return view('errPermission');
+})->name('permissionErr');
