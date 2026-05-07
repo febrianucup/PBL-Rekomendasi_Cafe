@@ -33,7 +33,9 @@
             <p class="text-gray-500 text-sm mt-2">eleanor@roasters.co</p>
             <div class="mt-8 pt-6 border-t border-light-beige/30 flex justify-between items-center text-sm">
                 <span class="text-gray-400 font-medium">Joined Mar 2024</span>
-                <a href="#" class="text-dark-brown font-bold uppercase tracking-wider text-xs hover:text-soft-green transition-colors">View Profile &rarr;</a>
+                <a href="{{ route('accounts.show', 1) }}" class="text-dark-brown font-bold uppercase tracking-wider text-xs hover:text-soft-green transition-colors">
+                    View Profile &rarr;
+                </a>
             </div>
         </div>
 
@@ -47,7 +49,9 @@
             <p class="text-gray-500 text-sm mt-2">j.holden@example.com</p>
             <div class="mt-8 pt-6 border-t border-light-beige/30 flex justify-between items-center text-sm">
                 <span class="text-gray-400 font-medium">Joined Oct 2024</span>
-                <a href="#" class="text-dark-brown font-bold uppercase tracking-wider text-xs hover:text-soft-green transition-colors">View Profile &rarr;</a>
+                <a href="{{ route('accounts.show', 2) }}" class="text-dark-brown font-bold uppercase tracking-wider text-xs hover:text-soft-green transition-colors">
+                    View Profile &rarr;
+                </a>
             </div>
         </div>
 
@@ -61,7 +65,9 @@
             <p class="text-gray-500 text-sm mt-2">sarah.c@lumina.cafe</p>
             <div class="mt-8 pt-6 border-t border-light-beige/30 flex justify-between items-center text-sm">
                 <span class="text-gray-400 font-medium">Joined Jan 2025</span>
-                <a href="#" class="text-dark-brown font-bold uppercase tracking-wider text-xs hover:text-soft-green transition-colors">View Profile &rarr;</a>
+                <a href="{{ route('accounts.show', 3) }}" class="text-dark-brown font-bold uppercase tracking-wider text-xs hover:text-soft-green transition-colors">
+                    View Profile &rarr;
+                </a>
             </div>
         </div>
 
@@ -75,9 +81,12 @@
             <p class="text-gray-500 text-sm mt-2">m.aurelius@rome.it</p>
             <div class="mt-8 pt-6 border-t border-light-beige/30 flex justify-between items-center text-sm">
                 <span class="text-gray-400 font-medium">Joined 2 days ago</span>
-                <a href="#" class="text-dark-brown font-bold uppercase tracking-wider text-xs hover:text-soft-green transition-colors">View Profile &rarr;</a>
+                <a href="{{ route('accounts.show', 4) }}" class="text-dark-brown font-bold uppercase tracking-wider text-xs hover:text-soft-green transition-colors">
+                    View Profile &rarr;
+                </a>
             </div>
         </div>
+
     </div>
 </div>
 @endsection
