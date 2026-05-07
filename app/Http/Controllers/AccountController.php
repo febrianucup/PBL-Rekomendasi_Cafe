@@ -39,8 +39,6 @@ class AccountController extends Controller
         return redirect()->route('accounts.show', $user->id)
                          ->with('success', 'Account updated successfully.');
     }
-
-    // Delete account
     public function destroy($id)
     {
         $user = User::findOrFail($id);
