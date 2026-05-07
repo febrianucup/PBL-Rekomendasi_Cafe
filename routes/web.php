@@ -88,7 +88,7 @@ Route::middleware(['auth'])->group(function(){
         })->name('admin.settings.update');
     });
 
-    Route::middleware('isAdmin')->group(function(){
+    Route::middleware('isOwner')->group(function(){
          Route::get('/dashboard', function () {
             return view('Owner.dashboard');
         });

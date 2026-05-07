@@ -32,14 +32,19 @@ class LoginController extends Controller
                 ]);
             }
 
-            $request->session()->regenerate();
+           if (Auth::attempt($credenttials)) {
+                $request->session()->regenerate();
 
-            if($user->role->name == 'admin'){
-                return redirect('/admin/cafes');
-            }else if($user->role->name == 'owner'){
-                return redirect('/dashboard');
-            }else if($user->role->name == 'guest'){
-                return redirect()->intended('/');
+                
+                if($user->role->name == 'admin'){
+                    return redirect('/admin/cafes');
+                }else if($user->role->name == 'owner'){
+                    return redirect('/dashboard');
+                }else if($user->role->name == 'guest'){
+                    return redirect()->intended('/');
+                }
+
+                return redirect()->intended('dashboard');
             }
 
             $remember = $request->filled('remember');

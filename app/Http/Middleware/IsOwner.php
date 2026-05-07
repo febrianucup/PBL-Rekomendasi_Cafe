@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsAdmin
+class IsOwner
 {
     /**
      * Handle an incoming request.
@@ -15,10 +15,9 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->check() && auth()->user()->role->name==='admin'){
+        if (auth()->check() && auth()->user()->role?->name === 'owner') {
             return $next($request);
         }
-
-        return redirect('/permission-denied')->with('error', 'You do not have admin access');
+        return redirect()->route('permissionErr');
     }
 }
