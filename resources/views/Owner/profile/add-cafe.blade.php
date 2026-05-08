@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Add Cafe - Saran Kafe</title>
+    <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />

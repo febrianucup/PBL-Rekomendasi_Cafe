@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Permission Denied</title>
+    <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
-<body>
-    <section>
+<body class="bg-cream">
+    <section class="bg-cream">
         <div class="min-h-[80vh] flex items-center justify-center px-4">
             <div class="max-w-md w-full text-center space-y-8">
                 
