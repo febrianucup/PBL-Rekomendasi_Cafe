@@ -13,11 +13,11 @@ Route::get('/', [CafeController::class, 'index'])->name('cafes.index');
 
 Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
 
-Route::redirect('/login', '/login/form');
+Route::middleware('guest')->group(function(){
+    Route::get('/login', [LoginController::class, 'loginForm'])->name('login/form');
 
-Route::get('/login/form', [LoginController::class, 'loginForm'])->name('login/form');
-
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login');
+});
 
 Route::middleware(['auth'])->group(function(){
     Route::middleware(['isAdmin'])->prefix('admin')->group(function(){

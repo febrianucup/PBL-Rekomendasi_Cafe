@@ -67,18 +67,24 @@
 
             <form method="POST" action="{{ route('login') }}" class="space-y-5">
                 @csrf
-                
+
                 @if(session('success'))
-                <div class="bg-[#BFE3B4] border-l-4 border-[#5D4037] p-4 mb-6 rounded-r-xl shadow-sm transition-all duration-300">
-                    <div class="flex items-center">
+                <div class="bg-[#BFE3B4] border-l-4 border-[#5D4037] p-4 mb-6 rounded-r-xl shadow-sm">
+                    <p class="text-sm font-medium text-[#3E2723]">{{ session('success') }}</p>
+                </div>
+                @endif
+
+                @if($errors->has('loginError'))
+                <div class="bg-red-100 border-l-4 border-red-500 p-4 mb-6 rounded-r-xl shadow-sm">
+                    <div class="flex">
                         <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-[#5D4037]" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <p class="text-sm font-medium text-[#3E2723]">
-                                {{ session('success') }}
+                            <p class="text-sm font-medium text-red-800">
+                                {{ $errors->first('loginError') }}
                             </p>
                         </div>
                     </div>
@@ -88,9 +94,8 @@
                 <div class="space-y-1.5">
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Email Address</label>
                     <input type="email" name="email" value="{{ old('email') }}" required
-                        class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @error('email') ring-2 ring-red-500 @enderror"
+                        class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('email') || $errors->has('loginError')) ring-2 ring-red-500 @endif"
                         placeholder="your@email.com">
-                    @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="space-y-1.5">
@@ -99,21 +104,24 @@
                         <a href="{{ route('forgot-password') }}" class="text-[10px] text-[#5D4037] hover:underline font-bold uppercase tracking-wider">Forgot?</a>
                     </div>
                     <input type="password" name="password" required
-                        class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all"
+                        class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('loginError')) ring-2 ring-red-500 @endif"
                         placeholder="••••••••">
                 </div>
 
-                <div class="flex items-center gap-2 mt-2">
-                    <input type="checkbox" name="remember" id="remember" 
+                  <div class="flex items-center gap-2 mt-2">
+
+                    <input type="checkbox" name="remember" id="remember"
+
                         class="rounded border-gray-300 text-[#5D4037] focus:ring-[#5D4037] w-4 h-4 transition-colors">
+
                     <label for="remember" class="text-sm text-gray-500">Keep me signed in</label>
+
                 </div>
 
-                <button type="submit" class="w-full py-4 mt-6 bg-[#5D4037] text-white text-xs font-bold tracking-[0.15em] uppercase rounded-full hover:bg-[#4E342E] transition-colors shadow-lg">
+                <button type="submit" class="w-full py-4 mt-6 bg-[#5D4037] text-white text-xs font-bold tracking-[0.15em] uppercase rounded-full hover:bg-[#4E342E] active:scale-[0.98] transition-all shadow-lg">
                     Sign In
                 </button>
-            </form>
-            
+            </form>     
             <div class="mt-12 text-center">
                 <p class="text-xs text-gray-500">
                     New here?
@@ -129,7 +137,6 @@
 
         </div>
     </div>
-
 </div>
 
 </body>
