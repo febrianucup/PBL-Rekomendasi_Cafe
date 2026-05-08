@@ -24,6 +24,7 @@ class Cafes extends Model
         'latitude',
         'longitude',
         'maps_link',
+        'kecamatan',
     ];
 
     public function type():BelongsTo{
