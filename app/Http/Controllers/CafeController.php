@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Http;
 
 class CafeController extends Controller
 {
@@ -54,13 +55,13 @@ class CafeController extends Controller
             'longitude'=>'required|numeric',
             'tags'=>'nullable|array',
             'tags.*'=>'exists:tags,id',
-            'thumbnail'=>'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'photos.*'=>'image|mimes:jpeg,png,jpg|max:2048',
+            'thumbnail'=>'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'photos.*'=>'image|mimes:jpeg,png,jpg|max:5120',
             'open_time'=>'nullable|array',
             'open_time.*.day_range'=>'required_with:open_time|string|max:255',
             'open_time.*.open_time'=>'required_with:open_time|date_format:H:i',
             'open_time.*.close_time'=>'required_with:open_time|date_format:H:i',
-            'phone_number'=>['required', 'phone:ID'],
+            'phone_number'=>['required'],
             'email'=>'required|email:rfc,dns',
             'address'=>'required',
             'maps'=>'required|url',
@@ -68,11 +69,28 @@ class CafeController extends Controller
             'menu_items.*.name'=>'required_with:menu_items|string|max:255',
             'menu_items.*.description'=>'nullable|string',
             'menu_items.*.price'=>'required_with:menu_items|numeric',
-            'menu_items.*.image'=>'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'menu_items.*.image'=>'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
+        $response=Http::withHeaders([
+            'User-Agent'=>'Laravel'
+        ])->get('https://nominatim.openstreetmap.org/reverse', [
+            'format'=>'json',
+            'lat'=>$credentials['latitude'],
+            'lon'=>$credentials['longitude']
+        ]);
+
+        $data=$response->json();
+
+        $kecamatan =
+                    $data['address']['city_district']
+                    ?? $data['address']['suburb']
+                    ?? $data['address']['town']
+                    ?? $data['address']['village']
+                    ?? $data['address']['county']
+                    ?? 'Tidak diketahui';
         try{
-            DB::transaction(function() use ($credentials, $request){
+            DB::transaction(function() use ($credentials, $kecamatan, $request){
                 $cafe=Cafes::create([
                     'user_id'=>Auth::id(),
                     'name'=>$credentials['name'],
@@ -84,6 +102,7 @@ class CafeController extends Controller
                     'latitude'=>$credentials['latitude'],
                     'longitude'=>$credentials['longitude'],
                     'maps_link'=>$credentials['maps'],
+                    'kecamatan'=>$kecamatan,
                 ]);
 
                 if($request->has('tags')){
@@ -150,8 +169,8 @@ class CafeController extends Controller
             'longitude'=>'required|numeric',
             'tags'=>'nullable|array',
             'tags.*'=>'exists:tags,id',
-            'thumbnail'=>'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'photos.*'=>'image|mimes:jpeg,png,jpg|max:2048',
+            'thumbnail'=>'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'photos.*'=>'image|mimes:jpeg,png,jpg|max:5120',
             'open_time'=>'nullable|array',
             'open_time.*.day_range'=>'required_with:open_time|string|max:255',
             'open_time.*.open_time'=>'required_with:open_time|date_format:H:i',
@@ -164,11 +183,26 @@ class CafeController extends Controller
             'menu_items.*.name'=>'required_with:menu_items|string|max:255',
             'menu_items.*.description'=>'nullable|string',
             'menu_items.*.price'=>'required_with:menu_items|numeric',
-            'menu_items.*.image'=>'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'menu_items.*.image'=>'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
+        $response=Http::withHeaders([
+            'User-Agent'=>'Laravel'
+        ])->get('https://nominatim.openstreetmap.org/reverse', [
+            'format'=>'json',
+            'lat'=>$credentials['latitude'],
+            'lon'=>$credentials['longitude']
+        ]);
+
+        $data=$response->json();
+
+        $kecamatan =
+                    $data['address']['city_district']
+                    ?? $data['address']['suburb']
+                    ?? $data['address']['village'];
+
         try {
-            DB::transaction(function () use ($credentials, $request, $id) {
+            DB::transaction(function () use ($credentials, $kecamatan, $request, $id) {
                 $cafe = Cafes::findOrFail($id);
                 $cafe->update([
                     'user_id'=>Auth::id(),
@@ -181,6 +215,7 @@ class CafeController extends Controller
                     'latitude' => $credentials['latitude'],
                     'longitude' => $credentials['longitude'],
                     'maps_link' => $credentials['maps'],
+                    'kecamata' => $kecamatan,
                 ]);
 
                 if (isset($credentials['tags'])) {
