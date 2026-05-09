@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cafes;
+use App\Models\Menu;
 use App\Models\OperationalTime;
 use App\Models\Tags;
 use App\Models\Type;
@@ -28,8 +29,9 @@ class CafeController extends Controller
         $cafe=Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
             ->findOrFail($id);
         $user=Auth::user();
+        $menus=Menu::whereCafeId($id)->paginate(6);
 
-        return view('DetailCafe.detailCafe', compact('cafe', 'user'));
+        return view('DetailCafe.detailCafe', compact('cafe', 'user', 'menus'));
     }
 
     public function edit(){

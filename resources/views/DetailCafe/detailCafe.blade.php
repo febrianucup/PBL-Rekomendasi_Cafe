@@ -148,7 +148,7 @@
                 <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-full shadow-sm transition-all duration-300 hover:bg-gray-100">
                     <span class="w-2 h-2 rounded-full bg-[#D4A373]"></span>
                     <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 mr-1">Type:</span>
-                    <span class="text-sm font-bold text-gray-700">{{ $cafe->type->name ?? 'Standard Cafe' }}</span>
+                    <span class="text-sm font-bold text-gray-700">#{{ $cafe->type->name ?? 'Standard Cafe' }}</span>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-2">
@@ -220,10 +220,10 @@
 
         <section class="mt-16">
             <h2 class="text-3xl text-center mb-8">Menu List</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 gap-y-2" id="menu">
                 @if ($cafe->menuItems && $cafe->menuItems->count() > 0)
                     @foreach ($cafe->menuItems as $menu)
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center mb-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
                             <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
                                 <div class="aspect-[1/1] mb-3 overflow-hidden rounded-xl shadow-xs relative"> 
                                     <img src="{{ $cafe->menuItems ? asset('storage/'.$menu->img_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=80' }}" alt="{{ $cafe->name }}" class="w-full h-full object-cover rounded-xl">
@@ -236,6 +236,11 @@
                             </div>
                         </div>
                     @endforeach
+                    @if ($menus->hasPages())
+                        <div class="mt-8">
+                            {{ $menus->fragment('menu')->links() }}
+                        </div>
+                    @endif
                 @else
                     <div class="col-span-2 text-center py-8 text-gray-500">
                         Belum ada menu yang tersedia.
