@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$cafe->name</title>
+    <title>Safe - {{ $cafe->name }}</title>
     <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -223,11 +223,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 @if ($cafe->menuItems && $cafe->menuItems->count() > 0)
                     @foreach ($cafe->menuItems as $menu)
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                            <div> 
-                                <img src="{{ $cafe->menuItems ? asset('storage/'.$menu->img_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=80' }}" alt="{{ $cafe->name }}" class="w-48 rounded-xl mr-6">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center mb-4">
+                            <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
+                                <div class="aspect-[1/1] mb-3 overflow-hidden rounded-xl shadow-xs relative"> 
+                                    <img src="{{ $cafe->menuItems ? asset('storage/'.$menu->img_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=80' }}" alt="{{ $cafe->name }}" class="w-full h-full object-cover rounded-xl">
+                                </div>
                             </div>
-                            <div>
+                            <div class="ml-4 sm:ml-6 flex-1">
                                 <h4 class="font-bold text-lg">{{ $menu->name }}</h4>
                                 <p class="text-sm text-gray-500 mt-1">{{ $menu->description }}</p>
                                 <span class="font-bold text-[#D4A373]">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
