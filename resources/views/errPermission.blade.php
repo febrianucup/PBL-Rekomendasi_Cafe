@@ -33,23 +33,19 @@
                         Akses Terbatas
                     </h2>
                     <p class="text-gray-500 text-lg leading-relaxed">
-                        Mohon maaf, kamu tidak memiliki akses untuk menuju konten ini.
+                        Mohon maaf, Anda tidak memiliki akses untuk menuju konten ini.
                     </p>
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
-                    <a href="{{ url()->previous() }}" 
+                    <a href="javascript:history.back()" 
                     class="w-full sm:w-auto px-8 py-3 bg-black border-2 border-light-beige text-white font-bold rounded-full hover:opacity-70 transition duration-200">
-                        Go Back
-                    </a>
-                    <a href="/" 
-                    class="w-full sm:w-auto px-8 py-3 bg-yellow-500 text-white font-bold rounded-full hover:opacity-90 shadow-lg shadow-dark-brown/20 transition duration-200">
-                        Return Home
+                        Kembali
                     </a>
                 </div>
 
                 <p class="text-sm text-gray-400 pt-8">
-                    Jika kamu yakin ini adalah eror, silahkan hubungi admin.
+                    Jika Anda yakin ini adalah eror, silahkan hubungi admin.
                 </p>
                 
             </div>
