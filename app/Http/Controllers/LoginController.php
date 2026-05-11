@@ -43,9 +43,9 @@ class LoginController extends Controller
         }
 
         if ($user->role->name == 'admin') {
-            return redirect('/admin/cafes');
+            return redirect('/admin');
         } else if ($user->role->name == 'owner') {
-            return redirect('/dashboard');
+            return redirect()->route('owner.dashboard');
         }
 
         return redirect()->intended('/');

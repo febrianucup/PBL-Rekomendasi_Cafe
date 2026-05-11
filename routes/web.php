@@ -92,8 +92,8 @@ Route::middleware(['auth'])->group(function(){
 
     Route::middleware('isOwner')->group(function(){
          Route::get('/dashboard', function () {
-            return view('Owner.dashboard');
-        });
+            return view('Owner.Dashboard');
+        })->name('owner.dashboard');
 
         Route::get('/add-cafe', [CafeController::class, 'create'])->name('add-cafe');
         Route::post('/add-cafe', [CafeController::class, 'addCafe'])->name('add-cafe.submit');
