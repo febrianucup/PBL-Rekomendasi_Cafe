@@ -88,7 +88,7 @@
               type="email"
               name="email"
               value="{{ old('email') }}"
-              placeholder="your@email.com"
+              placeholder="emailkamu@email.com"
               class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @error('email') ring-2 ring-red-500 @enderror"
               required>
           </div>
