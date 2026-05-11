@@ -21,8 +21,10 @@ class CafeController extends Controller
     public function index(){
         $cafe=Cafes::with(['type', 'thumbnail', 'photos'])->get();
         $user=Auth::user();
+        
+        $setting = \App\Models\LandingPageSetting::first() ?? new \App\Models\LandingPageSetting();
 
-        return view('ListCafe.listCafe', compact('cafe', 'user'));
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting'));
     }
 
     public function show($id){

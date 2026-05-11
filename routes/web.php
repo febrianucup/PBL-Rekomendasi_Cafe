@@ -25,15 +25,17 @@ Route::middleware(['auth'])->group(function(){
             return redirect('/admin/cafes');
         });
         
-        Route::get('/cafes', function () {
-            return view('admin.cafes');
-        });
+        Route::get('/cafes', [\App\Http\Controllers\Admin\CafeController::class, 'index'])->name('admin.cafes');
+        Route::delete('/cafes/{id}', [\App\Http\Controllers\Admin\CafeController::class, 'destroy'])->name('admin.cafes.destroy');
         
         Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
         
-        Route::get('/comments', function () {
-            return view('admin.comments');
-        });
+        Route::get('/comments', [\App\Http\Controllers\Admin\CommentController::class, 'index'])->name('admin.comments');
+        Route::patch('/comments/{id}/status', [\App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])->name('admin.comments.status');
+        Route::delete('/comments/{id}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('admin.comments.destroy');
+
+        Route::get('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'index'])->name('admin.beranda_settings');
+        Route::post('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'update'])->name('admin.beranda_settings.update');
 
         Route::get('/settings', function () {
             return view('admin.settings');

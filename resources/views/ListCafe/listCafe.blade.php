@@ -69,8 +69,8 @@
     </header>
 
 <div class="text-center mb-6 mt-6">
-            <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">Beranda</h1>
-            <p class="text-gray-500 text-sm md:text-base max-w-lg mx-auto">Cari tempat ternyaman dan cafe favoritmu dengan mudah.</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">{{ $setting->title ?? 'Beranda' }}</h1>
+            <p class="text-gray-500 text-sm md:text-base max-w-lg mx-auto">{{ $setting->description ?? 'Cari tempat ternyaman dan cafe favoritmu dengan mudah.' }}</p>
         </div>
         
         {{-- @php
@@ -81,14 +81,19 @@
                 : ['https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80'];
         @endphp --}}
         <div class="w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+            @php
+                $sliderImages = $setting->slider_images && count($setting->slider_images) > 0 
+                    ? array_map(function($img) { return asset("storage/" . $img); }, $setting->slider_images) 
+                    : [
+                        "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80",
+                        "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80",
+                        "https://images.unsplash.com/photo-1468436139062-f60a71c5c892?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80"
+                    ];
+            @endphp
             <section class="w-full h-[550px] mb-12 bg-gray-200 relative group overflow-hidden rounded-xl"
         x-data='{ 
             activeSlide: 0,
-            slides: [
-                    "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80",
-                    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80",
-                    "https://images.unsplash.com/photo-1468436139062-f60a71c5c892?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80"
-                ],
+            slides: @json($sliderImages),
             autoplayInterval:null,
             init() {
                 this.startAutoplay();

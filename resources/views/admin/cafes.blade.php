@@ -53,68 +53,18 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-light-beige/20 text-sm">
-                    <!-- Row 1 -->
+                    @forelse($cafes as $cafe)
                     <tr class="hover:bg-cream/20 transition-colors group">
                         <td class="px-8 py-5">
                             <div class="flex items-center gap-4">
-                                <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" alt="Cafe" class="w-16 h-16 rounded-2xl object-cover shadow-sm group-hover:shadow-md transition-shadow">
+                                <img src="{{ $cafe->thumbnail ? asset('storage/'.$cafe->thumbnail->photo_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80' }}" alt="Cafe" class="w-16 h-16 rounded-2xl object-cover shadow-sm group-hover:shadow-md transition-shadow">
                                 <div>
-                                    <p class="font-serif font-bold text-lg text-dark-brown">The Artisan Roast</p>
-                                    <p class="text-gray-500 text-xs mt-0.5 font-medium">Added 2 days ago</p>
+                                    <p class="font-serif font-bold text-lg text-dark-brown">{{ $cafe->name }}</p>
+                                    <p class="text-gray-500 text-xs mt-0.5 font-medium">Added {{ $cafe->created_at->diffForHumans() }}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-8 py-5 text-gray-600 font-medium">Downtown, 4th Ave</td>
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-1.5 bg-cream px-3 py-1.5 rounded-lg inline-flex">
-                                <span class="text-dark-brown font-semibold">4.9</span>
-                                <span class="text-soft-green text-xs">★</span>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5">
-                            <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-soft-green/10 text-soft-green border border-soft-green/20">Published</span>
-                        </td>
-                        <td class="px-8 py-5 text-right">
-                            <button class="text-gray-400 hover:text-dark-brown transition-colors font-medium">Edit</button>
-                        </td>
-                    </tr>
-                    <!-- Row 2 -->
-                    <tr class="hover:bg-cream/20 transition-colors group">
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-4">
-                                <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" alt="Cafe" class="w-16 h-16 rounded-2xl object-cover shadow-sm group-hover:shadow-md transition-shadow">
-                                <div>
-                                    <p class="font-serif font-bold text-lg text-dark-brown">Velvet Brew</p>
-                                    <p class="text-gray-500 text-xs mt-0.5 font-medium">Added 5 days ago</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5 text-gray-600 font-medium">Westside, Miller St</td>
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-1.5 bg-cream px-3 py-1.5 rounded-lg inline-flex">
-                                <span class="text-dark-brown font-semibold">4.7</span>
-                                <span class="text-soft-green text-xs">★</span>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5">
-                            <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-light-beige/30 text-dark-brown border border-light-beige">Review</span>
-                        </td>
-                        <td class="px-8 py-5 text-right">
-                            <button class="text-gray-400 hover:text-dark-brown transition-colors font-medium">Edit</button>
-                        </td>
-                    </tr>
-                    <!-- Row 3 -->
-                    <tr class="hover:bg-cream/20 transition-colors group">
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-4">
-                                <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" alt="Cafe" class="w-16 h-16 rounded-2xl object-cover shadow-sm group-hover:shadow-md transition-shadow">
-                                <div>
-                                    <p class="font-serif font-bold text-lg text-dark-brown">Lumina Coffee Co.</p>
-                                    <p class="text-gray-500 text-xs mt-0.5 font-medium">Added 1 week ago</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5 text-gray-600 font-medium">Uptown, 8th Ave</td>
+                        <td class="px-8 py-5 text-gray-600 font-medium">{{ $cafe->address }}</td>
                         <td class="px-8 py-5">
                             <div class="flex items-center gap-1.5 bg-cream px-3 py-1.5 rounded-lg inline-flex">
                                 <span class="text-dark-brown font-semibold">4.8</span>
@@ -124,10 +74,19 @@
                         <td class="px-8 py-5">
                             <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-soft-green/10 text-soft-green border border-soft-green/20">Published</span>
                         </td>
-                        <td class="px-8 py-5 text-right">
-                            <button class="text-gray-400 hover:text-dark-brown transition-colors font-medium">Edit</button>
+                        <td class="px-8 py-5 text-right flex justify-end gap-2">
+                            <form action="{{ route('admin.cafes.destroy', $cafe->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this cafe?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-soft-red hover:text-red-700 transition-colors font-medium">Delete</button>
+                            </form>
                         </td>
                     </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-8 py-10 text-center text-gray-500 font-medium">No cafes found in the database.</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
