@@ -42,7 +42,7 @@ class SignUpController extends Controller
             ]);
         });
 
-        return redirect('/login/form')->with('success', 'Registrasi berhasil, tunggu persetujuan admin.');
+        return redirect()->route('login/form')->with('success', 'Registrasi berhasil, tunggu persetujuan admin.');
     }
 
     public function guestRegister(Request $request){
@@ -61,6 +61,6 @@ class SignUpController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        return redirect('/login/form')->with('success', 'Registrasi berhasil! Silakan masuk dengan akun Anda.');
+        return redirect()->route('login/form')->with('success', 'Registrasi berhasil! Silakan masuk dengan akun Anda.');
     }
 }
