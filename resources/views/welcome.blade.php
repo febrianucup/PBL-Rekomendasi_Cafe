@@ -23,6 +23,26 @@
         <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
+                    
+                    {{-- 1. Tarik Data Menu secara Dinamis dari Database --}}
+                    @php
+                        // Memanggil model Navbar, ambil yang aktif, dan urutkan posisinya
+                        $navMenus = \App\Models\Navbar::where('is_active', true)
+                                        ->orderBy('sort_order', 'asc')
+                                        ->get();
+                    @endphp
+
+                    {{-- 2. Looping Data Database (Mempertahankan Desain Bawaan) --}}
+                    @foreach($navMenus as $menu)
+                        <a 
+                            href="{{ url($menu->url) }}" 
+                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
+                        >
+                            {{ $menu->title }}
+                        </a>
+                    @endforeach
+
+                    {{-- 3. Logika Login/Register Bawaan (Tetap Dipertahankan) --}}
                     @auth
                         <a
                             href="{{ url('/dashboard') }}"
