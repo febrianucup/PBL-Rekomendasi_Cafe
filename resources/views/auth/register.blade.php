@@ -62,7 +62,7 @@
         <div class="relative grid grid-cols-2 mb-8 rounded-3xl bg-[#F3EEE5] p-1">
           <!-- Background Indicator -->
           <div id="tab-indicator" class="absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] bg-white rounded-3xl shadow-sm transition-transform duration-300 ease-out"></div>
-          
+
           <button type="button" onclick="switchTab('guest')" id="guest-tab" class="relative z-10 text-sm font-semibold py-3 transition-colors duration-300 text-[#2d1e13]">
             GUEST
           </button>
@@ -72,7 +72,7 @@
         </div>
 
         <form id="guest-form" method="POST" action="{{ route('register/guest') }}" class="tab-content space-y-5 transition-all duration-300 opacity-100 translate-y-0">
-          
+
           @csrf <input type="hidden" name="account_type" value="guest">
 
           <div class="space-y-1.5">
@@ -85,7 +85,7 @@
               class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @error('name') ring-2 ring-red-500 @enderror"
               required
               autofocus>
-          
+
           </div>
 
           <div class="space-y-1.5">
@@ -97,6 +97,7 @@
               placeholder="emailkamu@email.com"
               class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @error('email') ring-2 ring-red-500 @enderror"
               required>
+            @error('email') <small style="color: red;">{{ $message }}</small> @enderror
           </div>
 
           <div class="space-y-1.5">
@@ -224,22 +225,22 @@
         guestTab.classList.add('text-[#2d1e13]');
         ownerTab.classList.remove('text-[#2d1e13]');
         ownerTab.classList.add('text-gray-500');
-        
+
         // Hide Owner Form
         ownerForm.classList.remove('opacity-100', 'translate-y-0');
         ownerForm.classList.add('opacity-0', 'translate-y-4');
-        
+
         setTimeout(() => {
           ownerForm.classList.add('hidden');
           guestForm.classList.remove('hidden');
-          
+
           // Slight delay for rendering before starting animation
           setTimeout(() => {
             guestForm.classList.remove('opacity-0', 'translate-y-4');
             guestForm.classList.add('opacity-100', 'translate-y-0');
           }, 20);
         }, 300);
-        
+
       } else {
         // Update Indicator and Texts
         tabIndicator.style.transform = 'translateX(100%)';
@@ -251,11 +252,11 @@
         // Hide Guest Form
         guestForm.classList.remove('opacity-100', 'translate-y-0');
         guestForm.classList.add('opacity-0', 'translate-y-4');
-        
+
         setTimeout(() => {
           guestForm.classList.add('hidden');
           ownerForm.classList.remove('hidden');
-          
+
           // Slight delay for rendering before starting animation
           setTimeout(() => {
             ownerForm.classList.remove('opacity-0', 'translate-y-4');
