@@ -1,11 +1,40 @@
-var map = L.map('map').setView([-7.9362141, 112.6249031], 15);
+// Tunggu sampai DOM selesai dimuat
+document.addEventListener("DOMContentLoaded", function () {
+    const mapElement = document.getElementById('map');
 
-// Menggunakan tiles dari OpenStreetMap
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+    if (mapElement) {
+        // 1. Ambil data dari atribut HTML
+        const lat = mapElement.getAttribute('data-lat');
+        const lng = mapElement.getAttribute('data-lng');
+        const name = mapElement.getAttribute('data-name');
+        const address = mapElement.getAttribute('data-address');
 
-// Menambahkan Marker
-L.marker([-7.9362141, 112.6249031]).addTo(map)
-    .bindPopup('The Amber Roastery')
-    .openPopup();
+        // 2. Validasi apakah koordinat tersedia
+        if (lat && lng) {
+            // Inisialisasi peta menggunakan data dari database
+            var map = L.map('map').setView([lat, lng], 16);
+
+            // Gunakan tiles dari OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Tambahkan Marker dan Popup
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup(`
+                    <div style="min-width: 150px;">
+                        <strong style="font-size: 14px; color: #1e293b; display: block;">${name}</strong>
+                        <span style="font-size: 12px; color: #64748b; display: block; margin-top: 4px;">${address}</span>
+                    </div>
+                `)
+                .openPopup();
+        } else {
+            // Tampilan jika data koordinat kosong
+            mapElement.innerHTML = `
+                <div class="flex items-center justify-center h-full bg-slate-50 text-slate-400 text-sm">
+                    Koordinat peta belum ditentukan untuk cafe ini.
+                </div>
+            `;
+        }
+    }
+});

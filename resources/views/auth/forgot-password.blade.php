@@ -1,6 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password</title>
+  <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .serif-title { font-family: 'Playfair Display', serif; }
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="m-0 p-0 overflow-x-hidden bg-white">
+
+  <div class="flex flex-col md:flex-row w-full h-screen bg-white">
+
+    <div class="relative w-full md:w-1/2 h-screen bg-[#515744] overflow-hidden hidden md:flex group">
+      <img
+        src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop"
+        class="absolute inset-0 opacity-60 mix-blend-overlay transition-transform duration-[2000ms] group-hover:scale-105"
+        style="object-fit: cover; width: 100%; height: 100vh;"
+        alt="Interior Cafe"
+      >
+
+      <div class="relative z-10 h-full p-12 flex flex-col justify-center">
+        <h1 class="serif-title italic text-5xl md:text-6xl text-white leading-tight mb-6 fade-in">
+            The Sensory<br>Editorial
+        </h1>
+        <p class="text-white/90 text-sm md:text-base max-w-xs leading-relaxed font-light fade-in" style="animation-delay: 0.2s;">
+            Curating the world's most intimate brewing spaces, one cup at a time.
+        </p>
+
+        <div class="mt-auto pt-10 fade-in" style="animation-delay: 0.4s;">
+          <div class="flex items-center gap-3">
+            <div class="h-[1px] w-8 bg-white/40"></div>
+            <span class="text-[10px] tracking-[0.2em] text-white/60 uppercase font-medium">
+              Est. 2024 — Portfolio of Taste
+            </span>
+          </div>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password - The Sensory Editorial</title>
