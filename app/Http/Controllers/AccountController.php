@@ -34,22 +34,21 @@ class AccountController extends Controller
     }
 
     // Update account
-    public function update(Request $request, $id)
+        public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
             'role' => 'required|string',
+            'status' => 'required|string',
         ]);
 
         $user->update($validated);
 
         return redirect()->route('accounts.show', $user->id)
-                         ->with('success', 'Account updated successfully.');
+                        ->with('success', 'Account updated successfully.');
     }
-    public function destroy($id)
+        public function destroy($id)
     {
         $user = User::findOrFail($id);
 
