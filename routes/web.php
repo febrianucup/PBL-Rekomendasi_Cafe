@@ -91,9 +91,7 @@ Route::middleware(['auth'])->group(function(){
     });
 
     Route::middleware('isOwner')->group(function(){
-         Route::get('/dashboard', function () {
-            return view('Owner.Dashboard');
-        })->name('owner.dashboard');
+        Route::get('/dashboard/{id?}', [CafeController::class, 'ownerDashboard'])->name('owner.dashboard');
 
         Route::get('/add-cafe', [CafeController::class, 'create'])->name('add-cafe');
         Route::post('/add-cafe', [CafeController::class, 'addCafe'])->name('add-cafe.submit');
@@ -104,9 +102,9 @@ Route::middleware(['auth'])->group(function(){
 
         Route::delete('/cafe/{id}', [CafeController::class, 'delete'])->name('cafe.delete');
 
-        Route::get('/cafe/edit', function () {
-            return view('Owner.profile.edit');
-        })->name('cafe.edit'); 
+        Route::get('/cafe/{id}/show', [CafeController::class, 'showOwner'])->name('cafe.show');
+        Route::get('/cafe/{id}/edit', [CafeController::class, 'edit'])->name('cafe.edit');
+        Route::put('/cafe/{id}', [CafeController::class, 'updateCafe'])->name('cafe.update');
 
     });
 });
@@ -140,12 +138,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/navbar', [NavbarController::class, 'store'])->name('admin.navbar.store');
     Route::delete('/admin/navbar/{id}', [NavbarController::class, 'destroy'])->name('admin.navbar.destroy');
 });
-// Menampilkan form lupa password
-Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
-    ->middleware('guest')
-    ->name('password.request');
+// // Menampilkan form lupa password
+// Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+//     ->middleware('guest')
+//     ->name('password.request');
 
-// Memproses pengiriman link ke Gmail
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-    ->middleware('guest')
-    ->name('password.email');
+// // Memproses pengiriman link ke Gmail
+// Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+//     ->middleware('guest')
+//     ->name('password.email');

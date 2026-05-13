@@ -6,6 +6,7 @@ use App\Models\Cafes;
 use App\Models\Menu;
 use App\Models\OperationalTime;
 use App\Models\Tags;
+use App\Models\User;
 use App\Models\Type;
 use Faker\Provider\id_ID\PhoneNumber;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
@@ -34,8 +35,37 @@ class CafeController extends Controller
         return view('DetailCafe.detailCafe', compact('cafe', 'user', 'menus'));
     }
 
-    public function edit(){
+    public function ownerDashboard($id = null)
+    {
+        $cafes = Cafes::where('user_id', Auth::id())
+            ->with(['thumbnail', 'type'])
+            ->get();
+
+        return view('Owner.Dashboard', compact('cafes'));
+    }
+
+    public function showOwner($id)
+    {
+        $cafe = Cafes::with(['type', 'tags', 'thumbnail', 'photos', 'operationalTime', 'menuItems'])
+            ->findOrFail($id);
+
+        if ($cafe->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk melihat cafe ini.');
+        }
+
+        return view('Owner.profile.show', compact('cafe'));
+    }
+
+    public function edit($id){
+        $cafe = Cafes::with(['type', 'tags', 'thumbnail', 'photos', 'operationalTime', 'menuItems'])
+            ->findOrFail($id);
+        
+        if ($cafe->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mengedit cafe ini.');
+        }
+
         return view('Owner.profile.edit', [
+            'cafe' => $cafe,
             'types' => Type::all(),
             'tags' => Tags::all(),
         ]);
@@ -155,7 +185,7 @@ class CafeController extends Controller
                 return $cafe;
             });
 
-            return redirect()->route('add-cafe')->with('success', 'Cafe berhasil dipublikasikan!');
+            return redirect()->route('owner.dashboard')->with('success', 'Cafe berhasil dipublikasikan!');
 
         } catch (\Throwable $e) {
             return back()->withInput()->withErrors(['error' => $e->getMessage()]);
@@ -271,7 +301,7 @@ class CafeController extends Controller
                 }
             });
 
-            return redirect()->back()->with('success', 'Cafe berhasil diperbarui!');
+            return redirect()->route('owner.dashboard')->with('success', 'Cafe berhasil diperbarui!');
         } catch (\Throwable $e) {
             return back()->withInput()->withErrors(['error' => $e->getMessage()]);
         }
@@ -315,7 +345,7 @@ class CafeController extends Controller
                 $cafe->delete();
             });
 
-            return redirect()->route('cafe')->with('success', 'Cafe berhasil dihapus secara permanen.');
+            return redirect()->route('owner.dashboard')->with('success', 'Cafe berhasil dihapus secara permanen.');
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menghapus cafe: ' . $e->getMessage());

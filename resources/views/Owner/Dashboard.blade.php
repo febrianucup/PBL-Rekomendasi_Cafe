@@ -86,73 +86,61 @@
             <p class="text-[11px] uppercase tracking-[0.2em] text-muted mb-1">My Cafes</p>
             <h3 class="text-lg font-semibold text-dark mb-4">Branch overview</h3>
 
-            <!-- CARD 1 -->
-            <div class="flex bg-white border border-border rounded-[18px] overflow-hidden mb-3.5">
-                <div class="relative w-40 min-w-[160px]">
-                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=400&q=80"
-                         alt="Fitzrovia" class="w-full h-full object-cover" />
-                    <span class="absolute top-2.5 left-2.5 bg-active text-white text-[9px] font-bold uppercase tracking-[0.16em] px-2 py-1 rounded-full">Active</span>
+            @if($cafes->isEmpty())
+                <!-- EMPTY STATE -->
+                <div class="border-2 border-dashed border-[#D9D5CC] bg-white rounded-[18px] py-11 text-center mt-2">
+                    <p class="text-[11px] uppercase tracking-[0.2em] text-[#A39B92] mb-3.5">add_business</p>
+                    <h3 class="text-lg font-semibold text-dark mb-2">No Cafes Yet</h3>
+                    <p class="text-xs text-muted mb-5">Start by adding your first cafe to the system.</p>
+                    <a href="{{ route('add-cafe') }}" class="inline-block bg-[#FEF9F5] border border-[#D9D5CC] rounded-full px-5 py-2.5 text-xs font-semibold text-brown uppercase tracking-wider">
+                        ADD FIRST CAFE
+                    </a>
                 </div>
-                <div class="flex flex-col justify-between flex-1 p-4">
-                    <div>
-                        <p class="text-base font-semibold text-dark">Velvet &amp; Vine — Fitzrovia</p>
-                        <p class="text-xs text-muted mt-0.5">location_on 12 Charlotte St, London W1T 2LU</p>
-                        <div class="flex gap-3 mt-3">
-                            <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
-                                <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Weekly Footfall</p>
-                                <p class="text-lg font-semibold text-dark mt-1">1,240</p>
+            @else
+                @foreach($cafes as $cafe)
+                    <!-- CAFE CARD -->
+                    <div class="flex bg-white border border-border rounded-[18px] overflow-hidden mb-3.5">
+                        <div class="relative w-40 min-w-[160px]">
+                            @if($cafe->thumbnail && $cafe->thumbnail->photo_url)
+                                <img src="{{ asset('storage/' . $cafe->thumbnail->photo_url) }}"
+                                     alt="{{ $cafe->name }}" class="w-full h-full object-cover" />
+                            @else
+                                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=400&q=80"
+                                     alt="{{ $cafe->name }}" class="w-full h-full object-cover" />
+                            @endif
+                            <span class="absolute top-2.5 left-2.5 bg-active text-white text-[9px] font-bold uppercase tracking-[0.16em] px-2 py-1 rounded-full">Active</span>
+                        </div>
+                        <div class="flex flex-col justify-between flex-1 p-4">
+                            <div>
+                                <p class="text-base font-semibold text-dark">{{ $cafe->name }}</p>
+                                <p class="text-xs text-muted mt-0.5">📍 {{ $cafe->address }}</p>
+                                <p class="text-xs text-muted mt-0.5">Type: {{ $cafe->type->name ?? 'N/A' }}</p>
+                                <div class="flex gap-3 mt-3">
+                                    <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
+                                        <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Phone</p>
+                                        <p class="text-sm font-semibold text-dark mt-1 truncate">{{ $cafe->num_phone }}</p>
+                                    </div>
+                                    <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
+                                        <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Email</p>
+                                        <p class="text-sm font-semibold text-dark mt-1 truncate">{{ $cafe->email }}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
-                                <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Avg Rating</p>
-                                <p class="text-lg font-semibold text-dark mt-1">4.9</p>
+                            <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3 gap-2">
+                                <div class="flex gap-3">
+                                    <a href="{{ route('cafe.show', $cafe->id) }}" class="text-xs font-semibold text-dark hover:text-brown transition">view</a>
+                                    <a href="{{ route('cafe.edit', $cafe->id) }}" class="text-xs font-semibold text-dark hover:text-brown transition">edit</a>
+                                </div>
+                                <form action="{{ route('cafe.delete', $cafe->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus cafe ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-xs font-semibold text-red-600 hover:text-red-700 transition">delete</button>
+                                </form>
                             </div>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3">
-                        <a href="{{ route('cafe.edit') }}" class="text-xs font-semibold text-dark">edit</a>
-                        <button class="text-xs font-semibold text-red-600">delete</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 2 -->
-            <div class="flex bg-white border border-border rounded-[18px] overflow-hidden mb-3.5">
-                <div class="relative w-40 min-w-[160px]">
-                    <img src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=400&q=80"
-                         alt="Soho" class="w-full h-full object-cover" />
-                    <span class="absolute top-2.5 left-2.5 bg-active text-white text-[9px] font-bold uppercase tracking-[0.16em] px-2 py-1 rounded-full">Active</span>
-                </div>
-                <div class="flex flex-col justify-between flex-1 p-4">
-                    <div>
-                        <p class="text-base font-semibold text-dark">Velvet &amp; Vine — Soho</p>
-                        <p class="text-xs text-muted mt-0.5">location_on 47 Greek St, London W1D 4EE</p>
-                        <div class="flex gap-3 mt-3">
-                            <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
-                                <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Weekly Footfall</p>
-                                <p class="text-lg font-semibold text-dark mt-1">2,105</p>
-                            </div>
-                            <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
-                                <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Avg Rating</p>
-                                <p class="text-lg font-semibold text-dark mt-1">4.7</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3">
-                        <a href="{{ route('cafe.edit') }}" class="text-xs font-semibold text-dark">edit</a>
-                        <button class="text-xs font-semibold text-red-600">delete</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- EXPANSION -->
-            <div class="border-2 border-dashed border-[#D9D5CC] bg-white rounded-[18px] py-11 text-center mt-2">
-                <p class="text-[11px] uppercase tracking-[0.2em] text-[#A39B92] mb-3.5">add_business</p>
-                <h3 class="text-lg font-semibold text-dark mb-2">Expansion Opportunity</h3>
-                <p class="text-xs text-muted mb-5">Your next sensory destination is just a blueprint away.</p>
-                <button class="bg-[#FEF9F5] border border-[#D9D5CC] rounded-full px-5 py-2.5 text-xs font-semibold text-brown uppercase tracking-wider">
-                    IDENTIFY LOCATION
-                </button>
-            </div>
+                @endforeach
+            @endif
 
         </main>
     </div>
