@@ -15,7 +15,8 @@ class IsOwner
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role?->name === 'owner') {
+        $roleName = strtolower(auth()->user()->role?->name ?? '');
+        if (auth()->check() && $roleName === 'owner') {
             return $next($request);
         }
         return redirect()->route('permissionErr');

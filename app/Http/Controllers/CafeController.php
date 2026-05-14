@@ -79,8 +79,10 @@ class CafeController extends Controller
         ]);
     }
 
-    public function create(){
+    public function create()
+    {
         return view('Owner.profile.add-cafe', [
+            'user' => Auth::user(),
             'types' => Type::all(),
             'tags' => Tags::all(),
         ]);
