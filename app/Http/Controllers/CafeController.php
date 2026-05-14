@@ -15,14 +15,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use App\Models\Navbar;
 
 class CafeController extends Controller
 {
     public function index(){
         $cafe=Cafes::with(['type', 'thumbnail', 'photos'])->get();
         $user=Auth::user();
+        $navbars = Navbar::orderBy('sort_order', 'asc')->get();
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'navbars'));
 
-        return view('ListCafe.listCafe', compact('cafe', 'user'));
     }
 
     public function show($id){

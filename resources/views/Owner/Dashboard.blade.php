@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +13,9 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Instrument Sans', 'sans-serif'] },
+                    fontFamily: {
+                        sans: ['Instrument Sans', 'sans-serif']
+                    },
                     colors: {
                         cream: '#F7F5F0',
                         dark: '#1B1B18',
@@ -28,6 +31,7 @@
         }
     </script>
 </head>
+
 <body class="bg-cream font-sans text-dark min-h-screen">
 
     <!-- TOP NAVBAR -->
@@ -87,62 +91,20 @@
             <h3 class="text-lg font-semibold text-dark mb-4">Branch overview</h3>
 
             <!-- CARD 1 -->
+            @foreach($cafes as $cafe)
             <div class="flex bg-white border border-border rounded-[18px] overflow-hidden mb-3.5">
-                <div class="relative w-40 min-w-[160px]">
-                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=400&q=80"
-                         alt="Fitzrovia" class="w-full h-full object-cover" />
-                    <span class="absolute top-2.5 left-2.5 bg-active text-white text-[9px] font-bold uppercase tracking-[0.16em] px-2 py-1 rounded-full">Active</span>
-                </div>
-                <div class="flex flex-col justify-between flex-1 p-4">
-                    <div>
-                        <p class="text-base font-semibold text-dark">Velvet &amp; Vine — Fitzrovia</p>
-                        <p class="text-xs text-muted mt-0.5">location_on 12 Charlotte St, London W1T 2LU</p>
-                        <div class="flex gap-3 mt-3">
-                            <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
-                                <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Weekly Footfall</p>
-                                <p class="text-lg font-semibold text-dark mt-1">1,240</p>
-                            </div>
-                            <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
-                                <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Avg Rating</p>
-                                <p class="text-lg font-semibold text-dark mt-1">4.9</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3">
-                        <a href="{{ route('cafe.edit') }}" class="text-xs font-semibold text-dark">edit</a>
-                        <button class="text-xs font-semibold text-red-600">delete</button>
-                    </div>
-                </div>
-            </div>
+                <!-- ... gambar dan detail cafe ... -->
+                <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3">
+                    <a href="{{ route('cafe.edit', $cafe->id) }}" class="text-xs font-semibold text-dark">edit</a>
 
-            <!-- CARD 2 -->
-            <div class="flex bg-white border border-border rounded-[18px] overflow-hidden mb-3.5">
-                <div class="relative w-40 min-w-[160px]">
-                    <img src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=400&q=80"
-                         alt="Soho" class="w-full h-full object-cover" />
-                    <span class="absolute top-2.5 left-2.5 bg-active text-white text-[9px] font-bold uppercase tracking-[0.16em] px-2 py-1 rounded-full">Active</span>
-                </div>
-                <div class="flex flex-col justify-between flex-1 p-4">
-                    <div>
-                        <p class="text-base font-semibold text-dark">Velvet &amp; Vine — Soho</p>
-                        <p class="text-xs text-muted mt-0.5">location_on 47 Greek St, London W1D 4EE</p>
-                        <div class="flex gap-3 mt-3">
-                            <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
-                                <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Weekly Footfall</p>
-                                <p class="text-lg font-semibold text-dark mt-1">2,105</p>
-                            </div>
-                            <div class="bg-stat rounded-xl px-3.5 py-2.5 min-w-[100px]">
-                                <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Avg Rating</p>
-                                <p class="text-lg font-semibold text-dark mt-1">4.7</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3">
-                        <a href="{{ route('cafe.edit') }}" class="text-xs font-semibold text-dark">edit</a>
-                        <button class="text-xs font-semibold text-red-600">delete</button>
-                    </div>
+                    <form action="{{ route('cafe.delete', $cafe->id) }}" method="POST" onsubmit="return confirm('Hapus cabang {{ $cafe->name }}?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-xs font-semibold text-red-600">delete</button>
+                    </form>
                 </div>
             </div>
+            @endforeach
 
             <!-- EXPANSION -->
             <div class="border-2 border-dashed border-[#D9D5CC] bg-white rounded-[18px] py-11 text-center mt-2">
@@ -158,4 +120,5 @@
     </div>
 
 </body>
+
 </html>
