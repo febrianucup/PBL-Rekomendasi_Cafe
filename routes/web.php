@@ -127,10 +127,6 @@ Route::post('/register/guest', [SignUpController::class, 'guestRegister']
 Route::post('/register/owner', [SignUpController::class, 'ownerRegister']
 )->name('register/owner');
 
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name('forgot-password');
-
 Route::get('/permission-denied', function(){
     return view('errPermission');
 })->name('permissionErr');
@@ -140,12 +136,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/navbar', [NavbarController::class, 'store'])->name('admin.navbar.store');
     Route::delete('/admin/navbar/{id}', [NavbarController::class, 'destroy'])->name('admin.navbar.destroy');
 });
-// // Menampilkan form lupa password
-// Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
-//     ->middleware('guest')
-//     ->name('password.request');
+// Menampilkan form lupa password
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->middleware('guest')
+    ->name('password.request');
 
-// // Memproses pengiriman link ke Gmail
-// Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
-//     ->middleware('guest')
-//     ->name('password.email');
+// Memproses pengiriman link ke Gmail
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->middleware('guest')
+    ->name('password.email');

@@ -39,7 +39,13 @@ class CafeController extends Controller
 
     public function ownerDashboard($id = null)
     {
-        $cafes = Cafes::where('user_id', Auth::id())
+        $id = $id === null ? Auth::id() : (int) $id;
+
+        if ($id !== Auth::id()) {
+            return redirect()->route('owner.dashboard', ['id' => Auth::id()]);
+        }
+
+        $cafes = Cafes::where('user_id', $id)
             ->with(['thumbnail', 'type'])
             ->get();
 
@@ -150,7 +156,7 @@ class CafeController extends Controller
                             'open_time'=>$hours['open_time'],
                             'close_time'=>$hours['close_time'],
                         ]);
-                    }
+                       }
                 }
 
                 if($request->hasFile('photos')){

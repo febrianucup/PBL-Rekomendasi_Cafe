@@ -102,7 +102,7 @@
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center">
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Password</label>
-                        <a href="{{ route('forgot-password') }}" class="text-[10px] text-[#5D4037] hover:underline font-bold uppercase tracking-wider">Forgot?</a>
+                        <a href="{{ route('password.request') }}" class="text-[10px] text-[#5D4037] hover:underline font-bold uppercase tracking-wider">Forgot?</a>
                     </div>
                     <input type="password" name="password" required
                         class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('loginError')) ring-2 ring-red-500 @endif"
