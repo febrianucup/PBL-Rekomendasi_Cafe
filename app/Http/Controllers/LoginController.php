@@ -42,9 +42,11 @@ class LoginController extends Controller
             ]);
         }
 
-        if ($user->role->name == 'admin') {
+        $roleName = strtolower($user->role->name ?? '');
+
+        if ($roleName === 'admin') {
             return redirect('/admin');
-        } else if ($user->role->name == 'owner') {
+        } elseif ($roleName === 'owner') {
             return redirect()->route('owner.dashboard', ['id' => $user->id]);
         }
 

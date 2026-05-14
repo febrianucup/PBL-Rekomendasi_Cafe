@@ -1,14 +1,8 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
+@section('title', 'Account Settings')
+@section('page-title', 'Account Settings')
 @section('content')
-<div class="space-y-10">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6">
-        <div>
-            <h2 class="font-serif text-4xl font-bold text-dark-brown">Account Settings</h2>
-            <p class="text-gray-500 mt-2 text-lg">Manage your personal admin profile and security.</p>
-        </div>
-    </div>
 
     <!-- Settings Form -->
     <div class="bg-white rounded-3xl p-8 shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-white/40 max-w-3xl">
@@ -23,7 +17,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
+        <form method="POST" action="{{ route('profile.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
             @csrf
             
             @php
@@ -56,7 +50,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-dark-brown tracking-wide">Full Name</label>
-                    <input type="text" name="name" value="{{ old('name', auth()->user()?->name ?? 'Admin User') }}" class="w-full px-4 py-3 bg-cream/30 border border-light-beige/50 rounded-2xl focus:ring-2 focus:ring-dark-brown/20 focus:bg-white focus:outline-none transition-all text-dark-brown placeholder-gray-400" required>
+                    <input type="text" name="name" value="{{ auth()->user()->name ?? 'Admin User' }}" class="w-full px-4 py-3 bg-cream/30 border border-light-beige/50 rounded-2xl focus:ring-2 focus:ring-dark-brown/20 focus:bg-white focus:outline-none transition-all text-dark-brown placeholder-gray-400" required>
                     @error('name') <span class="text-soft-red text-xs block mt-1">{{ $message }}</span> @enderror
                 </div>
 

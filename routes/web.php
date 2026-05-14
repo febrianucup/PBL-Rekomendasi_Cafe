@@ -39,57 +39,10 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'index'])->name('admin.beranda_settings');
         Route::post('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'update'])->name('admin.beranda_settings.update');
 
-        Route::get('/settings', function () {
-            return view('admin.settings');
-        })->name('admin.settings');
-
         Route::get('/accounts/{id}', [AccountController::class, 'show'])->name('accounts.show');
         Route::get('/accounts/{id}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
         Route::put('/accounts/{id}', [AccountController::class, 'update'])->name('accounts.update');
         Route::delete('/accounts/{id}', [AccountController::class, 'destroy'])->name('accounts.destroy');
-
-        Route::post('/settings', function (\Illuminate\Http\Request $request) {
-            $user = Auth::user();
-            if (!$user) {
-                // For testing if not logged in
-                return back()->with('error', 'You must be logged in to update profile. (Currently testing without auth)');
-            }
-
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-                'current_password' => 'nullable|string',
-                'password' => 'nullable|string|min:8|confirmed',
-                'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            ]);
-
-            $user->name = $validated['name'];
-            $user->email = $validated['email'];
-
-            if (!empty($validated['password'])) {
-                if (!\Illuminate\Support\Facades\Hash::check($validated['current_password'], $user->password)) {
-                    return back()->withErrors(['current_password' => 'Current password does not match']);
-                }
-                $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
-            }
-
-            if ($request->hasFile('avatar')) {
-                $file = $request->file('avatar');
-                $filename = 'avatar_' . $user->id . '.' . $file->getClientOriginalExtension();
-                
-                $existing = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
-                foreach ($existing as $exFile) {
-                    if (str_starts_with(basename($exFile), 'avatar_' . $user->id . '.')) {
-                        \Illuminate\Support\Facades\Storage::disk('public')->delete($exFile);
-                    }
-                }
-                $file->storeAs('avatars', $filename, 'public');
-            }
-
-            $user->save();
-
-            return back()->with('success', 'Profile updated successfully.');
-        })->name('admin.settings.update');
     });
 
     Route::middleware('isOwner')->group(function(){
@@ -107,8 +60,56 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/cafe/{id}/show', [CafeController::class, 'showOwner'])->name('cafe.show');
         Route::get('/cafe/{id}/edit', [CafeController::class, 'edit'])->name('cafe.edit');
         Route::put('/cafe/{id}', [CafeController::class, 'updateCafe'])->name('cafe.update');
-
     });
+});
+
+Route::middleware(['auth'])->group(function(){
+    Route::get('/profile/settings', function () {
+        return view('profile-settings.settings');
+    })->name('profile.settings');
+
+    Route::post('/settings', function (\Illuminate\Http\Request $request) {
+        $user = Auth::user();
+        if (!$user) {
+            // For testing if not logged in
+            return back()->with('error', 'You must be logged in to update profile. (Currently testing without auth)');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'current_password' => 'nullable|string',
+            'password' => 'nullable|string|min:8|confirmed',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+
+        if (!empty($validated['password'])) {
+            if (!\Illuminate\Support\Facades\Hash::check($validated['current_password'], $user->password)) {
+                return back()->withErrors(['current_password' => 'Current password does not match']);
+            }
+            $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
+        }
+
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $filename = 'avatar_' . $user->id . '.' . $file->getClientOriginalExtension();
+            
+            $existing = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
+            foreach ($existing as $exFile) {
+                if (str_starts_with(basename($exFile), 'avatar_' . $user->id . '.')) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($exFile);
+                }
+            }
+            $file->storeAs('avatars', $filename, 'public');
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Profile updated successfully.');
+    })->name('profile.settings.update');
 });
 
 Route::post('/logout', function () {
