@@ -108,10 +108,3 @@
         </div>
     </div>
 @endsection
-
-
-        </main>
-    </div>
-
-</body>
-</html>

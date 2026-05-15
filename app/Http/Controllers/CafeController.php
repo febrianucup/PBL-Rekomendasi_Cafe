@@ -8,6 +8,8 @@ use App\Models\OperationalTime;
 use App\Models\Tags;
 use App\Models\User;
 use App\Models\Type;
+use App\Models\Thumbnail;
+use App\Models\LandingPageSetting;
 use Faker\Provider\id_ID\PhoneNumber;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Http\Request;
@@ -23,7 +25,7 @@ class CafeController extends Controller
         $cafe=Cafes::with(['type', 'thumbnail', 'photos'])->get();
         $user=Auth::user();
         
-        $setting = \App\Models\LandingPageSetting::first() ?? new \App\Models\LandingPageSetting();
+        $setting = LandingPageSetting::first() ?? new LandingPageSetting();
 
         return view('ListCafe.listCafe', compact('cafe', 'user', 'setting'));
     }
