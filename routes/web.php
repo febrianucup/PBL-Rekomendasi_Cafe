@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/accounts/{id}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
         Route::put('/accounts/{id}', [AccountController::class, 'update'])->name('accounts.update');
         Route::delete('/accounts/{id}', [AccountController::class, 'destroy'])->name('accounts.destroy');
+        Route::get('/navbar-settings', [NavbarController::class, 'index'])->name('admin.navbar');
     });
 
     Route::middleware('isOwner')->group(function(){

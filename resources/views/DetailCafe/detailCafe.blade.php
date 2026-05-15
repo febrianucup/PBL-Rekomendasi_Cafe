@@ -1,41 +1,8 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.public')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe - {{ $cafe->name }}</title>
-    <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    @vite('resources/js/addcoment.js')
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        h1,
-        h2,
-        h3 {
-            font-family: 'Playfair Display', serif;
-        }
-        body { font-family: 'Inter', sans-serif; background-color: #FAF9F6; }
-        h1, h2 { font-family: 'Playfair Display', serif; }
-        header { background-color: #F5F1EC; }
-    </style>
-</head>
-
-<body class="bg-[#FDFBF7] text-[#333]">
-    <header class="w-full px-12 border-b border-gray-200 mb-8">
-        <div class="px-6 py-6 flex justify-between items-center">
-            <div class="font-bold text-xl tracking-wider">SAFE</div>
-            <nav class="hidden md:flex space-x-8 text-sm uppercase tracking-widest text-gray-500">
-                <a href="/" class="text-black border-b border-black pb-1">Beranda</a>
-            </nav>
-    </header>
+@section('title', ($cafe->name ?? 'Cafe Detail'))
+@section('content')
+@vite('resources/js/map.js')
     @php
         $slides = $cafe->photos && $cafe->photos->isNotEmpty() 
             ? $cafe->photos->map(fn($photo) => str_starts_with($photo->photo_url, 'http') 
@@ -44,7 +11,7 @@
             : ['https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80'];
     @endphp
 
-    <div class="w-full max-w-9/10 mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full h-[550px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
        <div class="text-center mb-6 px-4">
         <div class="inline-block text-left group">
             <p class="text-[10px] uppercase tracking-[0.4em] text-gray-400 mb-2 ml-1">
@@ -86,10 +53,10 @@
             <div class="w-full h-full relative z-0">
                 <template x-for="(slide, index) in slides" :key="index">
                     <div x-show="activeSlide === index"
-                        x-transition:enter="transition ease-out duration-5000"
+                        x-transition:enter="transition ease-out duration-700"
                         x-transition:enter-start="opacity-0 scale-105"
                         x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-5000"
+                        x-transition:leave="transition ease-in duration-700"
                         x-transition:leave-start="opacity-100"
                         x-transition:leave-end="opacity-0"
                         class="absolute inset-0 w-full h-full">
@@ -141,7 +108,7 @@
         </div>
     </div>
 
-    <main class="max-w-4xl mx-auto py-16 px-4">
+    <main class="w-full max-w-7xl mx-auto py-16 px-4 mt-6 sm:px-6 lg:px-8 mt-36">
         <section class="text-center mb-16 max-w-3xl mx-auto px-4">
             <span class="text-xs font-bold tracking-widest text-[#D4A373] uppercase block mb-2">Vibe & Features</span>
             
@@ -180,7 +147,7 @@
         <section class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
             <p class="text-center text-sm uppercase tracking-widest text-gray-400">Lokasi & Kontak</p>
             <h3 class="text-center text-2xl mt-2 mb-6">{{ $cafe->address }}</h3>
-            <div class="w-full h-80 bg-gray-800 rounded-lg mb-6" 
+            <div class="w-full h-80 bg-gray-800 rounded-lg mb-6 h-[550px]" 
                 id="map"
                 data-lat="{{ $cafe->latitude }}"
                 data-lng="{{ $cafe->longitude }}"
@@ -202,8 +169,8 @@
                     @if($cafe->operationalTime && $cafe->operationalTime->count() > 0)
                         <ul class="space-y-1">
                             @foreach ($cafe->operationalTime as $time)
-                                <li class="flex items-center justify-evenly text-sm text-gray-600 max-w-xs">
-                                    <span class="font-medium w-1/2">{{ $time->day_range }}</span>
+                                <li class="flex items-center justify-evenly text-sm text-gray-600 max-w-[300px] mx-auto">
+                                    <span class="font-medium w-1/3">{{ $time->day_range }}</span>
                                     <span>:</span>
                                     <span class="text-gray-500">
                                         {{ \Carbon\Carbon::parse($time->open_time)->format('H:i') }} - 
@@ -230,7 +197,7 @@
 
         <section class="mt-16">
             <h2 class="text-3xl text-center mb-8">Menu List</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 gap-y-2" id="menu">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 gap-y-2" id="menu">
                 @if ($cafe->menuItems && $cafe->menuItems->count() > 0)
                     @foreach ($cafe->menuItems as $menu)
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
@@ -259,7 +226,7 @@
             </div>
         </section>
 
-        <section class="mt-16">
+        <section class="mt-16 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl">Colomn Comment</h2>
                 <button id="btn-add-comment" class="text-sm underline">Add Comment</button>
@@ -314,7 +281,4 @@
             </script>
         </section>
     </main>
-    @vite('resources/js/map.js')
-</body>
-
-</html>
+@endsection

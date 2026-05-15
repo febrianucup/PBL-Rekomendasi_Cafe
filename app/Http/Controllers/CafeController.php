@@ -29,7 +29,7 @@ class CafeController extends Controller
         $setting = LandingPageSetting::first() ?? new LandingPageSetting();
         $navbars = Navbar::orderBy('sort_order', 'asc')->get();
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars');
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars'));
     }
 
     public function show($id){
