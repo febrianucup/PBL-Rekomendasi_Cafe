@@ -23,13 +23,14 @@ use App\Models\Navbar;
 class CafeController extends Controller
 {
     public function index(){
-        $cafe=Cafes::with(['type', 'thumbnail', 'photos'])->get();
+        $cafe=Cafes::with(['type', 'tags', 'thumbnail', 'photos'])->get();
         $user=Auth::user();
         
         $setting = LandingPageSetting::first() ?? new LandingPageSetting();
         $navbars = Navbar::orderBy('sort_order', 'asc')->get();
+        $tags = Tags::all();
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars'));
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags'));
     }
 
     public function show($id){

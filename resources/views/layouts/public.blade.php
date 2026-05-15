@@ -36,8 +36,8 @@
     </style>
 </head>
 <body class="text-gray-900 min-h-screen flex flex-col">
-    <header class="w-full px-6 border-b border-gray-200">
-        <div class="mx-auto px-6 py-6 flex justify-between items-center">
+    <header class="w-full px-6 border-b border-gray-400 sticky top-0 z-[999] transition-all duration-500 ease-in-out" x-data="{isScrolled: false}" @scroll.window="isScrolled = (window.scrollY > 10) ? true : false" :class="isScrolled ? 'bg-white/50 backdrop-blur-sm shadow-xl rounded-b-2xl' : 'bg-transparent'">
+         <div class="mx-auto px-6 py-6 flex justify-between items-center">
             <div class="font-bold text-xl tracking-wider">SAFE</div>
 
             <nav class="hidden md:flex space-x-8 text-sm uppercase tracking-widest text-gray-500">

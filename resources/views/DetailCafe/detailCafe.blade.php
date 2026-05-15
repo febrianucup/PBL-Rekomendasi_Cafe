@@ -129,7 +129,7 @@
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-2">
-                    @if($cafe->tags && $cafe->tags->isNotEmpty())
+                    @if(isset($cafe->tags) && $cafe->tags->isNotEmpty())
                         @foreach($cafe->tags as $tag)
                             <span class="text-xs font-medium px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg border border-slate-200/60 shadow-xs uppercase tracking-wide hover:scale-105 transition-transform">
                                 #{{ $tag->tag_name }}
@@ -156,12 +156,78 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center border-t border-b py-6">
                 <div>
-                    <h4 class="font-bold text-sm text-gray-500 uppercase">Contact</h4>
-                    <p class="mt-2 text-gray-800">{{ $cafe->num_phone }}</p>
+                    <h4 class="font-bold text-sm text-gray-500 uppercase text-center">Contact</h4>
+                    <div x-data="{ 
+                            copyText: '{{ $cafe->num_phone }}', 
+                            copied: false 
+                        }" class="flex justify-center items-center gap-2 mt-2">
+                        
+                        <button @click="
+                            navigator.clipboard.writeText(copyText);
+                            copied = true;
+                            setTimeout(() => copied = false, 2000)
+                        " class="group flex flex-col items-center justify-center text-xs bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-xl transition-all duration-300 border border-gray-100 w-full max-w-[200px]">
+                            
+                            <p class="text-sm font-bold text-gray-800 mb-1">{{ $cafe->num_phone }}</p>
+                            
+                            <div class="flex items-center gap-1.5">
+                                <template x-if="!copied">
+                                    <span class="text-gray-400 flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                        </svg>
+                                        Salin Nomor
+                                    </span>
+                                </template>
+                                
+                                <template x-if="copied">
+                                    <span class="text-green-600 font-semibold flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        Tersalin!
+                                    </span>
+                                </template>
+                            </div>
+                        </button>
+                    </div>
                 </div>
                 <div>
-                    <h4 class="font-bold text-sm text-gray-500 uppercase">Email</h4>
-                    <p class="mt-2 text-gray-800">{{ $cafe->email }}</p>
+                    <h4 class="font-bold text-sm text-gray-500 uppercase text-center">Email</h4>
+                    <div x-data="{ 
+                            copyText: '{{ $cafe->email }}', 
+                            copied: false 
+                        }" class="flex justify-center items-center gap-2 mt-2">
+                        
+                        <button @click="
+                            navigator.clipboard.writeText(copyText);
+                            copied = true;
+                            setTimeout(() => copied = false, 2000)
+                        " class="group flex flex-col items-center justify-center text-xs bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-xl transition-all duration-300 border border-gray-100 w-full max-w-[200px]">
+                            
+                            <p class="text-sm font-bold text-gray-800 mb-1">{{ $cafe->email }}</p>
+                            
+                            <div class="flex items-center gap-1.5">
+                                <template x-if="!copied">
+                                    <span class="text-gray-400 flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                        </svg>
+                                        Salin Email
+                                    </span>
+                                </template>
+                                
+                                <template x-if="copied">
+                                    <span class="text-green-600 font-semibold flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        Tersalin!
+                                    </span>
+                                </template>
+                            </div>
+                        </button>
+                    </div>
                 </div>
                 <div>
                     <h4 class="font-bold text-sm text-gray-500 uppercase mb-2">Opening Hours</h4>
@@ -197,7 +263,7 @@
 
         <section class="mt-16">
             <h2 class="text-3xl text-center mb-8">Menu List</h2>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 gap-y-2" id="menu">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 gap-y-2" id="menu">
                 @if ($cafe->menuItems && $cafe->menuItems->count() > 0)
                     @foreach ($cafe->menuItems as $menu)
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">

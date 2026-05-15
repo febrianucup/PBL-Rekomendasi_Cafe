@@ -17,7 +17,7 @@
                  class="relative w-full max-w-sm bg-white p-8 rounded-[32px] shadow-2xl border border-cream mx-4 text-center">
                 
                 <h3 class="text-xl font-bold text-dark-brown mb-2">Konfirmasi Keluar</h3>
-                <p class="text-gray-500 mb-8">Apakah Anda yakin ingin logout dari PBL Cafe?</p>
+                <p class="text-gray-500 mb-8">Apakah Anda yakin ingin logout dari SAFE?</p>
 
                 <div class="flex gap-3">
                     <button @click="open = false" class="flex-1 px-6 py-3 rounded-2xl border border-cream text-gray-500 font-semibold hover:bg-cream transition-colors">
