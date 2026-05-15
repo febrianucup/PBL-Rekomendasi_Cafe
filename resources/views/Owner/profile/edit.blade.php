@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Add New Branch</title>
+    <title>{{ isset($cafe) ? 'Edit Cafe' : 'Add Cafe' }} - Saran Kafe</title>
     <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
     <link rel="preconnect" href="https://fonts.bunny.net">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -47,298 +48,368 @@
 
     <!-- PAGE CONTENT -->
     <div class="max-w-2xl mx-auto px-6 py-8">
+        <form method="POST" action="{{ isset($cafe) ? route('cafe.update', $cafe->id) : route('add-cafe.submit') }}" enctype="multipart/form-data">
+            @csrf
+            @if(isset($cafe))
+                @method('PUT')
+            @endif
 
-        <!-- BACK LINK -->
-        <a href="{{ route('cafe.edit') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
-            ← BACK TO BRANCHES
-        </a>
-
-        <!-- PAGE TITLE -->
-        <h1 class="text-3xl font-semibold text-dark mb-1">Edit Cafe Owner</h1>
-        <p class="text-xs text-muted mb-8 max-w-sm">Refine your café's presence. Update your story, operating rhythm, and sensory offerings for your community.</p>
-
-        <!-- SECTION: General Information -->
-        <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">General Information</h2>
-            <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
-
-                <!-- Cafe Name -->
-                <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Cafe Name</label>
-                    <input type="text" value="Velvet & Vine"
-                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+            @if(session('success'))
+                <div class="mb-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
+                    {{ session('success') }}
                 </div>
+            @endif
 
-                <!-- Brand Editorial Description -->
-                <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Brand Editorial Description</label>
-                    <textarea rows="4"
-                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted resize-none">Velvet & Vine is an artisanal retreat where the richness of boutique coffee meets the elegance of locally sourced botanicals. Founded in 2019, we specialize in sensory exploration through small-batch roasts and curated greenery.</textarea>
+            @if($errors->any())
+                <div class="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                    <ul class="list-disc pl-5">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
+            @endif
 
-                <!-- Establishment Type + Atmospheric Tag -->
-                <div class="grid grid-cols-2 gap-4">
+            <!-- BACK LINK -->
+            <a href="{{ route('owner.dashboard') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
+                ← BACK TO BRANCHES
+            </a>
+
+            <!-- PAGE TITLE -->
+            <h1 class="text-3xl font-semibold text-dark mb-1">{{ isset($cafe) ? 'Edit Cafe' : 'Add Cafe' }}</h1>
+            <p class="text-xs text-muted mb-8 max-w-sm">Refine your café's presence. Update your story, operating rhythm, and sensory offerings for your community.</p>
+
+            <!-- SECTION: General Information -->
+            <section class="mb-8">
+                <h2 class="text-base font-semibold text-dark mb-4">General Information</h2>
+                <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+
+                    <!-- Cafe Name -->
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Establishment Type</label>
-                        <div class="relative">
-                            <select class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer">
-                                <option>Artisan Café & Garden</option>
-                                <option>Coffee Shop</option>
-                                <option>Bistro</option>
-                                <option>Bakery Café</option>
-                            </select>
-                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Cafe Name</label>
+                        <input type="text" name="name" value="{{ old('name', $cafe->name ?? '') }}"
+                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                    </div>
+
+                    <!-- Brand Editorial Description -->
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Brand Editorial Description</label>
+                        <textarea name="description" rows="4"
+                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted resize-none" required>{{ old('description', $cafe->description ?? '') }}</textarea>
+                    </div>
+
+                    <!-- Establishment Type + Atmospheric Tag -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Establishment Type</label>
+                            <div class="relative">
+                                <select name="type_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer" required>
+                                    <option value="">Select a type</option>
+                                    @foreach($types as $type)
+                                        <option value="{{ $type->id }}" {{ old('type_id', $cafe->type_id ?? '') == $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
+                            </div>
+                        </div>
+
+                        <div x-data='{ 
+                            tags: @json($tags->toArray()), 
+                            selectedTags: @json(old("tags", isset($cafe) ? $cafe->tags->pluck("id")->toArray() : [])).map(String) 
+                        }'>
+                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">
+                                Atmospheric Tags (Multi-select)
+                            </label>
+
+                            <div class="flex flex-wrap items-center gap-2 mt-1">
+                                @foreach($tags as $tag)
+                                    <label class="cursor-pointer">
+                                        <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="hidden" x-model="selectedTags" />
+                                        <span
+                                            :class="selectedTags.includes(String({{ $tag->id }})) ? 'bg-active text-white' : 'bg-[#E8E4DE] text-dark'"
+                                            class="text-[11px] font-medium px-4 py-1.5 rounded-full transition-all duration-200 inline-block border border-transparent">
+                                            {{ $tag->tag_name }}
+                                        </span>
+                                    </label>
+                                @endforeach
+                            </div>
+
+                            <div class="mt-4 p-3 bg-cream rounded-xl border border-border">
+                                <p class="text-[10px] text-muted uppercase tracking-wider mb-1">Data Terpilih (ID):</p>
+                                <code class="text-xs text-active font-bold" x-text="selectedTags.length > 0 ? selectedTags.join(', ') : 'Belum ada yang dipilih'"></code>
+                            </div>
+                        </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION: Opening Hours -->
+            @php
+                if (isset($cafe) && $cafe->operationalTime->isNotEmpty()) {
+                    $defaultSchedules = $cafe->operationalTime->map(function($time) {
+                        return [
+                            'day_range' => $time->day_range,
+                            'open_time' => $time->open_time,
+                            'close_time' => $time->close_time,
+                        ];
+                    })->toArray();
+                } else {
+                    $defaultSchedules = old('open_time') ?: [
+                        ['day_range' => 'Mon - Fri', 'open_time' => '07:00', 'close_time' => '19:00'],
+                        ['day_range' => 'Saturday', 'open_time' => '08:00', 'close_time' => '21:00'],
+                        ['day_range' => 'Sunday', 'open_time' => '09:00', 'close_time' => '17:00'],
+                    ];
+                }
+            @endphp
+
+            <section class="mb-8" x-data='{
+                schedules: @json($defaultSchedules),
+                addSchedule() {
+                    this.schedules.push({ day_range: "", open_time: "00:00", close_time: "00:00" });
+                },
+                removeSchedule(index) {
+                    this.schedules.splice(index, 1);
+                }
+            }'>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-base font-semibold text-dark">Opening Hours</h2>
+                    <button type="button" @click="addSchedule()" 
+                        class="text-[11px] text-active border border-active rounded-full px-3 py-1 hover:bg-active hover:text-white transition-colors">
+                        + Add Schedule
+                    </button>
+                </div>
+
+                <div class="bg-white border border-border rounded-2xl overflow-hidden">
+                    <template x-for="(schedule, index) in schedules" :key="index">
+                        <div class="flex items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group">
+                            
+                            <div class="w-32">
+                                <input type="text" x-model="schedule.day_range" placeholder="e.g. Monday"
+                                    :name="`open_time[${index}][day_range]`"
+                                    class="text-sm font-semibold text-dark bg-transparent border-b border-transparent focus:border-active focus:outline-none w-full" required />
+                            </div>
+
+                            <div class="flex items-center gap-3 flex-1">
+                                <input type="time" x-model="schedule.open_time" 
+                                    :name="`open_time[${index}][open_time]`"
+                                    class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" required />
+                                
+                                <span class="text-muted text-sm">—</span>
+                                
+                                <input type="time" x-model="schedule.close_time" 
+                                    :name="`open_time[${index}][close_time]`"
+                                    class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" required />
+                            </div>
+
+                            <button type="button" @click="removeSchedule(index)" 
+                                class="ml-4 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <!-- SECTION: Contact Details -->
+            <section class="mb-8">
+                <h2 class="text-base font-semibold text-dark mb-4">Contact Details</h2>
+                <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Phone Number</label>
+                            <input type="tel" name="phone_number" value="{{ old('phone_number', $cafe->num_phone ?? '') }}"
+                                class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Email Address</label>
+                            <input type="email" name="email" value="{{ old('email', $cafe->email ?? '') }}"
+                                class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                         </div>
                     </div>
+
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Atmospheric Tag</label>
-                        <div class="flex flex-wrap items-center gap-2 mt-1">
-                            <span class="bg-[#E8E4DE] text-dark text-[11px] font-medium px-3 py-1 rounded-full">Quiet Study</span>
-                            <span class="bg-active text-white text-[11px] font-medium px-3 py-1 rounded-full">Garden View</span>
-                            <button class="text-[11px] text-muted border border-border rounded-full px-2.5 py-1 hover:bg-stat transition-colors">+ Add</button>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Address</label>
+                        <input type="text" name="address" value="{{ old('address', $cafe->address ?? '') }}"
+                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION: Location & Maps -->
+            <section class="mb-8">
+                <h2 class="text-base font-semibold text-dark mb-4">Location & Maps</h2>
+                <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
+                            <input type="text" name="latitude" placeholder="e.g., 47.6062" value="{{ old('latitude', $cafe->latitude ?? '') }}"
+                                class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Longitude</label>
+                            <input type="text" name="longitude" placeholder="e.g., -122.3321" value="{{ old('longitude', $cafe->longitude ?? '') }}"
+                                class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                         </div>
                     </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SECTION: Opening Hours -->
-        <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Opening Hours</h2>
-            <div class="bg-white border border-border rounded-2xl overflow-hidden">
-
-                <!-- Mon-Fri -->
-                <div class="flex items-center justify-between px-5 py-4 border-b border-border">
-                    <span class="text-sm font-semibold text-dark w-24">Mon - Fri</span>
-                    <div class="flex items-center gap-3 flex-1">
-                        <input type="time" value="07:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                        <span class="text-muted text-sm">—</span>
-                        <input type="time" value="19:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                    </div>
-                </div>
-
-                <!-- Saturday -->
-                <div class="flex items-center justify-between px-5 py-4 border-b border-border">
-                    <span class="text-sm font-semibold text-dark w-24">Saturday</span>
-                    <div class="flex items-center gap-3 flex-1">
-                        <input type="time" value="08:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                        <span class="text-muted text-sm">—</span>
-                        <input type="time" value="21:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                    </div>
-                </div>
-
-                <!-- Sunday -->
-                <div class="flex items-center justify-between px-5 py-4">
-                    <span class="text-sm font-semibold text-dark w-24">Sunday</span>
-                    <div class="flex items-center gap-3 flex-1">
-                        <input type="time" value="09:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                        <span class="text-muted text-sm">—</span>
-                        <input type="time" value="17:00"
-                            class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" />
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SECTION: Contact Details -->
-        <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Contact Details</h2>
-            <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
-
-                <div class="grid grid-cols-2 gap-4">
+                    
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Phone Number</label>
-                        <input type="tel" value="+1 (885) 251-8501"
-                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Email Address</label>
-                        <input type="email" value="hello@velvetvine.com"
-                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
-                    </div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
+                        <input type="url" name="maps" placeholder="https://maps.google.com/maps?q=..." value="{{ old('maps', $cafe->maps_link ?? '') }}"
+                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                 </div>
+            </section>
 
-                <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Address</label>
-                    <input type="text" value="442 Artisan Way, Seattle, WA 98101"
-                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+            <!-- SECTION: Photo Gallery -->
+            <section class="mb-8">
+                <h2 class="text-base font-semibold text-dark mb-4">Photo Gallery</h2>
+                <div class="bg-white border border-border rounded-2xl p-5">
+                    <div class="grid grid-cols-4 gap-3" id="photo-gallery">
+
+                        <!-- Existing Photos -->
+                        @if(isset($cafe) && $cafe->photos->isNotEmpty())
+                            @foreach($cafe->photos as $photo)
+                                <div class="relative group rounded-xl overflow-hidden aspect-square">
+                                    <img src="{{ asset('storage/' . $photo->photo_url) }}" alt="cafe photo" class="w-full h-full object-cover" />
+                                    <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                                </div>
+                            @endforeach
+                        @endif
+
+                        <!-- Upload Area -->
+                        <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" onclick="document.getElementById('photo-input').click()" id="photo-upload-area">
+                            <span class="text-lg text-muted">⊕</span>
+                            <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
+                            <input type="file" name="photos[]" id="photo-input" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)" />
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-muted mt-3">Upload multiple images (recommended: at least 4-6 photos). Maximum 12 images.</p>
                 </div>
+            </section>
 
-            </div>
-        </section>
+            <!-- SECTION: Thumbnail -->
+            <section class="mb-8">
+                <h2 class="text-base font-semibold text-dark mb-4">Thumbnail</h2>
+                <div class="bg-white border border-border rounded-2xl p-5">
 
-        <!-- SECTION: Location & Maps -->
-        <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Location & Maps</h2>
-            <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+                    <div class="grid grid-cols-4 gap-3" id="thumbnail-gallery">
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
-                        <input type="text" placeholder="e.g., 47.6062" value="47.6062"
-                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                        <!-- Existing Thumbnail -->
+                        @if(isset($cafe) && $cafe->thumbnail)
+                            <div class="relative group rounded-xl overflow-hidden aspect-square">
+                                <img src="{{ asset('storage/' . $cafe->thumbnail->photo_url) }}" alt="thumbnail" class="w-full h-full object-cover" />
+                                <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                            </div>
+                        @endif
+
+                        <!-- Upload Area (HARUS di dalam thumbnail-gallery) -->
+                        <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" 
+                            onclick="document.getElementById('thumbnail-input').click()" 
+                            id="thumbnail-upload-area">
+                            <span class="text-lg text-muted">⊕</span>
+                            <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
+                            <input type="file" name="thumbnail" id="thumbnail-input" accept="image/*" style="display: none;" onchange="handleThumbnailInput(event)" />
+                        </div>
+
+                    </div> <!-- Penutup thumbnail-gallery -->
+                </div> <!-- Penutup bg-white -->
+            </section>
+
+            <!-- SECTION: Featured Menu -->
+            <section class="mb-10">
+                <h2 class="text-base font-semibold text-dark mb-4">Featured Menu</h2>
+                <div class="bg-white border border-border rounded-2xl overflow-hidden" id="menu-section">
+
+                    <div id="menu-list">
+                        <!-- Existing Menu Items -->
+                        @if(isset($cafe) && $cafe->menuItems->isNotEmpty())
+                            @foreach($cafe->menuItems as $index => $item)
+                                <div class="menu-item flex items-center justify-between px-5 py-4 border-b border-border">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl overflow-hidden {{ $item->img_url ? '' : 'bg-[#f5f1ec] flex items-center justify-center text-xs text-muted' }}">
+                                            @if($item->img_url)
+                                                <img src="{{ asset('storage/' . $item->img_url) }}" alt="menu image" class="w-full h-full object-cover" />
+                                            @else
+                                                IMG
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold text-dark">{{ $item->name }}</p>
+                                            <p class="text-xs text-muted">{{ $item->description }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="menu-price text-sm font-semibold text-dark">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                                        <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this, {{ $index }})">✕</button>
+                                    </div>
+
+                                    <input type="hidden" name="menu_items[{{ $index }}][name]" value="{{ $item->name }}">
+                                    <input type="hidden" name="menu_items[{{ $index }}][description]" value="{{ $item->description }}">
+                                    <input type="hidden" name="menu_items[{{ $index }}][price]" value="{{ $item->price }}">
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Longitude</label>
-                        <input type="text" placeholder="e.g., -122.3321" value="-122.3321"
-                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
-                    </div>
-                </div>
 
-                <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
-                    <input type="url" placeholder="https://maps.google.com/maps?q=..." value="https://maps.google.com/maps?q=47.6062,-122.3321"
-                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
-                    <p class="text-[10px] text-muted mt-2">Get this link from Google Maps by right-clicking on your location and selecting "Copy link"</p>
-                </div>
+                    <div id="new-menu-form" class="hidden px-5 py-4 border-b border-border space-y-3">
+                        <div class="grid grid-cols-12 gap-3">
+                            <div class="col-span-12 md:col-span-4">
+                                <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Menu Name</label>
+                                <input type="text" id="menu-name" placeholder="Menu name" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                            </div>
+                            <div class="col-span-12 md:col-span-5">
+                                <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Description</label>
+                                <input type="text" id="menu-description" placeholder="Short description" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                            </div>
+                            <div class="col-span-12 md:col-span-3">
+                                <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Price (Rupiah)</label>
+                                <input type="text" id="menu-price" placeholder="Rp 35.000" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" onblur="formatPriceInput(this)" />
+                            </div>
+                        </div>
 
-            </div>
-        </section>
+                        <div class="grid grid-cols-12 gap-3 items-end">
+                            <div class="col-span-12 md:col-span-4">
+                                <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Photo</label>
+                                <div class="flex items-center gap-3">
+                                    <button type="button" onclick="document.getElementById('menu-image-input').click()" class="bg-[#F2EEE7] border border-border text-dark text-sm font-semibold rounded-xl px-4 py-2.5 hover:bg-stat transition-colors">Upload Image</button>
+                                    <span id="menu-image-name" class="text-[10px] text-muted">No file chosen</span>
+                                </div>
+                                <input type="file" id="menu-image-input" accept="image/*" style="display: none;" onchange="handleMenuImageUpload(event)" />
+                            </div>
+                            <div class="col-span-12 md:col-span-8">
+                                <div id="menu-image-preview" class="h-20 rounded-2xl border border-border bg-[#F7F5F0] flex items-center justify-center text-[10px] text-muted overflow-hidden">
+                                    Preview image akan muncul di sini
+                                </div>
+                            </div>
+                        </div>
 
-        <!-- SECTION: Photo Gallery -->
-        <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Photo Gallery</h2>
-            <div class="bg-white border border-border rounded-2xl p-5">
-                <div class="grid grid-cols-4 gap-3" id="photo-gallery">
-
-                    <!-- Upload Area -->
-                    <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" onclick="document.getElementById('photo-input').click()" id="upload-area">
-                        <span class="text-lg text-muted">⊕</span>
-                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
-                        <input type="file" id="photo-input" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)" />
-                    </div>
-
-                    <!-- Photo 1 -->
-                    <div class="relative group rounded-xl overflow-hidden aspect-square">
-                        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=300&q=80"
-                            alt="cafe" class="w-full h-full object-cover" />
-                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
-                    </div>
-
-                    <!-- Photo 2 -->
-                    <div class="relative group rounded-xl overflow-hidden aspect-square">
-                        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=300&q=80"
-                            alt="latte" class="w-full h-full object-cover" />
-                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
-                    </div>
-
-                    <!-- Photo 3 -->
-                    <div class="relative group rounded-xl overflow-hidden aspect-square">
-                        <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=300&q=80"
-                            alt="coffee grinder" class="w-full h-full object-cover" />
-                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
-                    </div>
-
-                </div>
-                <p class="text-[10px] text-muted mt-3">Upload multiple images (recommended: at least 4-6 photos). Maximum 12 images.</p>
-            </div>
-        </section>
-
-        <!-- SECTION: Featured Menu -->
-        <section class="mb-10">
-            <h2 class="text-base font-semibold text-dark mb-4">Featured Menu</h2>
-            <div class="bg-white border border-border rounded-2xl overflow-hidden" id="menu-section">
-
-                <div id="menu-list">
-                    <!-- Menu Item 1 -->
-                    <div class="menu-item flex items-center justify-between px-5 py-4 border-b border-border">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=100&q=80"
-                                    alt="Velvet Latte" class="w-full h-full object-cover" />
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-dark">The Velvet Latte</p>
-                                <p class="text-xs text-muted">Signature espresso with lavender infused milk</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="menu-price text-sm font-semibold text-dark">Rp 65.000</span>
-                            <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this)">✕</button>
+                            <button type="button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">Add Menu</button>
+                            <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">Cancel</button>
                         </div>
                     </div>
 
-                    <!-- Menu Item 2 -->
-                    <div class="menu-item flex items-center justify-between px-5 py-4 border-b border-border">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=100&q=80"
-                                    alt="Emerald Tartine" class="w-full h-full object-cover" />
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-dark">Emerald Tartine</p>
-                                <p class="text-xs text-muted">Smashed avocado, radish and micro herbs</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="menu-price text-sm font-semibold text-dark">Rp 140.000</span>
-                            <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this)">✕</button>
-                        </div>
+                    <div class="flex items-center justify-center px-5 py-3.5 cursor-pointer hover:bg-stat transition-colors" onclick="toggleNewMenuForm(true)">
+                        <span class="text-xs text-muted font-medium">+ add menu item</span>
                     </div>
+
                 </div>
+            </section>
 
-                <div id="new-menu-form" class="hidden px-5 py-4 border-b border-border space-y-3">
-                    <div class="grid grid-cols-12 gap-3">
-                        <div class="col-span-12 md:col-span-4">
-                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Menu Name</label>
-                            <input type="text" id="menu-name" placeholder="Menu name"
-                                class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
-                        </div>
-                        <div class="col-span-12 md:col-span-5">
-                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Description</label>
-                            <input type="text" id="menu-description" placeholder="Short description"
-                                class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
-                        </div>
-                        <div class="col-span-12 md:col-span-3">
-                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Price (Rupiah)</label>
-                            <input type="text" id="menu-price" placeholder="Rp 35.000"
-                                class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" onblur="formatPriceInput(this)" />
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-12 gap-3 items-end">
-                        <div class="col-span-12 md:col-span-4">
-                            <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Photo</label>
-                            <div class="flex items-center gap-3">
-                                <button type="button" onclick="document.getElementById('menu-image-input').click()" class="bg-[#F2EEE7] border border-border text-dark text-sm font-semibold rounded-xl px-4 py-2.5 hover:bg-stat transition-colors">Upload Image</button>
-                                <span id="menu-image-name" class="text-[10px] text-muted">No file chosen</span>
-                            </div>
-                            <input type="file" id="menu-image-input" accept="image/*" style="display: none;" onchange="handleMenuImageUpload(event)" />
-                        </div>
-                        <div class="col-span-12 md:col-span-8">
-                            <div id="menu-image-preview" class="h-20 rounded-2xl border border-border bg-[#F7F5F0] flex items-center justify-center text-[10px] text-muted overflow-hidden">
-                                Preview image akan muncul di sini
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button type="button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">Add Menu</button>
-                        <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">Cancel</button>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-center px-5 py-3.5 cursor-pointer hover:bg-stat transition-colors" onclick="toggleNewMenuForm(true)">
-                    <span class="text-xs text-muted font-medium">+ add menu item</span>
-                </div>
-
+            <!-- BOTTOM ACTIONS -->
+            <div class="flex items-center gap-3 pb-10">
+                <button type="submit" class="flex-1 bg-darkbrown text-white text-sm font-semibold rounded-full py-3.5 hover:bg-[#1e1a16] transition-colors">
+                    {{ isset($cafe) ? 'Save Changes' : 'Publish Changes' }}
+                </button>
+                <button type="reset" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-8 py-3.5 hover:bg-stat transition-colors">
+                    Discard
+                </button>
             </div>
-        </section>
-
-        <!-- BOTTOM ACTIONS -->
-        <div class="flex items-center gap-3 pb-10">
-            <button class="flex-1 bg-darkbrown text-white text-sm font-semibold rounded-full py-3.5 hover:bg-[#1e1a16] transition-colors">
-                Publish Changes
-            </button>
-            <button class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-8 py-3.5 hover:bg-stat transition-colors">
-                Discard
-            </button>
-        </div>
+        </form>
 
     </div>
 
@@ -346,10 +417,9 @@
         function handlePhotoUpload(event) {
             const files = Array.from(event.target.files);
             const gallery = document.getElementById('photo-gallery');
-            const uploadArea = document.getElementById('upload-area');
-            const currentPhotos = gallery.querySelectorAll('[class*="group"]').length - 1; // Exclude upload area
+            const uploadArea = document.getElementById('photo-upload-area');
+            const currentPhotos = gallery.querySelectorAll('[class*="group"]').length - 1;
             
-            // Limit to 12 photos total
             if (currentPhotos + files.length > 12) {
                 alert('Maximum 12 photos allowed. You already have ' + currentPhotos + ' photos.');
                 return;
@@ -368,14 +438,39 @@
                 };
                 reader.readAsDataURL(file);
             });
+        }
 
-            // Reset input
-            event.target.value = '';
+        function handleThumbnailInput(event) {
+            const files = Array.from(event.target.files);
+            const gallery = document.getElementById('thumbnail-gallery');
+            const uploadArea = document.getElementById('thumbnail-upload-area');
+            const currentPhotos = gallery.querySelectorAll('[class*="group"]').length - 1;
+            
+            if (currentPhotos + files.length > 1) {
+                alert('Maximum 1 thumbnail allowed. You already have ' + currentPhotos + ' thumbnail.');
+                return;
+            }
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.className = 'relative group rounded-xl overflow-hidden aspect-square';
+                    photoDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="thumbnail" class="w-full h-full object-cover" />
+                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                    `;
+                    gallery.insertBefore(photoDiv, uploadArea.nextSibling);
+                };
+                reader.readAsDataURL(file);
+            });
         }
 
         function removePhoto(button) {
             button.closest('.relative').remove();
         }
+
+        let menuImages = [];
 
         function toggleNewMenuForm(show) {
             const form = document.getElementById('new-menu-form');
@@ -388,9 +483,19 @@
             }
         }
 
+        function clearNewMenuFields() {
+            document.getElementById('menu-name').value = '';
+            document.getElementById('menu-description').value = '';
+            document.getElementById('menu-price').value = '';
+            document.getElementById('menu-image-input').value = '';
+            document.getElementById('menu-image-name').textContent = 'No file chosen';
+            const preview = document.getElementById('menu-image-preview');
+            preview.innerHTML = 'Preview image akan muncul di sini';
+            delete preview.dataset.image;
+        }
+
         function formatPriceInput(input) {
-            const formatted = formatRupiah(input.value);
-            input.value = formatted;
+            input.value = formatRupiah(input.value);
         }
 
         function formatRupiah(value) {
@@ -399,14 +504,44 @@
             return 'Rp ' + angka.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
 
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        function handleMenuImageUpload(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('menu-image-preview');
+            const fileName = document.getElementById('menu-image-name');
+            
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.innerHTML = `<img src="${escapeHtml(e.target.result)}" alt="menu preview" class="w-full h-full object-cover" />`;
+                preview.dataset.image = e.target.result;
+                fileName.textContent = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+
         function saveMenuItem() {
             const nameInput = document.getElementById('menu-name');
             const descInput = document.getElementById('menu-description');
             const priceInput = document.getElementById('menu-price');
             const imageInput = document.getElementById('menu-image-input');
+
             const name = nameInput.value.trim();
             const description = descInput.value.trim();
-            const price = formatRupiah(priceInput.value.trim());
+            const rawPrice = priceInput.value.replace(/[^0-9]/g, '');
+            const priceFormatted = formatRupiah(priceInput.value.trim());
+
             const imagePreview = document.getElementById('menu-image-preview');
             const imageData = imagePreview.dataset.image || '';
 
@@ -415,13 +550,15 @@
                 nameInput.focus();
                 return;
             }
-            if (!price) {
-                alert('Masukkan harga menu dalam format Rupiah.');
+            if (!rawPrice) {
+                alert('Masukkan harga menu.');
                 priceInput.focus();
                 return;
             }
 
             const menuList = document.getElementById('menu-list');
+            const index = menuList.getElementsByClassName('menu-item').length;
+
             const menuItem = document.createElement('div');
             menuItem.className = 'menu-item flex items-center justify-between px-5 py-4 border-b border-border';
             menuItem.innerHTML = `
@@ -435,57 +572,58 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="menu-price text-sm font-semibold text-dark">${escapeHtml(price)}</span>
-                    <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this)">✕</button>
+                    <span class="menu-price text-sm font-semibold text-dark">${escapeHtml(priceFormatted)}</span>
+                    <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this, ${index})">✕</button>
                 </div>
+
+                <input type="hidden" name="menu_items[${index}][name]" value="${escapeHtml(name)}">
+                <input type="hidden" name="menu_items[${index}][description]" value="${escapeHtml(description)}">
+                <input type="hidden" name="menu_items[${index}][price]" value="${escapeHtml(rawPrice)}">
             `;
+
+            if (imageInput.files[0]) {
+                const hiddenFileInput = document.createElement('input');
+                hiddenFileInput.type = 'file';
+                hiddenFileInput.style.display = 'none';
+                hiddenFileInput.name = `menu_items[${index}][image]`;
+                hiddenFileInput.id = `hidden-file-${index}`;
+
+                const dt = new DataTransfer();
+                dt.items.add(imageInput.files[0]);
+                hiddenFileInput.files = dt.files;
+
+                menuItem.appendChild(hiddenFileInput);
+            }
+
             menuList.appendChild(menuItem);
             toggleNewMenuForm(false);
+            clearNewMenuFields();
         }
 
-        function handleMenuImageUpload(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('menu-image-preview');
-            const fileName = document.getElementById('menu-image-name');
-            if (!file) {
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                preview.innerHTML = `<img src="${escapeHtml(e.target.result)}" alt="menu preview" class="w-full h-full object-cover" />`;
-                preview.dataset.image = e.target.result;
-                fileName.textContent = file.name;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function removeMenuItem(button) {
+        function removeMenuItem(button, index) {
             const menuItem = button.closest('.menu-item');
             if (menuItem) {
                 menuItem.remove();
+                reindexMenuItems();
             }
         }
 
-        function clearNewMenuFields() {
-            document.getElementById('menu-name').value = '';
-            document.getElementById('menu-description').value = '';
-            document.getElementById('menu-price').value = '';
-            document.getElementById('menu-image-input').value = '';
-            const preview = document.getElementById('menu-image-preview');
-            preview.innerHTML = 'Preview image akan muncul di sini';
-            preview.dataset.image = '';
-            document.getElementById('menu-image-name').textContent = 'No file chosen';
-        }
+        function reindexMenuItems() {
+            const items = document.querySelectorAll('#menu-list .menu-item');
+            items.forEach((item, newIndex) => {
+                item.querySelector(`input[name*="[name]"]`).name = `menu_items[${newIndex}][name]`;
+                item.querySelector(`input[name*="[description]"]`).name = `menu_items[${newIndex}][description]`;
+                item.querySelector(`input[name*="[price]"]`).name = `menu_items[${newIndex}][price]`;
+                
+                const fileInput = item.querySelector(`input[type="file"]`);
+                if (fileInput) {
+                    fileInput.name = `menu_items[${newIndex}][image]`;
+                    fileInput.id = `hidden-file-${newIndex}`;
+                }
 
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+                const removeBtn = item.querySelector('button[onclick^="removeMenuItem"]');
+                removeBtn.setAttribute('onclick', `removeMenuItem(this, ${newIndex})`);
+            });
         }
     </script>
 

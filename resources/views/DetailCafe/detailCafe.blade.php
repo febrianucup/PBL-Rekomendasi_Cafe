@@ -17,26 +17,25 @@
         body {
             font-family: 'Inter', sans-serif;
         }
-
         h1,
         h2,
         h3 {
             font-family: 'Playfair Display', serif;
         }
+        body { font-family: 'Inter', sans-serif; background-color: #FAF9F6; }
+        h1, h2 { font-family: 'Playfair Display', serif; }
+        header { background-color: #F5F1EC; }
     </style>
 </head>
 
 <body class="bg-[#FDFBF7] text-[#333]">
-
-    <nav class="flex justify-between items-center px-8 py-6 w-100">
-        <div class="text-xl font-bold italic">SAFE</div>
-        <div class="flex gap-6 text-sm font-semibold">
-            {{-- <a href="#">Journals</a> --}}
-            <a href="#" class="border-b-2 border-black">Cafés</a>
-            {{-- <a href="#">Roasters</a>
-            <a href="#">Curated Sets</a> --}}
-        </div>
-    </nav>
+    <header class="w-full px-12 border-b border-gray-200 mb-8">
+        <div class="px-6 py-6 flex justify-between items-center">
+            <div class="font-bold text-xl tracking-wider">SAFE</div>
+            <nav class="hidden md:flex space-x-8 text-sm uppercase tracking-widest text-gray-500">
+                <a href="/" class="text-black border-b border-black pb-1">Beranda</a>
+            </nav>
+    </header>
     @php
         $slides = $cafe->photos && $cafe->photos->isNotEmpty() 
             ? $cafe->photos->map(fn($photo) => str_starts_with($photo->photo_url, 'http') 
@@ -45,8 +44,19 @@
             : ['https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80'];
     @endphp
 
-    <div class="w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-        <header class="relative w-full h-[500px] overflow-hidden rounded-xl group"
+    <div class="w-full max-w-9/10 mx-auto px-4 sm:px-6 lg:px-8">
+       <div class="text-center mb-6 px-4">
+        <div class="inline-block text-left group">
+            <p class="text-[10px] uppercase tracking-[0.4em] text-gray-400 mb-2 ml-1">
+                Cafe Profile
+            </p>
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 tracking-tighter uppercase leading-none">
+                {{ $cafe->name }}
+            </h1>
+            <div class="mt-4 h-[3px] bg-black w-1/2 transition-all duration-500 group-hover:w-full"></div>
+        </div>
+    </div>
+        <div class="relative w-full h-[550px] overflow-hidden rounded-xl group"
             x-data='{ 
                 activeSlide: 0,
                 slides: @json($slides),
@@ -64,7 +74,7 @@
                     if (this.slides.length > 1) {
                         this.autoplayInterval = setInterval(() => {
                             this.next();
-                        }, 2000); // 4000 ms = Gambar bergeser otomatis setiap 4 detik
+                        }, 4000);
                     }
                 },
                 resetAutoplay() {
@@ -128,7 +138,7 @@
                     </template>
                 </div>
             </template>
-        </header>
+        </div>
     </div>
 
     <main class="max-w-4xl mx-auto py-16 px-4">

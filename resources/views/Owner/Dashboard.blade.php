@@ -1,124 +1,110 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@extends('layouts.app')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Owner Dashboard</title>
-    <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Instrument Sans', 'sans-serif']
-                    },
-                    colors: {
-                        cream: '#F7F5F0',
-                        dark: '#1B1B18',
-                        muted: '#6B635A',
-                        border: '#E3E3E0',
-                        stat: '#F7F3EE',
-                        brown: '#6B4F3B',
-                        darkbrown: '#2C2720',
-                        active: '#3F4C40',
-                    }
-                }
-            }
-        }
-    </script>
-</head>
+@section('title', 'Owner Dashboard')
+@section('page-title', 'My Cafes')
 
-<body class="bg-cream font-sans text-dark min-h-screen">
-
-    <!-- TOP NAVBAR -->
-    <nav class="flex items-center justify-between px-7 py-3.5 border-b border-border bg-cream">
-        <div class="flex items-center gap-7">
-            <span class="font-semibold text-sm">Sensory Editorial</span>
-            <div class="flex gap-1">
-                <a href="#" class="text-sm font-semibold text-dark border-b-2 border-dark pb-0.5 px-2">My Cafes</a>
-            </div>
-        </div>
-        <div class="flex items-center gap-5">
-            <a href="#" class="text-sm text-muted">notifications</a>
-            <a href="#" class="text-sm text-muted">settings</a>
-            <div class="w-8 h-8 rounded-full bg-[#D6C9BD] flex items-center justify-center text-xs font-semibold text-[#4A4037]">JS</div>
-        </div>
-    </nav>
-
-    <!-- LAYOUT -->
-    <div class="flex min-h-[calc(100vh-49px)]">
-
-        <!-- SIDEBAR -->
-        <aside class="w-[200px] min-w-[200px] border-r border-border bg-cream flex flex-col justify-between px-4 py-6">
-            <div>
-                <div class="mb-5">
-                    <p class="text-sm font-semibold text-dark leading-snug">SAFE<br>Saran Kafe</p>
+@section('content')
+    <!-- Dashboard Content -->
+    <div class="space-y-6">
+        <!-- Welcome Section -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-light-beige">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-dark-brown mb-2">Welcome back, {{ auth()->user()->name }}!</h1>
+                    <p class="text-muted">Manage your cafe collection and grow your business.</p>
+                </div>
+                <div class="text-right">
                     <p class="text-[10px] uppercase tracking-widest text-muted mt-1">Owner Dashboard</p>
                 </div>
-                <nav class="flex flex-col gap-1 mt-2">
-                    <a href="#" class="flex items-center gap-1.5 text-[11px] font-medium text-white bg-dark px-2.5 py-2 rounded-lg">
-                        <span class="text-[10px] text-[#888]">storefront</span> MY CAFES
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Total Cafes -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-light-beige">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-muted mb-1">Total Cafes</p>
+                        <p class="text-3xl font-bold text-dark-brown">{{ $cafes->count() }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-light-beige rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-dark-brown" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cafes List -->
+        <div class="bg-white rounded-2xl shadow-sm border border-light-beige overflow-hidden">
+            <div class="p-6 border-b border-light-beige">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-dark-brown">Your Cafes</h2>
+                    <a href="{{ route('add-cafe') }}" class="inline-flex items-center gap-2 bg-dark-brown text-white px-4 py-2 rounded-xl hover:bg-dark-brown/90 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add New Cafe
                     </a>
-                </nav>
-            </div>
-            <div>
-                <a href="{{ route('add-cafe') }}" class="w-full bg-darkbrown text-white text-[11px] font-bold uppercase tracking-wider rounded-full py-2.5 px-4">
-                    ADD NEW BRANCH
-                </a>
-            </div>
-        </aside>
-
-        <!-- MAIN -->
-        <main class="flex-1 px-8 py-7">
-
-            <!-- HEADER -->
-            <div class="flex items-start justify-between mb-7">
-                <div>
-                    <h2 class="text-2xl font-semibold text-dark">My Branches</h2>
-                    <p class="text-xs text-muted mt-1.5 max-w-sm">Managing the physical heartbeat of <em>Velvet &amp; Vine</em> across the city's finest postcodes.</p>
-                </div>
-                <a href="{{ route('add-cafe') }}" class="inline-block bg-darkbrown text-white text-xs font-semibold rounded-full px-5 py-2.5">
-                    add New Cafe
-                </a>
-            </div>
-
-            <!-- SECTION LABEL -->
-            <p class="text-[11px] uppercase tracking-[0.2em] text-muted mb-1">My Cafes</p>
-            <h3 class="text-lg font-semibold text-dark mb-4">Branch overview</h3>
-
-            <!-- CARD 1 -->
-            @foreach($cafes as $cafe)
-            <div class="flex bg-white border border-border rounded-[18px] overflow-hidden mb-3.5">
-                <!-- ... gambar dan detail cafe ... -->
-                <div class="flex items-center justify-between bg-stat rounded-full px-4 py-2 mt-3">
-                    <a href="{{ route('cafe.edit', $cafe->id) }}" class="text-xs font-semibold text-dark">edit</a>
-
-                    <form action="{{ route('cafe.delete', $cafe->id) }}" method="POST" onsubmit="return confirm('Hapus cabang {{ $cafe->name }}?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-xs font-semibold text-red-600">delete</button>
-                    </form>
                 </div>
             </div>
-            @endforeach
 
-            <!-- EXPANSION -->
-            <div class="border-2 border-dashed border-[#D9D5CC] bg-white rounded-[18px] py-11 text-center mt-2">
-                <p class="text-[11px] uppercase tracking-[0.2em] text-[#A39B92] mb-3.5">add_business</p>
-                <h3 class="text-lg font-semibold text-dark mb-2">Expansion Opportunity</h3>
-                <p class="text-xs text-muted mb-5">Your next sensory destination is just a blueprint away.</p>
-                <button class="bg-[#FEF9F5] border border-[#D9D5CC] rounded-full px-5 py-2.5 text-xs font-semibold text-brown uppercase tracking-wider">
-                    IDENTIFY LOCATION
-                </button>
-            </div>
-
-        </main>
+            @if($cafes->count() > 0)
+                <div class="divide-y divide-light-beige">
+                    @foreach($cafes as $cafe)
+                        <div class="p-6 hover:bg-cream/50 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    @if($cafe->thumbnail)
+                                        <img src="{{ asset('storage/' . $cafe->thumbnail->photo_url) }}" alt="{{ $cafe->name }}" class="w-16 h-16 rounded-xl object-cover">
+                                    @else
+                                        <div class="w-16 h-16 bg-light-beige rounded-xl flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                    @endif
+                                    <div class="gap-2 mt-1 text-sm">
+                                        <h3 class="font-semibold text-dark-brown">{{ $cafe->name }}</h3>
+                                        <p class="text-sm text-muted">{{ $cafe->type->type_name ?? 'Unknown Type' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ route('cafe.show', $cafe->id) }}" class="text-muted hover:text-dark-brown transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                    </a>
+                                    <a href="{{ route('cafe.edit', $cafe->id) }}" class="text-muted hover:text-dark-brown transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="p-12 text-center">
+                    <div class="w-24 h-24 bg-light-beige rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-dark-brown mb-2">No cafes yet</h3>
+                    <p class="text-muted mb-6">Start building your cafe collection by adding your first cafe.</p>
+                    <a href="{{ route('add-cafe') }}" class="inline-flex items-center gap-2 bg-dark-brown text-white px-6 py-3 rounded-xl hover:bg-dark-brown/90 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add Your First Cafe
+                    </a>
+                </div>
+            @endif
+        </div>
     </div>
-
-</body>
-
-</html>
+@endsection
