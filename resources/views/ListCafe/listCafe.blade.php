@@ -79,7 +79,7 @@
             </section>
         </div>
 
-    <main class="flex-grow w-screen mx-auto px-6 py-12 flex flex-col">
+    <main class="flex-grow w-full mx-auto px-6 py-12 flex flex-col">
         <div class="flex justify-center space-x-6 md:space-x-8 text-xs font-semibold uppercase tracking-widest mb-10 border-b border-gray-200 pb-4 overflow-x-auto whitespace-nowrap">
             <span class="border-b-2 border-black pb-4 text-black cursor-pointer">All Spaces</span>
             <span class="text-gray-400 hover:text-black cursor-pointer transition">Quiet</span>

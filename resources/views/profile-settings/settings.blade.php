@@ -50,7 +50,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-dark-brown tracking-wide">Full Name</label>
-                    <input type="text" name="name" value="{{ auth()->user()->name ?? 'Admin User' }}" class="w-full px-4 py-3 bg-cream/30 border border-light-beige/50 rounded-2xl focus:ring-2 focus:ring-dark-brown/20 focus:bg-white focus:outline-none transition-all text-dark-brown placeholder-gray-400" required>
+                    <input type="text" name="name" value="{{ auth()->user()->username ?? 'Admin User' }}" class="w-full px-4 py-3 bg-cream/30 border border-light-beige/50 rounded-2xl focus:ring-2 focus:ring-dark-brown/20 focus:bg-white focus:outline-none transition-all text-dark-brown placeholder-gray-400" required>
                     @error('name') <span class="text-soft-red text-xs block mt-1">{{ $message }}</span> @enderror
                 </div>
 
