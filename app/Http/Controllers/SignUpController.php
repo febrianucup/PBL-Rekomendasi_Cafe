@@ -18,10 +18,16 @@ class SignUpController extends Controller
     public function ownerRegister(Request $request){
         $data = $request->validate([
             'username' => 'required|string',
-            'email'    => 'required|email|unique:users',
+            'email'    => 'required|email|unique:users|',
             'password' => 'required|min:8',
             'cafe_name' => 'required|string',
             'address' => 'required|string',
+
+        ]
+        , [
+            'email.unique:users'   => 'email ini sudah digunakan',
+            'email.required' => 'Email tidak boleh kosong',
+            'email.email'    => 'Format email tidak valid',
         ]);
 
         DB::transaction(function() use ($data){
@@ -50,6 +56,11 @@ class SignUpController extends Controller
             'username' => 'required|string',
             'email'    => 'required|email|unique:users',
             'password' => 'required|min:8',
+        ],
+        [
+            'email.unique'   => 'email ini sudah digunakan',
+            'email.required' => 'Email tidak boleh kosong',
+            'email.email'    => 'Format email tidak valid',
         ]);
 
         $roleGuest = Role::where('name', 'guest')->first();

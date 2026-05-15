@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use App\Models\Navbar;
 
 class CafeController extends Controller
 {
@@ -26,8 +27,9 @@ class CafeController extends Controller
         $user=Auth::user();
         
         $setting = LandingPageSetting::first() ?? new LandingPageSetting();
+        $navbars = Navbar::orderBy('sort_order', 'asc')->get();
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting'));
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars');
     }
 
     public function show($id){
