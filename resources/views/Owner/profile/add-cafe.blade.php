@@ -230,7 +230,6 @@
         <section class="mb-8">
             <h2 class="text-base font-semibold text-dark mb-4">Location & Maps</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
@@ -242,12 +241,25 @@
                         <input type="text" name="longitude" placeholder="e.g., -122.3321" value="{{ old('longitude') }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
+            </div>
+                <div class="mb-4">
+                    <label for="kecamatan" class="block text-sm font-medium text-gray-700 mb-1">Kecamatan</label>
+                    <select name="kecamatan" id="kecamatan" required
+                            class="w-full h-full border-gray-300 rounded-md shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                        <option value="">-- Pilih Kecamatan --</option>
+                        @foreach($daftarDaerah as $kecamatan)
+                            <option value="{{ $kecamatan->id }}">
+                                {{ ucwords(strtolower($kecamatan->name)) }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 
                 <div>
                     <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
                     <input type="url" name="maps" placeholder="https://maps.google.com/maps?q=..." value="{{ old('maps') }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                </div>
             </div>
         </section>
 
@@ -336,6 +348,26 @@
             </div>
 
         </div>
+    </section>
+
+    <section class='mb-10'>
+                <!-- From Uiverse.io by Javierrocadev --> 
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input class="sr-only peer" value="" type="checkbox" name="is_published">
+            <div class="group peer ring-0 bg-gray-50 border-2 border-amber-900 rounded-full outline-none duration-700 after:duration-200 w-14 h-7  shadow-md peer-checked:bg-[#6B4F3B]  peer-focus:outline-none after:content-[''] after:rounded-full after:absolute after:bg-amber-900 after:outline-none after:h-5 after:w-5 after:top-1 after:left-1  peer-checked:after:translate-x-7 peer-hover:after:scale-95">
+
+                <svg y="0" xmlns="http://www.w3.org/2000/svg" x="0" width="100" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" height="100" class="absolute  top-1 left-1 fill-green-400 w-5 h-5">
+                <path d="M50,18A19.9,19.9,0,0,0,30,38v8a8,8,0,0,0-8,8V74a8,8,0,0,0,8,8H70a8,8,0,0,0,8-8V54a8,8,0,0,0-8-8H38V38a12,12,0,0,1,23.6-3,4,4,0,1,0,7.8-2A2₀.₁,2₀.₁,0,₀,₀,5₀,₁₈Z" class="svg-fill-primary">
+                </path>
+                </svg>
+
+                <svg y="0" xmlns="http://www.w3.org/2000/svg" x="0" width="100" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" height="100" class="absolute top-1 left-8 fill-red-600 w-5 h-5">
+                <path fill-rule="evenodd" d="M30,46V38a20,20,0,0,1,40,0v8a8,8,0,0,1,8,8V74a8,8,0,0,1-8,8H30a8,8,0,0,1-8-8V54A8,8,0,0,1,30,46Zm32-8v8H38V38a12,12,0,0,1,24,0Z">
+                </path>
+                </svg>
+            </div>
+                <span class="ml-3 text-sm font-medium text-[#1B1B18] font-semibold" >Publish</span>
+        </label>
     </section>
 
         <!-- BOTTOM ACTIONS -->

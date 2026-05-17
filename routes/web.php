@@ -58,7 +58,8 @@ Route::middleware(['auth'])->group(function(){
 
         Route::delete('/cafe/{id}', [CafeController::class, 'delete'])->name('cafe.delete');
 
-        Route::get('/cafe/{id}/show', [CafeController::class, 'showOwner'])->name('cafe.show');
+        Route::get('/cafe/{id}', [CafeController::class, 'showOwner'])->name('cafe.show');
+        Route::get('/cafe/{id}/show', [CafeController::class, 'showOwner'])->name('cafe.show.alt');
         Route::get('/cafe/{id}/edit', [CafeController::class, 'edit'])->name('cafe.edit');
         Route::put('/cafe/{id}', [CafeController::class, 'updateCafe'])->name('cafe.update');
     });

@@ -293,6 +293,22 @@
         </section>
 
         <section class="mt-16 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+            <h2 class="text-3xl text-center">Rate and Review</h2>
+            <div class="flex justify-center rating">
+                <input value="5" name="rating" id="star5" type="radio">
+                <label for="star5"></label>
+                <input value="4" name="rating" id="star4" type="radio">
+                <label for="star4"></label>
+                <input value="3" name="rating" id="star3" type="radio">
+                <label for="star3"></label>
+                <input value="2" name="rating" id="star2" type="radio">
+                <label for="star2"></label>
+                <input value="1" name="rating" id="star1" type="radio">
+                <label for="star1"></label>
+            </div>
+        </section>
+
+        <section class="mt-16 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl">Colomn Comment</h2>
                 <button id="btn-add-comment" class="text-sm underline">Add Comment</button>
