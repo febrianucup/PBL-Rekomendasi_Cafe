@@ -76,12 +76,14 @@
 
     <main class="flex-grow w-full mx-auto px-6 py-12 flex flex-col">
         <div class="flex justify-center space-x-6 md:space-x-8 text-xs font-semibold uppercase tracking-widest mb-10 border-b border-gray-200 pb-4 overflow-x-auto whitespace-nowrap">
-            <span class="border-b-2 border-black pb-4 text-black cursor-pointer">All Spaces</span>
+            <a href="{{ request()->fullUrlWithQuery(['tag' => null]) }}" class="{{ !request('tag') ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
+                All Cafe
+            </a>
             @if(isset($tags) && $tags->isNotEmpty())
                 @foreach($tags as $tag)
-                    <span class="text-gray-500 cursor-pointer hover:text-gray-700 transition-colors">
+                    <a href="{{ request()->fullUrlWithQuery(['tag' => $tag->tag_name]) }}" class="{{ request('tag') == $tag->tag_name ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
                         {{ $tag->tag_name }}
-                    </span>
+                    </a>
                 @endforeach
             @else
                 <span class="text-gray-400 italic">No tags available</span>

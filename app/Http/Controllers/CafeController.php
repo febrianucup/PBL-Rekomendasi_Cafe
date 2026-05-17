@@ -19,18 +19,57 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
 use App\Models\Navbar;
+use Laravolt\Indonesia\Models\City;
+use Laravolt\Indonesia\Models\District;
+use Laravolt\Indonesia\Models\Village;
+use Illuminate\Validation\Validator;
 
 class CafeController extends Controller
 {
-    public function index(){
-        $cafe=Cafes::with(['type', 'tags', 'thumbnail', 'photos'])->get();
+    public function index(Request $request){
+        $search = $request->input('search');
+        $tagFilter = $request->input('tag');
+        $kecamatanFilter = strtoupper($request->input('daerah'));
+
+        $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos']);
+
+        if ($search){
+            $cafeQuery->where(function($query) use ($search){
+                $query->where('name', 'like', "%$search%")
+                    ->orWhere('address', 'like', "%$search%");
+            });
+        }
+
+        if ($tagFilter){
+            $cafeQuery->whereHas('tags', function($query) use ($tagFilter){
+                $query->where('tag_name', $tagFilter);
+            });
+        }
+
+        if ($kecamatanFilter){
+            $kecamatan=District::find($kecamatanFilter);
+            if($kecamatan){
+                $cafeQuery->where(function($query) use ($kecamatan){
+                    $query->where('kecamatan', $kecamatan->name);
+            
+                });
+            }else{
+                $cafeQuery->where('kecamatan', '');
+            }
+        }
+
+        $cafe = $cafeQuery->get();
+
         $user=Auth::user();
+
+        $malangCity=City::whereIn('name', ['Kota Malang', 'Kabupaten Malang'])->pluck('code');
+        $daftarDaerah=District::whereIn('city_code', $malangCity)->orderBy('name', 'asc')->get();
         
         $setting = LandingPageSetting::first() ?? new LandingPageSetting();
         $navbars = Navbar::orderBy('sort_order', 'asc')->get();
         $tags = Tags::all();
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags'));
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah'));
     }
 
     public function show($id){
@@ -72,6 +111,8 @@ class CafeController extends Controller
     public function edit($id){
         $cafe = Cafes::with(['type', 'tags', 'thumbnail', 'photos', 'operationalTime', 'menuItems'])
             ->findOrFail($id);
+        $malangCity=City::whereIn('name', ['Kota Malang', 'Kabupaten Malang'])->pluck('code');
+        $daftarDaerah=District::whereIn('city_code', $malangCity)->orderBy('name', 'asc')->get();
         
         if ($cafe->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mengedit cafe ini.');
@@ -81,63 +122,50 @@ class CafeController extends Controller
             'cafe' => $cafe,
             'types' => Type::all(),
             'tags' => Tags::all(),
+            'daftarDaerah' => $daftarDaerah,
         ]);
     }
 
     public function create()
     {
-        return view('Owner.profile.add-cafe', [
-            'user' => Auth::user(),
-            'types' => Type::all(),
-            'tags' => Tags::all(),
-        ]);
+        $malangCity=City::whereIn('name', ['Kota Malang', 'Kabupaten Malang'])->pluck('code');
+        $daftarDaerah=District::whereIn('city_code', $malangCity)->orderBy('name', 'asc')->get();
+
+        $user = Auth::user();
+        $types = Type::all();
+        $tags = Tags::all();
+        return view('Owner.profile.add-cafe', compact('user', 'types', 'tags', 'daftarDaerah'));
     }
 
     public function addCafe(Request $request){
         $credentials = $request->validate([
-            'name'=>'required|max:255|string',
-            'description'=>'required',
-            'type_id'=>'required|exists:types,id',
-            'latitude'=>'required|numeric',
-            'longitude'=>'required|numeric',
-            'tags'=>'nullable|array',
-            'tags.*'=>'exists:tags,id',
-            'thumbnail'=>'nullable|image|mimes:jpeg,png,jpg|max:5120',
-            'photos.*'=>'image|mimes:jpeg,png,jpg|max:5120',
-            'open_time'=>'nullable|array',
-            'open_time.*.day_range'=>'required_with:open_time|string|max:255',
-            'open_time.*.open_time'=>'required_with:open_time|date_format:H:i',
-            'open_time.*.close_time'=>'required_with:open_time|date_format:H:i',
+            'name'=>['required','max:255','string'],
+            'description'=>['required'],
+            'type_id'=>['required','exists:types,id'],
+            'kecamatan' => ['required','exists:indonesia_districts,id'],
+            'latitude'=>['required','numeric'],
+            'longitude'=>['required','numeric'],
+            'tags'=>['nullable','array'],
+            'tags.*'=>['exists:tags,id'],
+            'thumbnail'=>['nullable','image','mimes:jpeg,png,jpg','max:5120'],
+            'photos.*'=>['image','mimes:jpeg,png,jpg','max:5120'],
+            'open_time'=> ['nullable', 'array'],
+            'open_time.*.day_range'  => ['required_with:open_time', 'string', 'max:255'],
+            'open_time.*.open_time'  => ['required_with:open_time', 'date_format:H:i'],
+            'open_time.*.close_time' => ['required_with:open_time', 'date_format:H:i'],
             'phone_number'=>['required'],
-            'email'=>'required|email:rfc,dns',
-            'address'=>'required',
-            'maps'=>'required|url',
-            'menu_items'=>'nullable|array',
-            'menu_items.*.name'=>'required_with:menu_items|string|max:255',
-            'menu_items.*.description'=>'nullable|string',
-            'menu_items.*.price'=>'required_with:menu_items|numeric',
-            'menu_items.*.image'=>'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'email'=>['required','email:rfc,dns'],
+            'address'=>['required'],
+            'maps'=>['required','url'],
+            'menu_items'=>['nullable','array'],
+            'menu_items.*.name'=>['required_with:menu_items','string','max:255'],
+            'menu_items.*.description'=>['nullable','string'],
+            'menu_items.*.price'=>['required_with:menu_items','numeric'],
+            'menu_items.*.image'=>['nullable','image','mimes:jpeg,png,jpg','max:5120'],
         ]);
 
-        $response=Http::withHeaders([
-            'User-Agent'=>'Laravel'
-        ])->get('https://nominatim.openstreetmap.org/reverse', [
-            'format'=>'json',
-            'lat'=>$credentials['latitude'],
-            'lon'=>$credentials['longitude']
-        ]);
-
-        $data=$response->json();
-
-        $kecamatan =
-                    $data['address']['city_district']
-                    ?? $data['address']['suburb']
-                    ?? $data['address']['town']
-                    ?? $data['address']['village']
-                    ?? $data['address']['county']
-                    ?? 'Tidak diketahui';
         try{
-            DB::transaction(function() use ($credentials, $kecamatan, $request){
+            DB::transaction(function() use ($credentials, $request){
                 $cafe=Cafes::create([
                     'user_id'=>Auth::id(),
                     'name'=>$credentials['name'],
@@ -149,7 +177,7 @@ class CafeController extends Controller
                     'latitude'=>$credentials['latitude'],
                     'longitude'=>$credentials['longitude'],
                     'maps_link'=>$credentials['maps'],
-                    'kecamatan'=>$kecamatan,
+                    'kecamatan'=>$credentials['kecamatan'] ? District::find($credentials['kecamatan'])->name : null,
                 ]);
 
                 if($request->has('tags')){
@@ -208,48 +236,36 @@ class CafeController extends Controller
     }
 
     public function updateCafe(Request $request, $id){
+        // 1. Validasi Data Form
         $credentials = $request->validate([
-            'name'=>'required|max:255|string',
-            'description'=>'required',
-            'type_id'=>'required|exists:types,id',
-            'latitude'=>'required|numeric',
-            'longitude'=>'required|numeric',
-            'tags'=>'nullable|array',
-            'tags.*'=>'exists:tags,id',
-            'thumbnail'=>'nullable|image|mimes:jpeg,png,jpg|max:5120',
-            'photos.*'=>'image|mimes:jpeg,png,jpg|max:5120',
-            'open_time'=>'nullable|array',
-            'open_time.*.day_range'=>'required_with:open_time|string|max:255',
-            'open_time.*.open_time'=>'required_with:open_time|date_format:H:i',
-            'open_time.*.close_time'=>'required_with:open_time|date_format:H:i',
-            'phone_number'=>['required', 'phone:ID'],
-            'email'=>'required|email:rfc,dns',
-            'address'=>'required',
-            'maps'=>'required|url',
-            'menu_items'=>'nullable|array',
-            'menu_items.*.name'=>'required_with:menu_items|string|max:255',
-            'menu_items.*.description'=>'nullable|string',
-            'menu_items.*.price'=>'required_with:menu_items|numeric',
-            'menu_items.*.image'=>'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'name'=>['required','max:255','string'],
+            'description'=>['required'],
+            'type_id'=>['required','exists:types,id'],
+            'kecamatan' => ['required', 'exists:indonesia_districts,id'],
+            'latitude'=>['required','numeric'],
+            'longitude'=>['required','numeric'],
+            'tags'=>['nullable','array'],
+            'tags.*'=>['exists:tags,id'],
+            'thumbnail'=>['nullable','image','mimes:jpeg,png,jpg','max:5120'],
+            'photos.*'=>['image','mimes:jpeg,png,jpg','max:5120'],
+            'open_time'=> ['nullable', 'array'],
+            'open_time.*.day_range'  => ['required_with:open_time', 'string', 'max:255'],
+            'open_time.*.open_time'  => ['required', 'date_format:H:i:s,H:i'],
+            'open_time.*.close_time' => ['required', 'date_format:H:i:s,H:i'],
+            'phone_number'=>['required'],
+            'email'=>['required','email:rfc,dns'],
+            'address'=>['required'],
+            'maps'=>['required','url'],
+            'menu_items'=>['nullable','array'],
+            'menu_items.*.id'=>['nullable'],
+            'menu_items.*.name'=>['required_with:menu_items','string','max:255'],
+            'menu_items.*.description'=>['nullable','string'],
+            'menu_items.*.price'=>['required_with:menu_items','numeric'],
+            'menu_items.*.image'=>['nullable','image','mimes:jpeg,png,jpg','max:5120'],
         ]);
-
-        $response=Http::withHeaders([
-            'User-Agent'=>'Laravel'
-        ])->get('https://nominatim.openstreetmap.org/reverse', [
-            'format'=>'json',
-            'lat'=>$credentials['latitude'],
-            'lon'=>$credentials['longitude']
-        ]);
-
-        $data=$response->json();
-
-        $kecamatan =
-                    $data['address']['city_district']
-                    ?? $data['address']['suburb']
-                    ?? $data['address']['village'];
 
         try {
-            DB::transaction(function () use ($credentials, $kecamatan, $request, $id) {
+            DB::transaction(function () use ($credentials, $request, $id) {
                 $cafe = Cafes::findOrFail($id);
                 $cafe->update([
                     'user_id'=>Auth::id(),
@@ -262,7 +278,7 @@ class CafeController extends Controller
                     'latitude' => $credentials['latitude'],
                     'longitude' => $credentials['longitude'],
                     'maps_link' => $credentials['maps'],
-                    'kecamata' => $kecamatan,
+                    'kecamatan' => $credentials['kecamatan'] ? District::find($credentials['kecamatan'])->name : null,
                 ]);
 
                 if (isset($credentials['tags'])) {
@@ -300,18 +316,34 @@ class CafeController extends Controller
                 }
 
                 if (isset($credentials['menu_items'])) {
-                    $cafe->menuItems()->delete();
+                    $keepMenuIds = collect($credentials['menu_items'])->pluck('id')->filter()->toArray();
+
+                    $cafe->menuItems()->whereNotIn('id', $keepMenuIds)->delete();
+
                     foreach ($credentials['menu_items'] as $index => $item) {
-                        $imagePath = null;
+                        
+                        if (isset($item['id']) && $item['id'] != '') {
+                            $menuItem = $cafe->menuItems()->findOrFail($item['id']);
+                            $imagePath = $menuItem->img_url;
+                        } else {
+                            $menuItem = new Menu();
+                            $menuItem->cafe_id = $cafe->id;
+                            $imagePath = 'cafes/menus/default-menu.jpg';
+                        }
+
                         if ($request->hasFile("menu_items.$index.image")) {
+                            if ($menuItem->exists && $menuItem->img_url && Storage::disk('public')->exists($menuItem->img_url)) {
+                                Storage::disk('public')->delete($menuItem->img_url);
+                            }
                             $imagePath = $request->file("menu_items.$index.image")->store('cafes/menus', 'public');
                         }
-                        $cafe->menuItems()->create([
-                            'name' => $item['name'],
-                            'description' => $item['description'],
-                            'price' => $item['price'],
-                            'img_url' => $imagePath,
-                        ]);
+
+                        $menuItem->name = $item['name'];
+                        $menuItem->description = $item['description'];
+                        $menuItem->price = $item['price'];
+                        $menuItem->img_url = $imagePath;
+                        
+                        $menuItem->save();
                     }
                 }
             });
@@ -321,7 +353,6 @@ class CafeController extends Controller
             return back()->withInput()->withErrors(['error' => $e->getMessage()]);
         }
     }
-
     public function delete($id)
     {
         $cafe = Cafes::with(['photos', 'thumbnail', 'operationalTime', 'menuItems', 'tags'])->findOrFail($id);
