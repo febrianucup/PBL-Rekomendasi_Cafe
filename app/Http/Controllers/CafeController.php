@@ -236,14 +236,13 @@ class CafeController extends Controller
     }
 
     public function updateCafe(Request $request, $id){
-        // 1. Validasi Data Form
         $credentials = $request->validate([
             'name'=>['required','max:255','string'],
             'description'=>['required'],
             'type_id'=>['required','exists:types,id'],
             'kecamatan' => ['required', 'exists:indonesia_districts,id'],
-            'latitude'=>['required','numeric'],
-            'longitude'=>['required','numeric'],
+            'latitude'  => ['required', 'numeric'],
+            'longitude' => ['required', 'numeric'],
             'tags'=>['nullable','array'],
             'tags.*'=>['exists:tags,id'],
             'thumbnail'=>['nullable','image','mimes:jpeg,png,jpg','max:5120'],

@@ -230,21 +230,30 @@
         <section class="mb-8">
             <h2 class="text-base font-semibold text-dark mb-4">Location & Maps</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
+                        <input type="text" name="latitude" placeholder="e.g., 47.6062" value="{{ old('latitude') }}"
+                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Longitude</label>
+                        <input type="text" name="longitude" placeholder="e.g., -122.3321" value="{{ old('longitude') }}"
+                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                    </div>
+            </div>
                 <div class="mb-4">
                     <label for="kecamatan" class="block text-sm font-medium text-gray-700 mb-1">Kecamatan</label>
                     <select name="kecamatan" id="kecamatan" required
                             class="w-full h-full border-gray-300 rounded-md shadow-sm focus:border-amber-500 focus:ring-amber-500">
                         <option value="">-- Pilih Kecamatan --</option>
                         @foreach($daftarDaerah as $kecamatan)
-                            <option value="{{ $kecamatan->id }}" data-meta="{{ json_encode($kecamatan->meta) }}">
+                            <option value="{{ $kecamatan->id }}">
                                 {{ ucwords(strtolower($kecamatan->name)) }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-
-                <input type="hidden" name="latitude" id="latitude">
-                <input type="hidden" name="longitude" id="longitude">
                 
                 <div>
                     <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
@@ -375,29 +384,6 @@
     </div>
 
     <script>
-        document.getElementById('kecamatan').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const metaData = selectedOption.getAttribute('data-meta');
-
-            if (metaData) {
-                try {
-                    // Lakukan pengecekan: Jika sudah otomatis berupa objek
-                    const meta = typeof metaData === 'string' ? JSON.parse(metaData) : metaData;
-                    
-                    // Masukkan nilai koordinat ke input hidden
-                    document.getElementById('latitude').value = meta.lat || '';
-                    document.getElementById('longitude').value = meta.long || '';
-                    
-                    console.log("Koordinat berhasil disinkronkan:", meta.lat, meta.long);
-                } catch (e) {
-                    console.error("Gagal membaca struktur data koordinat", e);
-                }
-            } else {
-                document.getElementById('latitude').value = '';
-                document.getElementById('longitude').value = '';
-            }
-        });
-
         function handlePhotoUpload(event) {
             const files = Array.from(event.target.files);
             const gallery = document.getElementById('photo-gallery');
