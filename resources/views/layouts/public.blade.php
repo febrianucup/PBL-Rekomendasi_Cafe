@@ -79,12 +79,21 @@
                 @if (request()->routeIs('cafes.index'))
                     <form action="{{ route('cafes.index') }}" method="GET" class="flex items-center gap-1">
                         <label for="voice-search" class="sr-only">Search</label>
-                        <input type="text" name="search" id="voice-search" value="{{ request('search') }}" class="border-b border-black py-1.5 px-3 bg-transparent text-sm focus:outline-none" placeholder="Search cafe...">
-                        <button type="submit" class="bg-black text-white px-4 py-2 uppercase text-xs font-bold transition hover:bg-gray-800">
+                        <div class="relative flex items-center">
+                        <input type="text" name="search" id="voice-search" value="{{ request('search') }}" class="border-b border-black py-1.5 pl-3 pr-8 bg-transparent text-sm focus:outline-none w-48" placeholder="Search cafe...">
+                         @if(request('search'))
+                            <a href="{{ url()->current() . (request()->except('search') ? '?' . http_build_query(request()->except('search')) : '') }}" class="absolute right-1 p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-all" title="Hapus Pencarian">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 24 24 6M6 6l24 24" />
+                                </svg>
+                            </a>
+                        @endif
+                        </div>
+                         <button type="submit" class="bg-black text-white px-4 py-2 uppercase text-xs font-bold transition hover:bg-gray-800">
                             Search
                         </button>
                     </form>
-
+                    
                     <details class="relative inline-block text-left group" x-data @click.outside="$el.removeAttribute('open')">
                         <summary class="flex items-center space-x-1 cursor-pointer list-none text-black-900 focus:outline-none py-2 px-3 rounded-md transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
