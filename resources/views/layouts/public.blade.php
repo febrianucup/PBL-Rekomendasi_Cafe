@@ -94,40 +94,78 @@
                         </button>
                     </form>
                     
-                    <details class="relative inline-block text-left group" x-data @click.outside="$el.removeAttribute('open')">
-                        <summary class="flex items-center space-x-1 cursor-pointer list-none text-black-900 focus:outline-none py-2 px-3 rounded-md transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                            </svg>
-                            <span class="text-sm font-medium">
-                                @if(request('daerah'))
-                                    {{ ucwords(strtolower(\Laravolt\Indonesia\Models\District::find(request('daerah'))->name ?? 'Pilih Daerah')) }}
+                   <div class="flex items-center gap-3">
+                        <details class="relative inline-block text-left group" x-data @click.outside="$el.removeAttribute('open')">
+                            <summary class="flex items-center space-x-1 cursor-pointer list-none text-black-900 focus:outline-none py-2 px-3 rounded-md transition-colors hover:bg-gray-50 border border-gray-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span class="text-sm font-medium">
+                                    @if(request('daerah'))
+                                        {{ ucwords(strtolower(\Laravolt\Indonesia\Models\District::find(request('daerah'))->name ?? 'Pilih Daerah')) }}
+                                    @else
+                                        Pilih Kecamatan
+                                    @endif
+                                </span>
+                            </summary>
+
+                            <div class="absolute left-0 mt-2 w-56 max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
+                                <a href="{{ request()->fullUrlWithQuery(['daerah' => null]) }}" 
+                                class="block px-4 py-2 text-sm {{ !request('daerah') ? 'bg-white text-black-900 font-semibold' : 'text-black-700 hover:bg-gray-100' }}">
+                                    Semua Kecamatan
+                                </a>
+                                
+                                <hr class="border-gray-100 my-1">
+
+                                @if(isset($daftarDaerah) && $daftarDaerah->isNotEmpty())
+                                    @foreach($daftarDaerah as $kecamatan)
+                                        <a href="{{ request()->fullUrlWithQuery(['daerah' => $kecamatan->id]) }}" 
+                                        class="block px-4 py-2 text-sm {{ request('daerah') == $kecamatan->id ? 'text-black-900 font-semibold' : 'text-black-700 hover:bg-gray-100' }}">
+                                            {{ ucwords(strtolower($kecamatan->name)) }}
+                                        </a>
+                                    @endforeach
                                 @else
-                                    Pilih Kecamatan
+                                    <span class="block px-4 py-2 text-xs text-gray-400 italic">Data tidak ditemukan</span>
                                 @endif
-                            </span>
-                        </summary>
+                            </div>
+                        </details>
 
-                        <div class="absolute right-0 mt-2 w-56 max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
-                            <a href="{{ request()->fullUrlWithQuery(['daerah' => null]) }}" 
-                            class="block px-4 py-2 text-sm {{ !request('daerah') ? 'bg-white-50 text-black-900 font-semibold' : 'text-black-700 hover:bg-gray-100' }}">
-                                Semua Kecamatan
-                            </a>
-                            
-                            <hr class="border-gray-100 my-1">
+                        <details class="relative inline-block text-left group" x-data @click.outside="$el.removeAttribute('open')">
+                            <summary class="flex items-center space-x-1 cursor-pointer list-none text-black-900 focus:outline-none py-2 px-3 rounded-md transition-colors hover:bg-gray-50 border border-gray-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                </svg>
+                                <span class="text-sm font-medium">
+                                    @if(request('type'))
+                                        {{ \App\Models\Type::find(request('type'))->type_name ?? 'Pilih Tipe' }}
+                                    @else
+                                        Pilih Tipe Cafe
+                                    @endif
+                                </span>
+                            </summary>
 
-                            @if(isset($daftarDaerah) && $daftarDaerah->isNotEmpty())
-                                @foreach($daftarDaerah as $kecamatan)
-                                    <a href="{{ request()->fullUrlWithQuery(['daerah' => $kecamatan->id]) }}" 
-                                    class="block px-4 py-2 text-sm {{ request('daerah') == $kecamatan->id ? 'bg-gray-100 text-black-900 font-semibold' : 'text-black-700 hover:bg-gray-100' }}">
-                                        {{ ucwords(strtolower($kecamatan->name)) }}
-                                    </a>
-                                @endforeach
-                            @else
-                                <span class="block px-4 py-2 text-xs text-gray-400 italic">Data tidak ditemukan</span>
-                            @endif
-                        </div>
-                    </details>
+                            <div class="absolute left-0 mt-2 w-56 max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50">
+                                <a href="{{ request()->fullUrlWithQuery(['type' => null]) }}" 
+                                class="block px-4 py-2 text-sm {{ !request('type') ? 'text-black-900 font-semibold' : 'text-black-700 hover:bg-gray-100' }}">
+                                    Semua Tipe
+                                </a>
+                                
+                                <hr class="border-gray-100 my-1">
+
+                                @if(isset($types) && $types->isNotEmpty())
+                                    @foreach($types as $tipe)
+                                        <a href="{{ request()->fullUrlWithQuery(['type' => $tipe->id]) }}" 
+                                        class="block px-4 py-2 text-sm {{ request('type') == $tipe->id ? 'text-black-900 font-semibold' : 'text-black-700 hover:bg-gray-100' }}">
+                                            {{ $tipe->type_name }}
+                                        </a>
+                                    @endforeach
+                                @else
+                                    <span class="block px-4 py-2 text-xs text-gray-400 italic">Tipe tidak ditemukan</span>
+                                @endif
+                            </div>
+                        </details>
+                    </div>
                 @endif
 
                 @auth

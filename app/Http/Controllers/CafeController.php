@@ -30,6 +30,7 @@ class CafeController extends Controller
         $search = $request->input('search');
         $tagFilter = $request->input('tag');
         $kecamatanFilter = strtoupper($request->input('daerah'));
+        $typesFilter=strtoupper($request->input('type'));
 
         $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos'])->where('published', true);
 
@@ -58,6 +59,12 @@ class CafeController extends Controller
             }
         }
 
+        if($typesFilter){
+            $cafeQuery->whereHas('type', function($query) use ($typesFilter){
+                $query->where('id', $typesFilter);
+            });
+        }
+
         $cafe = $cafeQuery->get();
 
         $user=Auth::user();
@@ -68,8 +75,9 @@ class CafeController extends Controller
         $setting = LandingPageSetting::first() ?? new LandingPageSetting();
         $navbars = Navbar::orderBy('sort_order', 'asc')->get();
         $tags = Tags::all();
+        $types = Type::all();
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah'));
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types'));
     }
 
     public function show($id){

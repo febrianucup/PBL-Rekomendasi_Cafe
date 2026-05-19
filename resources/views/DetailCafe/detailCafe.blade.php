@@ -125,7 +125,7 @@
                 <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-full shadow-sm transition-all duration-300 hover:bg-gray-100">
                     <span class="w-2 h-2 rounded-full bg-[#D4A373]"></span>
                     <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 mr-1">Type:</span>
-                    <span class="text-sm font-bold text-gray-700">#{{ $cafe->type->name ?? 'Standard Cafe' }}</span>
+                    <span class="text-sm font-bold text-gray-700">#{{ $cafe->type->type_name ?? 'Standard Cafe' }}</span>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-2">
