@@ -77,9 +77,9 @@
 
             <div class="flex items-center space-x-6">
                 @if (request()->routeIs('cafes.index'))
-                     <form action="{{ route('cafes.index') }}" method="GET" class="flex items-center gap-1">
+                    <form action="{{ route('cafes.index') }}" method="GET" class="flex items-center gap-1">
                         <label for="voice-search" class="sr-only">Search</label>
-                        <input type="text" name="search" id="voice-search" value="{{ request('search') }}"class="border-b border-black py-1.5 px-3 bg-transparent text-sm focus:outline-none" placeholder="Search cafe...">
+                        <input type="text" name="search" id="voice-search" value="{{ request('search') }}" class="border-b border-black py-1.5 px-3 bg-transparent text-sm focus:outline-none" placeholder="Search cafe...">
                         <button type="submit" class="bg-black text-white px-4 py-2 uppercase text-xs font-bold transition hover:bg-gray-800">
                             Search
                         </button>
@@ -110,7 +110,7 @@
                             @if(isset($daftarDaerah) && $daftarDaerah->isNotEmpty())
                                 @foreach($daftarDaerah as $kecamatan)
                                     <a href="{{ request()->fullUrlWithQuery(['daerah' => $kecamatan->id]) }}" 
-                                    class="block px-4 py-2 text-sm {{ request('daerah') == $kecamatan->id ? 'bg-amber-50 text-amber-900 font-semibold' : 'text-black-700 hover:bg-gray-100' }}">
+                                    class="block px-4 py-2 text-sm {{ request('daerah') == $kecamatan->id ? 'bg-gray-100 text-black-900 font-semibold' : 'text-black-700 hover:bg-gray-100' }}">
                                         {{ ucwords(strtolower($kecamatan->name)) }}
                                     </a>
                                 @endforeach

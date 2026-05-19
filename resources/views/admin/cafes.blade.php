@@ -18,7 +18,7 @@
         <div class="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40 relative overflow-hidden">
             <div class="absolute -right-6 -top-6 w-32 h-32 bg-cream rounded-full opacity-50"></div>
             <p class="text-gray-500 font-medium mb-2 relative z-10">Active Listings</p>
-            <h3 class="font-serif text-5xl font-bold text-dark-brown relative z-10">142</h3>
+            <h3 class="font-serif text-5xl font-bold text-dark-brown relative z-10">{{$cafes->count() }}</h3>
         </div>
         <div class="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40 relative overflow-hidden">
             <div class="absolute -right-6 -top-6 w-32 h-32 bg-cream rounded-full opacity-50"></div>
@@ -72,7 +72,11 @@
                             </div>
                         </td>
                         <td class="px-8 py-5">
-                            <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-soft-green/10 text-soft-green border border-soft-green/20">Published</span>
+                            @if ($cafe->published == true)
+                                <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-soft-green/10 text-soft-green border border-soft-green/20">Published</span>
+                            @else
+                                <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-soft-red/10 text-soft-red border border-soft-red/20">Unpublished</span>
+                            @endif
                         </td>
                         <td class="px-8 py-5 text-right flex justify-end gap-2">
                             <form action="{{ route('admin.cafes.destroy', $cafe->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this cafe?');">

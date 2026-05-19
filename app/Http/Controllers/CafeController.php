@@ -31,7 +31,7 @@ class CafeController extends Controller
         $tagFilter = $request->input('tag');
         $kecamatanFilter = strtoupper($request->input('daerah'));
 
-        $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos']);
+        $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos'])->where('published', true);
 
         if ($search){
             $cafeQuery->where(function($query) use ($search){
@@ -138,6 +138,8 @@ class CafeController extends Controller
     }
 
     public function addCafe(Request $request){
+        // dd($request->only('is_published'));
+
         $credentials = $request->validate([
             'name'=>['required','max:255','string'],
             'description'=>['required'],
@@ -162,10 +164,15 @@ class CafeController extends Controller
             'menu_items.*.description'=>['nullable','string'],
             'menu_items.*.price'=>['required_with:menu_items','numeric'],
             'menu_items.*.image'=>['nullable','image','mimes:jpeg,png,jpg','max:5120'],
+            'is_published'=>['nullable','boolean'],
         ]);
 
+        $isPublished = $request->boolean('is_published');
+
         try{
-            DB::transaction(function() use ($credentials, $request){
+            DB::transaction(function() use ($credentials, $request, $isPublished){
+                // dd($request->only('is_published'));
+
                 $cafe=Cafes::create([
                     'user_id'=>Auth::id(),
                     'name'=>$credentials['name'],
@@ -178,6 +185,7 @@ class CafeController extends Controller
                     'longitude'=>$credentials['longitude'],
                     'maps_link'=>$credentials['maps'],
                     'kecamatan'=>$credentials['kecamatan'] ? District::find($credentials['kecamatan'])->name : null,
+                    'published' => $isPublished,
                 ]);
 
                 if($request->has('tags')){
@@ -261,10 +269,13 @@ class CafeController extends Controller
             'menu_items.*.description'=>['nullable','string'],
             'menu_items.*.price'=>['required_with:menu_items','numeric'],
             'menu_items.*.image'=>['nullable','image','mimes:jpeg,png,jpg','max:5120'],
+            'is_published'=>['nullable','boolean'],
         ]);
 
+        $isPublished = $request->boolean('is_published');
+
         try {
-            DB::transaction(function () use ($credentials, $request, $id) {
+            DB::transaction(function () use ($credentials, $request, $id, $isPublished) {
                 $cafe = Cafes::findOrFail($id);
                 $cafe->update([
                     'user_id'=>Auth::id(),
@@ -278,6 +289,7 @@ class CafeController extends Controller
                     'longitude' => $credentials['longitude'],
                     'maps_link' => $credentials['maps'],
                     'kecamatan' => $credentials['kecamatan'] ? District::find($credentials['kecamatan'])->name : null,
+                    'published' => $isPublished,
                 ]);
 
                 if (isset($credentials['tags'])) {
