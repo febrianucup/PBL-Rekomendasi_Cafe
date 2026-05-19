@@ -22,7 +22,9 @@ return new class extends Migration
             $table->text('address');
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
+            $table->string('kecamatan')->nullable();
             $table->text('maps_link');
+            $table->boolean('published')->default(false);
             $table->timestamps();
         });
     }

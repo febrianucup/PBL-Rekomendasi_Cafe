@@ -413,7 +413,7 @@
             <section class='mb-10'>
                             <!-- From Uiverse.io by Javierrocadev --> 
                 <label class="relative inline-flex items-center cursor-pointer">
-                    <input class="sr-only peer" value="" type="checkbox" name="is_published">
+                    <input class="sr-only peer" value="1" {{ old('is_published', $cafe->published ?? false) ? 'checked' : '' }} type="checkbox" name="is_published">
                     <div class="group peer ring-0 bg-gray-50 border-2 border-amber-900 rounded-full outline-none duration-700 after:duration-200 w-14 h-7  shadow-md peer-checked:bg-[#6B4F3B]  peer-focus:outline-none after:content-[''] after:rounded-full after:absolute after:bg-amber-900 after:outline-none after:h-5 after:w-5 after:top-1 after:left-1  peer-checked:after:translate-x-7 peer-hover:after:scale-95">
 
                         <svg y="0" xmlns="http://www.w3.org/2000/svg" x="0" width="100" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" height="100" class="absolute  top-1 left-1 fill-green-400 w-5 h-5">
