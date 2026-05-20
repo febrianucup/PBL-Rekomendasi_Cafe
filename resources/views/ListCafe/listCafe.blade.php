@@ -3,7 +3,7 @@
 @section('title', 'Cafe List')
 @section('content')
     <div class="text-center mb-6 mt-6">
-        <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">{{ $setting->title ?? 'Beranda' }}</h1>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight">{{ $setting->title ?? 'Beranda' }}</h1>
         <p class="text-gray-500 text-sm md:text-base max-w-lg mx-auto">{{ $setting->description ?? 'Deskripsi default' }}</p>
     </div>
         
@@ -18,7 +18,7 @@
                 ];
         @endphp
         
-        <section class="w-full h-[550px] mb-12 bg-gray-200 relative group overflow-hidden rounded-xl"
+        <section class="w-full h-[550px] mb-12 mt-8 bg-gray-200 relative group overflow-hidden rounded-xl"
             x-data='{ 
                 activeSlide: 0,
                 slides: @json($sliderImages),

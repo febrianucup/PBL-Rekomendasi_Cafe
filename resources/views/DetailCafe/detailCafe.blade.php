@@ -12,7 +12,7 @@
     @endphp
 
     <div class="w-full h-[550px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-       <div class="text-center mb-6 px-4">
+       {{-- <div class="text-center mb-6 px-4">
         <div class="inline-block text-left group">
             <p class="text-[10px] uppercase tracking-[0.4em] text-gray-400 mb-2 ml-1">
                 Cafe Profile
@@ -21,9 +21,8 @@
                 {{ $cafe->name }}
             </h1>
             <div class="mt-4 h-[3px] bg-black w-1/2 transition-all duration-500 group-hover:w-full"></div>
-        </div>
-    </div>
-        <div class="relative w-full h-[550px] overflow-hidden rounded-xl group"
+        </div> --}}
+        <div class="relative w-full h-[550px] mt-8 overflow-hidden rounded-xl group"
             x-data='{ 
                 activeSlide: 0,
                 slides: @json($slides),
@@ -92,7 +91,7 @@
                         {{ $cafe->rating ?? '4.8' }}
                     </span>
                 </div>
-                <h1 class="text-4xl md:text-6xl font-bold tracking-tight">{{ $cafe->name }}</h1>
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight uppercase">{{ $cafe->name }}</h1>
                 <p class="mt-2 text-sm md:text-lg text-white/90 max-w-2xl leading-relaxed">{{ $cafe->address }}</p>
             </div>
 
@@ -108,7 +107,7 @@
         </div>
     </div>
 
-    <main class="w-full max-w-7xl mx-auto py-16 px-4 mt-6 sm:px-6 lg:px-8 mt-36">
+    <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
         <section class="text-center mb-16 max-w-3xl mx-auto px-4">
             <span class="text-xs font-bold tracking-widest text-[#D4A373] uppercase block mb-2">Vibe & Features</span>
             

@@ -60,7 +60,7 @@
 </head>
 <body class="text-gray-900 min-h-screen flex flex-col">
     <header class="w-full px-6 border-b border-gray-400 sticky top-0 z-[999] transition-all duration-500 ease-in-out" x-data="{isScrolled: false}" @scroll.window="isScrolled = (window.scrollY > 10) ? true : false" :class="isScrolled ? 'bg-white/50 backdrop-blur-sm shadow-xl rounded-b-2xl' : 'bg-transparent'">
-         <div class="mx-auto px-6 py-6 flex justify-between items-center">
+         <div class="mx-auto px-6 py-6 flex lg:px-8 h-20 justify-between items-center">
             <div class="font-bold text-xl tracking-wider">SAFE</div>
 
             <nav class="hidden md:flex space-x-8 text-sm uppercase tracking-widest text-gray-500">
@@ -71,7 +71,7 @@
                         </a>
                     @endforeach
                 @else
-                        <a href="/" class="text-black border-b border-black pb-1">Beranda</a>
+                        <a href="/" class="text-grey border-black pb-1 hover:text-black transition">Beranda</a>
                 @endisset
             </nav>
 
@@ -94,9 +94,9 @@
                         </button>
                     </form>
                     
-                   <div class="flex items-center gap-3">
+                   <div class="flex items-center">
                         <details class="relative inline-block text-left group" x-data @click.outside="$el.removeAttribute('open')">
-                            <summary class="flex items-center space-x-1 cursor-pointer list-none text-black-900 focus:outline-none py-2 px-3 rounded-md transition-colors hover:bg-gray-50 border border-gray-200">
+                            <summary class="flex items-center space-x-1 cursor-pointer border border-gray-300 text-black-900 focus:outline-none py-2 px-3 rounded-l-md transition-colors hover:bg-gray-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -105,7 +105,7 @@
                                     @if(request('daerah'))
                                         {{ ucwords(strtolower(\Laravolt\Indonesia\Models\District::find(request('daerah'))->name ?? 'Pilih Daerah')) }}
                                     @else
-                                        Pilih Kecamatan
+                                        Kecamatan
                                     @endif
                                 </span>
                             </summary>
@@ -132,7 +132,7 @@
                         </details>
 
                         <details class="relative inline-block text-left group" x-data @click.outside="$el.removeAttribute('open')">
-                            <summary class="flex items-center space-x-1 cursor-pointer list-none text-black-900 focus:outline-none py-2 px-3 rounded-md transition-colors hover:bg-gray-50 border border-gray-200">
+                            <summary class="flex items-center space-x-1 cursor-pointer border border-gray-300 text-black-900 focus:outline-none py-2 px-3 rounded-r-md transition-colors hover:bg-gray-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                                 </svg>
@@ -140,7 +140,7 @@
                                     @if(request('type'))
                                         {{ \App\Models\Type::find(request('type'))->type_name ?? 'Pilih Tipe' }}
                                     @else
-                                        Pilih Tipe Cafe
+                                        Tipe Cafe
                                     @endif
                                 </span>
                             </summary>
@@ -171,7 +171,7 @@
                 @auth
                     <div x-data="{ open: false }" @click.away="open = false" class="relative inline-block text-left">
                         <button @click="open = !open" class="flex items-center gap-2 font-bold focus:outline-none text-sm">
-                            {{ auth()->user()->username ?? 'User Profile' }}
+                            {{ \Illuminate\Support\Str::limit(auth()->user()->username ?? 'User Profile', 8, '...') }}
                             <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
