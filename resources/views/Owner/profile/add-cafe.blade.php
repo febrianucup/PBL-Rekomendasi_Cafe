@@ -69,28 +69,28 @@
 
             <!-- BACK LINK -->
             <a href="{{ url('/cafe') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
-                ← BACK TO BRANCHES
+                ← {{ __('messages.back_to_branches') }}
             </a>
 
         <!-- PAGE TITLE -->
-        <h1 class="text-3xl font-semibold text-dark mb-1">Add Cafe</h1>
-        <p class="text-xs text-muted mb-8 max-w-sm">Refine your café's presence. Update your story, operating rhythm, and sensory offerings for your community.</p>
+        <h1 class="text-3xl font-semibold text-dark mb-1">{{ __('messages.add_cafe_title') }}</h1>
+        <p class="text-xs text-muted mb-8 max-w-sm">{{ __('messages.add_cafe_desc') }}</p>
 
         <!-- SECTION: General Information -->
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">General Information</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.general_information') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
 
                 <!-- Cafe Name -->
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Cafe Name</label>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.cafe_name') }}</label>
                     <input type="text" name="name" value="{{ auth()->user()->ownerProfile->cafe_name ?? old('name') }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                 </div>
 
                 <!-- Brand Editorial Description -->
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Brand Editorial Description</label>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.brand_editorial_description') }}</label>
                     <textarea name="description" rows="4"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted resize-none" required>{{ old('description') }}</textarea>
                 </div>
@@ -98,10 +98,10 @@
                 <!-- Establishment Type + Atmospheric Tag -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Establishment Type</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.establishment_type') }}</label>
                         <div class="relative">
                             <select name="type_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer" required>
-                                <option value="">Select a type</option>
+                                <option value="">{{ __('messages.select_a_type') }}</option>
                                 @foreach($types as $type)
                                     <option value="{{ $type->id }}" {{ old('type_id') == $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
                                 @endforeach
@@ -115,7 +115,7 @@
                         selectedTags: @json(old("tags", [])).map(String) 
                     }'>
                         <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">
-                            Atmospheric Tags (Multi-select)
+                            {{ __('messages.atmospheric_tags') }}
                         </label>
 
                         <div class="flex flex-wrap items-center gap-2 mt-1">
@@ -132,8 +132,8 @@
                         </div>
 
                         <div class="mt-4 p-3 bg-cream rounded-xl border border-border">
-                            <p class="text-[10px] text-muted uppercase tracking-wider mb-1">Data Terpilih (ID):</p>
-                            <code class="text-xs text-active font-bold" x-text="selectedTags.length > 0 ? selectedTags.join(', ') : 'Belum ada yang dipilih'"></code>
+                            <p class="text-[10px] text-muted uppercase tracking-wider mb-1">{{ __('messages.selected_data') }}</p>
+                            <code class="text-xs text-active font-bold" x-text="selectedTags.length > 0 ? selectedTags.join(', ') : '{{ __('messages.nothing_selected') }}'"></code>
                         </div>
                     </div>
 
@@ -159,10 +159,10 @@
             }
         }'>
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-base font-semibold text-dark">Opening Hours</h2>
+                <h2 class="text-base font-semibold text-dark">{{ __('messages.opening_hours') }}</h2>
                 <button type="button" @click="addSchedule()" 
                     class="text-[11px] text-active border border-active rounded-full px-3 py-1 hover:bg-active hover:text-white transition-colors">
-                    + Add Schedule
+                    {{ __('messages.add_schedule') }}
                 </button>
             </div>
 
@@ -171,7 +171,7 @@
                     <div class="flex items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group">
                         
                         <div class="w-32">
-                            <input type="text" x-model="schedule.day_range" placeholder="e.g. Monday"
+                            <input type="text" x-model="schedule.day_range" placeholder="{{ __('messages.eg_monday') }}"
                                 :name="`open_time[${index}][day_range]`"
                                 class="text-sm font-semibold text-dark bg-transparent border-b border-transparent focus:border-active focus:outline-none w-full" required />
                         </div>
@@ -201,24 +201,24 @@
 
         <!-- SECTION: Contact Details -->
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Contact Details</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.contact_details') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Phone Number</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.phone_number') }}</label>
                         <input type="tel" name="phone_number" value="{{ old('phone_number') }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Email Address</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.email_address') }}</label>
                         <input type="email" name="email" value="{{ auth()->user()->email ?? old('email') }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Address</label>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.address') }}</label>
                     <input type="text" name="address" value="{{ auth()->user()->ownerProfile->address ?? old('address') }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                 </div>
@@ -228,24 +228,24 @@
 
         <!-- SECTION: Location & Maps -->
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Location & Maps</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.location_and_maps') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
-                        <input type="text" name="latitude" placeholder="e.g., 47.6062" value="{{ old('latitude') }}"
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.latitude') }}</label>
+                        <input type="text" name="latitude" placeholder="{{ __('messages.eg_latitude') }}" value="{{ old('latitude') }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Longitude</label>
-                        <input type="text" name="longitude" placeholder="e.g., -122.3321" value="{{ old('longitude') }}"
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.longitude') }}</label>
+                        <input type="text" name="longitude" placeholder="{{ __('messages.eg_longitude') }}" value="{{ old('longitude') }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
                 </div>
                 
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.google_maps_link') }}</label>
                     <input type="url" name="maps" placeholder="https://maps.google.com/maps?q=..." value="{{ old('maps') }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
             </div>
@@ -253,22 +253,22 @@
 
         <!-- SECTION: Photo Gallery -->
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Photo Gallery</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.photo_gallery') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5">
                 <div class="grid grid-cols-4 gap-3" id="photo-gallery">
 
                     <!-- Upload Area -->
                     <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" onclick="document.getElementById('photo-input').click()" id="photo-upload-area">
                         <span class="text-lg text-muted">⊕</span>
-                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
+                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">{{ __('messages.upload') }}</span>
                         <input type="file" name="photos[]" id="photo-input" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)" />
                     </div>
                 </div>
-                <p class="text-[10px] text-muted mt-3">Upload multiple images (recommended: at least 4-6 photos). Maximum 12 images.</p>
+                <p class="text-[10px] text-muted mt-3">{{ __('messages.upload_multiple_images') }}</p>
             </div>
         </section>
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Thumbnail</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.thumbnail') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5">
 
                 <div class="grid grid-cols-4 gap-3" id="thumbnail-gallery">
@@ -278,7 +278,7 @@
                         onclick="document.getElementById('thumbnail-input').click()" 
                         id="thumbnail-upload-area">
                         <span class="text-lg text-muted">⊕</span>
-                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
+                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">{{ __('messages.upload') }}</span>
                         <input type="file" name="thumbnail" id="thumbnail-input" accept="image/*" style="display: none;" onchange="handleThumbnailInput(event)" />
                     </div>
 
@@ -287,7 +287,7 @@
         </section>
 
         <section class="mb-10">
-        <h2 class="text-base font-semibold text-dark mb-4">Featured Menu</h2>
+        <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.featured_menu') }}</h2>
         <div class="bg-white border border-border rounded-2xl overflow-hidden" id="menu-section">
 
             <div id="menu-list">
@@ -296,43 +296,43 @@
             <div id="new-menu-form" class="hidden px-5 py-4 border-b border-border space-y-3">
                 <div class="grid grid-cols-12 gap-3">
                     <div class="col-span-12 md:col-span-4">
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Menu Name</label>
-                        <input type="text" id="menu-name" placeholder="Menu name" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.menu_name') }}</label>
+                        <input type="text" id="menu-name" placeholder="{{ __('messages.menu_name') }}" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
                     </div>
                     <div class="col-span-12 md:col-span-5">
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Description</label>
-                        <input type="text" id="menu-description" placeholder="Short description" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.description') }}</label>
+                        <input type="text" id="menu-description" placeholder="{{ __('messages.description') }}" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
                     </div>
                     <div class="col-span-12 md:col-span-3">
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Price (Rupiah)</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.price_rupiah') }}</label>
                         <input type="text" id="menu-price" placeholder="Rp 35.000" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" onblur="formatPriceInput(this)" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-12 gap-3 items-end">
                     <div class="col-span-12 md:col-span-4">
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Photo</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.photo') }}</label>
                         <div class="flex items-center gap-3">
-                            <button type="button" onclick="document.getElementById('menu-image-input').click()" class="bg-[#F2EEE7] border border-border text-dark text-sm font-semibold rounded-xl px-4 py-2.5 hover:bg-stat transition-colors">Upload Image</button>
-                            <span id="menu-image-name" class="text-[10px] text-muted">No file chosen</span>
+                            <button type="button" onclick="document.getElementById('menu-image-input').click()" class="bg-[#F2EEE7] border border-border text-dark text-sm font-semibold rounded-xl px-4 py-2.5 hover:bg-stat transition-colors">{{ __('messages.upload_image') }}</button>
+                            <span id="menu-image-name" class="text-[10px] text-muted">{{ __('messages.no_file_chosen') }}</span>
                         </div>
                         <input type="file" id="menu-image-input" accept="image/*" style="display: none;" onchange="handleMenuImageUpload(event)" />
                     </div>
                     <div class="col-span-12 md:col-span-8">
                         <div id="menu-image-preview" class="h-20 rounded-2xl border border-border bg-[#F7F5F0] flex items-center justify-center text-[10px] text-muted overflow-hidden">
-                            Preview image akan muncul di sini
+                            {{ __('messages.preview_image_here') }}
                         </div>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button type="button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">Add Menu</button>
-                    <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">Cancel</button>
+                    <button type="button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">{{ __('messages.add_menu') }}</button>
+                    <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">{{ __('messages.cancel') }}</button>
                 </div>
             </div>
 
             <div class="flex items-center justify-center px-5 py-3.5 cursor-pointer hover:bg-stat transition-colors" onclick="toggleNewMenuForm(true)">
-                <span class="text-xs text-muted font-medium">+ add menu item</span>
+                <span class="text-xs text-muted font-medium">{{ __('messages.add_menu_item') }}</span>
             </div>
 
         </div>
@@ -341,10 +341,10 @@
         <!-- BOTTOM ACTIONS -->
         <div class="flex items-center gap-3 pb-10">
             <button type="submit" class="flex-1 bg-darkbrown text-white text-sm font-semibold rounded-full py-3.5 hover:bg-[#1e1a16] transition-colors">
-                Publish Changes
+                {{ __('messages.publish_changes') }}
             </button>
             <button type="reset" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-8 py-3.5 hover:bg-stat transition-colors">
-                Discard
+                {{ __('messages.discard') }}
             </button>
         </div>
         </form>
@@ -429,9 +429,9 @@
             document.getElementById('menu-description').value = '';
             document.getElementById('menu-price').value = '';
             document.getElementById('menu-image-input').value = '';
-            document.getElementById('menu-image-name').textContent = 'No file chosen';
+            document.getElementById('menu-image-name').textContent = '{{ __("messages.no_file_chosen") }}';
             const preview = document.getElementById('menu-image-preview');
-            preview.innerHTML = 'Preview image akan muncul di sini';
+            preview.innerHTML = '{{ __("messages.preview_image_here") }}';
             delete preview.dataset.image;
         }
 

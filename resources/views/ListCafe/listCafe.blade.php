@@ -10,7 +10,10 @@
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
         @php
             $sliderImages = $setting->slider_images && count($setting->slider_images) > 0 
-                ? array_map(function($img) { return asset("storage/" . $img); }, $setting->slider_images) 
+                ? array_map(function($img) { 
+                    $imagePath = is_array($img) ? ($img['image'] ?? '') : $img;
+                    return asset("storage/" . $imagePath); 
+                }, $setting->slider_images) 
                 : [
                     "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80",
                     "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80",
@@ -76,7 +79,7 @@
 
     <main class="flex-grow w-full mx-auto px-6 py-12 flex flex-col">
         <div class="flex justify-center space-x-6 md:space-x-8 text-xs font-semibold uppercase tracking-widest mb-10 border-b border-gray-200 pb-4 overflow-x-auto whitespace-nowrap">
-            <span class="border-b-2 border-black pb-4 text-black cursor-pointer">All Spaces</span>
+            <span class="border-b-2 border-black pb-4 text-black cursor-pointer">{{ __('messages.all_spaces') }}</span>
             @if(isset($tags) && $tags->isNotEmpty())
                 @foreach($tags as $tag)
                     <span class="text-gray-500 cursor-pointer hover:text-gray-700 transition-colors">
@@ -84,7 +87,7 @@
                     </span>
                 @endforeach
             @else
-                <span class="text-gray-400 italic">No tags available</span>
+                <span class="text-gray-400 italic">{{ __('messages.no_tags') }}</span>
             @endif
         </div>
 
@@ -110,8 +113,8 @@
                 </div>
             @empty
                 <div class="col-span-1 sm:col-span-2 md:col-span-4 flex-grow flex flex-col items-center justify-center py-24 text-gray-400">
-                    <p class="text-lg italic font-medium">Belum ada cafe yang tersedia saat ini.</p>
-                    <p class="text-xs mt-1">Silakan kembali lagi nanti untuk melihat pembaruan data.</p>
+                    <p class="text-lg italic font-medium">{{ __('messages.no_cafe') }}</p>
+                    <p class="text-xs mt-1">{{ __('messages.no_cafe_desc') }}</p>
                 </div>
             @endforelse
         </div>

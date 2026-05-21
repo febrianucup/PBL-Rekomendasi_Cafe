@@ -48,16 +48,22 @@
                         </a>
                     @endforeach
                 @else
-                        <a href="/" class="text-black border-b border-black pb-1">Beranda</a>
+                        <a href="/" class="text-black border-b border-black pb-1">{{ __('messages.beranda') }}</a>
                 @endisset
             </nav>
 
             <div class="flex items-center space-x-6">
+                <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 mr-4">
+                    <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">EN</a>
+                    <span>|</span>
+                    <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">ID</a>
+                </div>
+
                 @if (request()->routeIs('cafes.index'))
                      <form class="flex items-center">
                         <label for="voice-search" class="sr-only">Search</label>
-                        <input type="text" id="voice-search" class="border-b border-black py-1.5 px-3 bg-transparent text-sm focus:outline-none" placeholder="Search..." required>
-                        <button type="submit" class="bg-black text-white px-4 py-2 uppercase text-xs font-bold ml-2 transition hover:bg-gray-800">Search</button>
+                        <input type="text" id="voice-search" class="border-b border-black py-1.5 px-3 bg-transparent text-sm focus:outline-none" placeholder="{{ __('messages.search') }}" required>
+                        <button type="submit" class="bg-black text-white px-4 py-2 uppercase text-xs font-bold ml-2 transition hover:bg-gray-800">{{ __('messages.search_btn') }}</button>
                     </form>
                 @endif
 
@@ -78,28 +84,28 @@
                         x-transition:enter-end="opacity-100 scale-100"
                         class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-md shadow-lg z-50">
                         <div class="py-1">
-                            <span class="block px-4 py-2 text-xs text-gray-400 uppercase tracking-wider">Profile</span>
+                            <span class="block px-4 py-2 text-xs text-gray-400 uppercase tracking-wider">{{ __('messages.profile') }}</span>
                             @if (auth()->user()->role->name == 'owner')
                                 <a href="{{ route('owner.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black">
-                                    Owner Dashboard
+                                    {{ __('messages.owner_dashboard') }}
                                 </a>
                             @elseif (auth()->user()->role->name == 'admin')
                                 <a href="{{ route('admin.cafes') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black">
-                                    Admin Dashboard
+                                    {{ __('messages.admin_dashboard') }}
                                 </a>
                             @endif
-                            <a href="{{ route('profile.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black">Settings</a>
+                            <a href="{{ route('profile.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black">{{ __('messages.settings') }}</a>
                             <div class="border-t border-gray-100 mt-1"></div>
                             
                             <form action="{{ route('logout') }}" method="POST" class="block">
                                 @csrf
-                                <button type="button" @click='$dispatch("open-logout-modal")' class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</button>
+                                <button type="button" @click='$dispatch("open-logout-modal")' class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">{{ __('messages.logout') }}</button>
                             </form>
                         </div>
                     </div>
                 </div>
                 @else
-                    <a class="bg-transparent border border-black text-black px-4 py-2 uppercase text-xs font-bold hover:bg-black hover:text-white transition" href="{{ route('login') }}">Login</a>
+                    <a class="bg-transparent border border-black text-black px-4 py-2 uppercase text-xs font-bold hover:bg-black hover:text-white transition" href="{{ route('login') }}">{{ __('messages.login') }}</a>
                 @endauth
             </div>
         </div>

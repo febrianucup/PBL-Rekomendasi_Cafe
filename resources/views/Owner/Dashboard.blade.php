@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Owner Dashboard')
 @section('page-title', 'My Cafes')
@@ -10,11 +10,11 @@
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-light-beige">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold text-dark-brown mb-2">Welcome back, {{ auth()->user()->name }}!</h1>
-                    <p class="text-muted">Manage your cafe collection and grow your business.</p>
+                    <h1 class="text-2xl font-bold text-dark-brown mb-2">{{ __('messages.welcome_back_owner', ['name' => auth()->user()->name]) }}</h1>
+                    <p class="text-muted">{{ __('messages.manage_cafe_collection') }}</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-[10px] uppercase tracking-widest text-muted mt-1">Owner Dashboard</p>
+                    <p class="text-[10px] uppercase tracking-widest text-muted mt-1">{{ __('messages.owner_dashboard') }}</p>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-light-beige">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-muted mb-1">Total Cafes</p>
+                        <p class="text-sm text-muted mb-1">{{ __('messages.total_cafes') }}</p>
                         <p class="text-3xl font-bold text-dark-brown">{{ $cafes->count() }}</p>
                     </div>
                     <div class="w-12 h-12 bg-light-beige rounded-full flex items-center justify-center">
@@ -41,12 +41,12 @@
         <div class="bg-white rounded-2xl shadow-sm border border-light-beige overflow-hidden">
             <div class="p-6 border-b border-light-beige">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold text-dark-brown">Your Cafes</h2>
+                    <h2 class="text-xl font-semibold text-dark-brown">{{ __('messages.your_cafes') }}</h2>
                     <a href="{{ route('add-cafe') }}" class="inline-flex items-center gap-2 bg-dark-brown text-white px-4 py-2 rounded-xl hover:bg-dark-brown/90 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
-                        Add New Cafe
+                        {{ __('messages.add_new_cafe') }}
                     </a>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                                     @endif
                                     <div class="gap-2 mt-1 text-sm">
                                         <h3 class="font-semibold text-dark-brown">{{ $cafe->name }}</h3>
-                                        <p class="text-sm text-muted">{{ $cafe->type->type_name ?? 'Unknown Type' }}</p>
+                                        <p class="text-sm text-muted">{{ $cafe->type->type_name ?? __('messages.unknown_type') }}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2">
@@ -95,13 +95,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-semibold text-dark-brown mb-2">No cafes yet</h3>
-                    <p class="text-muted mb-6">Start building your cafe collection by adding your first cafe.</p>
+                    <h3 class="text-lg font-semibold text-dark-brown mb-2">{{ __('messages.no_cafes_yet') }}</h3>
+                    <p class="text-muted mb-6">{{ __('messages.start_building_cafe') }}</p>
                     <a href="{{ route('add-cafe') }}" class="inline-flex items-center gap-2 bg-dark-brown text-white px-6 py-3 rounded-xl hover:bg-dark-brown/90 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
-                        Add Your First Cafe
+                        {{ __('messages.add_first_cafe') }}
                     </a>
                 </div>
             @endif

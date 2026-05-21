@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'id'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
 Route::get('/', [CafeController::class, 'index'])->name('cafes.index');
 
 Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
@@ -42,6 +49,7 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/accounts/{id}', [AccountController::class, 'show'])->name('accounts.show');
         Route::get('/accounts/{id}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
         Route::put('/accounts/{id}', [AccountController::class, 'update'])->name('accounts.update');
+        Route::patch('/accounts/{id}/status', [AccountController::class, 'updateStatus'])->name('accounts.status');
         Route::delete('/accounts/{id}', [AccountController::class, 'destroy'])->name('accounts.destroy');
         Route::get('/navbar-settings', [NavbarController::class, 'index'])->name('admin.navbar');
     });
