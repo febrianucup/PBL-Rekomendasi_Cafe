@@ -35,8 +35,11 @@
              alt="Cafe Image">
 
         <div class="relative z-10 h-full p-12 flex flex-col justify-center">
-            <h1 class="serif-title italic text-5xl md:text-6xl text-white leading-tight mb-6 fade-in">
-                SAFE<br>(Saran Cafe)
+            <h1 class="serif-title text-6xl md:text-7xl text-white leading-none mb-6 fade-in tracking-[0.08em]">
+                SAFE<br>
+                <span class="block text-base md:text-lg font-normal tracking-[0.35em] uppercase not-italic mt-1 ml-2">
+                    SARAN KAFE
+                </span>
             </h1>
             <p class="text-white/90 text-sm md:text-base max-w-xs leading-relaxed font-light fade-in" style="animation-delay: 0.2s;">
                 Curating the world's most evocative coffee spaces.
