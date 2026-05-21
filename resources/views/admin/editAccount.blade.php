@@ -42,7 +42,7 @@
         @endif
 
         <!-- Edit Form -->
-        <form action="{{ route('accounts.update', $user->id) }}" method="POST" class="space-y-6">
+        <form action="{{ $user->role && $user->role->name === 'owner' ? route('admin.owners.update', $user->id) : route('accounts.update', $user->id) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
 
@@ -82,15 +82,44 @@
                 <select 
                     name="role"
                     class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
+                    {{ $user->role && $user->role->name === 'owner' ? 'disabled' : '' }}
                 >
-                    <option value="owner" {{ $user->role == 'owner' ? 'selected' : '' }}>
+                    <option value="owner" {{ $user->role && $user->role->name == 'owner' ? 'selected' : '' }}>
                         Owner
                     </option>
-                    <option value="guest" {{ $user->role == 'guest' ? 'selected' : '' }}>
+                    <option value="guest" {{ $user->role && $user->role->name == 'guest' ? 'selected' : '' }}>
                         Guest
                     </option>
                 </select>
             </div>
+
+            @if($user->role && $user->role->name === 'owner')
+            <!-- Nomor Telepon -->
+            <div>
+                <label class="block text-sm font-semibold text-dark-brown mb-2">
+                    Nomor Telepon
+                </label>
+                <input 
+                    type="text"
+                    name="no_telp"
+                    value="{{ old('no_telp', $user->ownerProfile->no_telp ?? '') }}"
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
+                    required
+                >
+            </div>
+
+            <!-- Alamat -->
+            <div>
+                <label class="block text-sm font-semibold text-dark-brown mb-2">
+                    Alamat
+                </label>
+                <textarea 
+                    name="alamat"
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
+                    required
+                >{{ old('alamat', $user->ownerProfile->address ?? '') }}</textarea>
+            </div>
+            @endif
 
             <!-- Buttons -->
             <div class="flex flex-col sm:flex-row gap-4 pt-6">
