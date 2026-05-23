@@ -10,8 +10,16 @@
         <button wire:click="$set('commentType', 'discussion')" class="pb-2 font-bold {{ $commentType === 'discussion' ? 'border-b-2 border-black' : 'text-stone-400' }}">Komentar</button>
     </div>
 
+    @php
+        $isDiscussion = ($commentType === 'discussion');
+        $isReview = ($commentType === 'review');
+
+        $isOwner = (Auth::id() === $cafe->user_id);
+        $isAdmin = (auth()->user()->role->name === 'admin');
+    @endphp
+
     @auth
-        @if($commentType === 'discussion' || ($commentType === 'review' && Auth::id() !== $cafe->user_id && !$hasReviewed))
+        @if($isDiscussion || ($isReview && !$isOwner && !$isAdmin && !$hasReviewed))
             <form wire:submit.prevent="submitComment">
                 @if($commentType === 'review')
                     <span class="text-sm font-semibold text-gray-700">Rating:</span>
@@ -56,6 +64,15 @@
             <div class="flex justify-between items-center mb-1">
                 <div class="flex items-center">
                     <h3 class="font-bold text-l">{{ $comment->user->username }}</h3>
+                    @php
+                        $user = $comment->user;
+                        $roleName = $user->role->name;
+                        $isOwner = ($roleName === 'owner');
+                        $isAdmin = ($roleName === 'admin');
+                    @endphp
+                    @if($isOwner || $isAdmin)
+                        <span class="bg-dark-brown rounded-lg text-white m-2 p-1 text-xs font-bold">{{ $isAdmin ? 'admin' : 'owner' }}</span>
+                    @endif
                     <div class="mx-2 h-1 w-1 rounded-full bg-stone-400"></div>
                     <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
                 </div>
@@ -82,7 +99,7 @@
             @if($comment->images)
                 <div class="flex gap-2 flex-wrap">
                     @foreach(json_decode($comment->images, true) as $img)
-                        <img src="{{ asset('storage/' . $img) }}" class="w-16 h-16 object-cover rounded-lg cursor-pointer" @click.stop="$dispatch('open-image', '{{ asset('storage/' . $img) }}')">
+                        <img src="{{ asset('storage/' . $img) }}" class="w-25 h-25 object-cover rounded-lg cursor-pointer" @click.stop="$dispatch('open-image', '{{ asset('storage/' . $img) }}')">
                     @endforeach
                 </div>
             @endif
@@ -111,8 +128,14 @@
                             <div class="flex justify-between items-center mb-1">
                                     <div class="flex items-center">
                                     <span class="font-bold text-lg">{{ $reply->user->username }}</span>
-                                    @if(Auth::id() === $cafe->user_id)
-                                        <span class="bg-dark-brown rounded-lg text-white m-2 p-1 text-xs font-bold">Owner</span>
+                                    @php
+                                        $user = $reply->user;
+                                        $roleName = $user->role->name;
+                                        $isOwner = ($roleName === 'owner');
+                                        $isAdmin = ($roleName === 'admin');
+                                    @endphp
+                                    @if($isOwner || $isAdmin)
+                                        <span class="bg-dark-brown rounded-lg text-white m-2 p-1 text-xs font-bold">{{ $isAdmin ? 'admin' : 'owner' }}</span>
                                     @endif
                                     <div class="mx-2 h-1 w-1 rounded-full bg-stone-400"></div>
                                     <span class="text-[10px] text-stone-400">{{ $reply->created_at->diffForHumans() }}</span>

@@ -74,9 +74,7 @@ class CafeCommentSection extends Component
         session()->flash('success', 'Berhasil terkirim!');
     }
 
-    // Fungsi Utama: Kirim Ulasan
     public function submitReview(){
-        // Hanya untuk ulasan dengan rating dan foto
         $this->validate(['body' => 'required', 'rating_score' => 'required']);
         
         Comment::create([

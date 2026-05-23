@@ -220,7 +220,8 @@
     <main class="flex-grow">
         @yield('content')
     </main>
-
     <x-logout-modal />
+
+    @stack('scripts')
 </body>
 </html>
