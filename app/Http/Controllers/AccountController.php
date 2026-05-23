@@ -57,4 +57,17 @@ class AccountController extends Controller
         return redirect('/admin/accounts')
                          ->with('success', 'Account deleted successfully.');
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        
+        $validated = $request->validate([
+            'status' => 'required|in:active,rejected',
+        ]);
+
+        $user->update(['status' => $validated['status']]);
+
+        return redirect()->back()->with('success', 'User status updated successfully.');
+    }
 }

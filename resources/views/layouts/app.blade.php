@@ -38,6 +38,11 @@
                     <h2 class="text-2xl font-semibold text-dark-brown">@yield('page-title', 'Dashboard')</h2>
                 </div>
                 <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 mr-4">
+                        <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">EN</a>
+                        <span>|</span>
+                        <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">ID</a>
+                    </div>
                     <div class="h-10 w-10 rounded-full bg-light-beige overflow-hidden">
                         <img src="{{ $avatarUrl }}" class="h-full w-full object-cover">
                     </div>

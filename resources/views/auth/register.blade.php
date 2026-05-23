@@ -53,9 +53,9 @@
       <div class="max-w-sm mx-auto w-full">
 
         <header class="mb-10">
-          <h2 class="serif-title text-3xl text-[#3E2723] mb-2">Create Account</h2>
+          <h2 class="serif-title text-3xl text-[#3E2723] mb-2">{{ __('messages.create_account_title') }}</h2>
           <p class="text-gray-500 text-sm leading-relaxed">
-            Join the editorial and discover your next favorite brew.
+            {{ __('messages.join_editorial') }}
           </p>
         </header>
 
@@ -64,10 +64,10 @@
           <div id="tab-indicator" class="absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] bg-white rounded-3xl shadow-sm transition-transform duration-300 ease-out"></div>
 
           <button type="button" onclick="switchTab('guest')" id="guest-tab" class="relative z-10 text-sm font-semibold py-3 transition-colors duration-300 text-[#2d1e13]">
-            GUEST
+            {{ __('messages.guest') }}
           </button>
           <button type="button" onclick="switchTab('owner')" id="owner-tab" class="relative z-10 text-sm font-semibold py-3 transition-colors duration-300 text-gray-500 hover:text-[#2d1e13]">
-            OWNER
+            {{ __('messages.owner') }}
           </button>
         </div>
 
@@ -76,7 +76,7 @@
           @csrf <input type="hidden" name="account_type" value="guest">
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Username</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.username') }}</label>
             <input
               type="text"
               name="username"
@@ -89,7 +89,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Email Address</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.email_address') }}</label>
             <input
               type="email"
               name="email"
@@ -101,7 +101,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Password</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.password') }}</label>
             <input
               type="password"
               name="password"
@@ -111,7 +111,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Confirm Password</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.confirm_password') }}</label>
             <input
               type="password"
               name="password_confirmation"
@@ -121,7 +121,7 @@
           </div>
 
           <button type="submit" class="w-full py-4 mt-4 bg-[#5D4037] text-white text-xs font-bold tracking-[0.15em] uppercase rounded-full hover:bg-[#4E342E] transition-colors shadow-lg">
-            Create Account
+            {{ __('messages.create_account') }}
           </button>
         </form>
 
@@ -129,7 +129,7 @@
           @csrf <input type="hidden" name="account_type" value="owner">
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Username</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.username') }}</label>
             <input
               type="text"
               name="username"
@@ -139,7 +139,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Cafe Name</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.cafe_name') }}</label>
             <input
               type="text"
               name="cafe_name"
@@ -149,7 +149,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Location</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.location') }}</label>
             <input
               type="text"
               name="address"
@@ -159,7 +159,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Email Address</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.email_address') }}</label>
             <input
               type="email"
               name="email"
@@ -169,7 +169,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Password</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.password') }}</label>
             <input
               type="password"
               name="password"
@@ -179,7 +179,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Confirm Password</label>
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.confirm_password') }}</label>
             <input
               type="password"
               name="password_confirmation"
@@ -189,14 +189,14 @@
           </div>
 
           <button type="submit" class="w-full py-4 mt-4 bg-[#5D4037] text-white text-xs font-bold tracking-[0.15em] uppercase rounded-full hover:bg-[#4E342E] transition-colors shadow-lg">
-            Create Account
+            {{ __('messages.create_account') }}
           </button>
         </form>
 
         <div class="mt-12 text-center">
           <p class="text-xs text-gray-500">
-            Already have an account?
-            <a href="{{ route('login/form') }}" class="text-[#3E2723] font-bold hover:underline ml-1 cursor-pointer">Sign in</a>
+            {{ __('messages.already_have_account') }}
+            <a href="{{ route('login/form') }}" class="text-[#3E2723] font-bold hover:underline ml-1 cursor-pointer">{{ __('messages.sign_in') }}</a>
           </p>
         </div>
 

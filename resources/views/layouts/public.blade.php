@@ -76,6 +76,12 @@
             </nav>
 
             <div class="flex items-center space-x-6">
+                <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 mr-4">
+                    <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">EN</a>
+                    <span>|</span>
+                    <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">ID</a>
+                </div>
+
                 @if (request()->routeIs('cafes.index'))
                     <form action="{{ route('cafes.index') }}" method="GET" class="flex items-center gap-1">
                         <label for="voice-search" class="sr-only">Search</label>
@@ -205,7 +211,7 @@
                         </div>
                     </div>
                 @else
-                    <a class="bg-transparent border border-black text-black px-4 py-2 uppercase text-xs font-bold hover:bg-black hover:text-white transition" href="{{ route('login') }}">Login</a>
+                    <a class="bg-transparent border border-black text-black px-4 py-2 uppercase text-xs font-bold hover:bg-black hover:text-white transition" href="{{ route('login') }}">{{ __('messages.login') }}</a>
                 @endauth
             </div>
         </div>

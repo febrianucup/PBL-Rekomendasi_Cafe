@@ -14,6 +14,13 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CommentImageController;
 
 
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'id'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
 Route::get('/', [CafeController::class, 'index'])->name('cafes.index');
 
 Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
@@ -36,6 +43,8 @@ Route::middleware(['auth'])->group(function(){
         });
         
         Route::get('/cafes', [\App\Http\Controllers\Admin\CafeController::class, 'index'])->name('admin.cafes');
+        Route::get('/cafes/create', [\App\Http\Controllers\Admin\CafeController::class, 'create'])->name('admin.cafes.create');
+        Route::post('/cafes', [\App\Http\Controllers\Admin\CafeController::class, 'store'])->name('admin.cafes.store');
         Route::delete('/cafes/{id}', [\App\Http\Controllers\Admin\CafeController::class, 'destroy'])->name('admin.cafes.destroy');
         
         Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
@@ -44,12 +53,21 @@ Route::middleware(['auth'])->group(function(){
         Route::patch('/comments/{id}/status', [\App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])->name('admin.comments.status');
         Route::delete('/comments/{id}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('admin.comments.destroy');
 
+        Route::get('/owners', [\App\Http\Controllers\Admin\OwnerController::class, 'index'])->name('admin.owners.index');
+        Route::get('/owners/create', [\App\Http\Controllers\Admin\OwnerController::class, 'create'])->name('admin.owners.create');
+        Route::post('/owners', [\App\Http\Controllers\Admin\OwnerController::class, 'store'])->name('admin.owners.store');
+        Route::get('/owners/{id}/edit', [\App\Http\Controllers\Admin\OwnerController::class, 'edit'])->name('admin.owners.edit');
+        Route::put('/owners/{id}', [\App\Http\Controllers\Admin\OwnerController::class, 'update'])->name('admin.owners.update');
+        Route::delete('/owners/{id}', [\App\Http\Controllers\Admin\OwnerController::class, 'destroy'])->name('admin.owners.destroy');
+
+
         Route::get('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'index'])->name('admin.beranda_settings');
         Route::post('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'update'])->name('admin.beranda_settings.update');
 
         Route::get('/accounts/{id}', [AccountController::class, 'show'])->name('accounts.show');
         Route::get('/accounts/{id}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
         Route::put('/accounts/{id}', [AccountController::class, 'update'])->name('accounts.update');
+        Route::patch('/accounts/{id}/status', [AccountController::class, 'updateStatus'])->name('accounts.status');
         Route::delete('/accounts/{id}', [AccountController::class, 'destroy'])->name('accounts.destroy');
         Route::get('/navbar-settings', [NavbarController::class, 'index'])->name('admin.navbar');
     });
