@@ -7,6 +7,8 @@
     <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -241,19 +243,39 @@
             <!-- SECTION: Location & Maps -->
             <section class="mb-8">
                 <h2 class="text-base font-semibold text-dark mb-4">Location & Maps</h2>
-                 <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+                <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+                    
+                    <!-- Search Location -->
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">Cari Lokasi / Alamat</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="map-search-input" placeholder="Ketik nama jalan, cafe, atau tempat..."
+                                class="flex-grow bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                            <button type="button" id="btn-search-map" class="bg-active text-white text-xs font-semibold rounded-xl px-5 py-2.5 hover:bg-[#2d372e] transition-colors">
+                                Cari
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Leaflet Map Container -->
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">Pilih di Peta (Geser penanda / klik peta untuk menentukan koordinat)</label>
+                        <div id="map" class="h-64 rounded-xl border border-border z-0"></div>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
-                            <input type="text" name="latitude" placeholder="e.g., 47.6062" value="{{ old('latitude', $cafe->latitude ?? '') }}"
+                            <input type="text" name="latitude" id="latitude" placeholder="e.g., 47.6062" value="{{ old('latitude', $cafe->latitude ?? '') }}"
                                 class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Longitude</label>
-                            <input type="text" name="longitude" placeholder="e.g., -122.3321" value="{{ old('longitude', $cafe->longitude ?? '') }}"
+                            <input type="text" name="longitude" id="longitude" placeholder="e.g., -122.3321" value="{{ old('longitude', $cafe->longitude ?? '') }}"
                                 class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                         </div>
                     </div>
+                    
                     <div class="mb-4">
                         <label for="kecamatan" class="block text-sm font-medium text-gray-700 mb-1">Kecamatan</label>
                         <select name="kecamatan" id="kecamatan" required
@@ -269,8 +291,9 @@
                         
                     <div>
                         <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
-                        <input type="url" name="maps" placeholder="https://maps.google.com/maps?q=..." value="{{ old('maps', $cafe->maps_link ?? '') }}"
+                        <input type="url" name="maps" id="maps" placeholder="https://maps.google.com/maps?q=..." value="{{ old('maps', $cafe->maps_link ?? '') }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                    </div>
                 </div>
             </section>
 
@@ -656,6 +679,104 @@
                 removeBtn.setAttribute('onclick', `removeMenuItem(this, ${newIndex})`);
             });
         }
+
+        // Leaflet Map Initialization and Geocoding Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            let initialLat = {{ old('latitude', $cafe->latitude ?? -7.983908) }};
+            let initialLng = {{ old('longitude', $cafe->longitude ?? 112.621391) }};
+            
+            const latInput = document.getElementById('latitude');
+            const lngInput = document.getElementById('longitude');
+            const mapsInput = document.getElementById('maps');
+            
+            const oldLat = latInput.value;
+            const oldLng = lngInput.value;
+            if (oldLat && oldLng) {
+                initialLat = parseFloat(oldLat);
+                initialLng = parseFloat(oldLng);
+            }
+
+            const map = L.map('map').setView([initialLat, initialLng], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            const marker = L.marker([initialLat, initialLng], {
+                draggable: true
+            }).addTo(map);
+
+            // Update coordinates when marker is dragged
+            marker.on('dragend', function(e) {
+                const latLng = marker.getLatLng();
+                updateInputs(latLng.lat, latLng.lng);
+            });
+
+            // Update coordinates when map is clicked
+            map.on('click', function(e) {
+                const latLng = e.latlng;
+                marker.setLatLng(latLng);
+                updateInputs(latLng.lat, latLng.lng);
+            });
+
+            function updateInputs(lat, lng) {
+                latInput.value = lat.toFixed(8);
+                lngInput.value = lng.toFixed(8);
+                mapsInput.value = `https://www.google.com/maps?q=${lat.toFixed(8)},${lng.toFixed(8)}`;
+            }
+
+            // Geocode Kecamatan when selected
+            const kecamatanSelect = document.getElementById('kecamatan');
+            kecamatanSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption && selectedOption.value) {
+                    const kecamatanName = selectedOption.text.trim();
+                    const query = `Kecamatan ${kecamatanName}, Malang, Jawa Timur, Indonesia`;
+                    geocodeAddress(query);
+                }
+            });
+
+            // Geocode Search Input
+            const btnSearch = document.getElementById('btn-search-map');
+            const searchInput = document.getElementById('map-search-input');
+            btnSearch.addEventListener('click', function() {
+                const query = searchInput.value.trim();
+                if (query) {
+                    let fullQuery = query;
+                    if (!query.toLowerCase().includes('malang')) {
+                        fullQuery += ', Malang, Jawa Timur, Indonesia';
+                    }
+                    geocodeAddress(fullQuery);
+                }
+            });
+
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    btnSearch.click();
+                }
+            });
+
+            function geocodeAddress(query) {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const lat = parseFloat(data[0].lat);
+                            const lon = parseFloat(data[0].lon);
+                            map.setView([lat, lon], 15);
+                            marker.setLatLng([lat, lon]);
+                            updateInputs(lat, lon);
+                        } else {
+                            alert('Lokasi tidak ditemukan. Coba cari dengan kata kunci lain.');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Gagal mencari lokasi. Pastikan koneksi internet aktif.');
+                    });
+            }
+        });
     </script>
 
 </body>

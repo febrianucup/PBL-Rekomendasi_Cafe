@@ -1,0 +1,180 @@
+<?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use App\Models\Comment;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Cafes;
+
+class CafeCommentSection extends Component
+{
+    use WithFileUploads;
+
+    public $cafeId;
+    public $commentType = 'review';
+    
+    public $body = '';
+    public $rating_score = 5;
+    public $photos = [];
+    public $replyingToId = null; 
+    public $reply_body = [];
+    public $cafe;
+    public $confirmingDeleteId = null;
+    public $hasReviewed = false;
+
+    public function mount($cafeId){
+        $this->cafeId = $cafeId;
+        $this->cafe = Cafes::findOrFail($cafeId);
+
+        if (Auth::check()) {
+            $this->hasReviewed = Comment::where('cafe_id', $this->cafeId)
+                ->where('user_id', Auth::id())
+                ->where('type', 'review')
+                ->exists();
+        }
+    }
+
+    public function submitComment(){
+        $this->validate([
+            'body' => 'required|min:3',
+            'rating_score' => $this->commentType === 'review' ? 'required|integer|between:1,5' : 'nullable',
+        ]);
+
+        if ($this->commentType === 'review') {
+            $existingReview = Comment::where('cafe_id', $this->cafeId)
+                ->where('user_id', Auth::id())
+                ->where('type', 'review')
+                ->exists();
+
+            if ($existingReview) {
+                session()->flash('error', 'Anda sudah memberikan ulasan untuk kafe ini.');
+                return;
+            }
+
+            if (Auth::id() === $this->cafe->user_id) {
+                session()->flash('error', 'Pemilik kafe tidak bisa memberikan ulasan pada kafenya sendiri.');
+                return;
+            }
+        }
+
+        Comment::create([
+            'user_id' => Auth::id(),
+            'cafe_id' => $this->cafeId,
+            'type' => $this->commentType,
+            'body' => $this->body,
+            'rating_score' => $this->commentType === 'review' ? $this->rating_score : null,
+            'images' => !empty($this->photos) ? json_encode($this->storePhotos()) : null,
+        ]);
+
+        $this->reset(['body', 'rating_score']);
+        $this->photos = [];
+        $this->hasReviewed = true;
+        session()->flash('success', 'Berhasil terkirim!');
+    }
+
+    // Fungsi Utama: Kirim Ulasan
+    public function submitReview(){
+        // Hanya untuk ulasan dengan rating dan foto
+        $this->validate(['body' => 'required', 'rating_score' => 'required']);
+        
+        Comment::create([
+            'user_id' => Auth::id(),
+            'cafe_id' => $this->cafeId,
+            'type' => 'review',
+            'body' => $this->body,
+            'rating_score' => $this->rating_score,
+        ]);
+    }
+
+    public function submitDiscussion(){
+        $this->validate(['body' => 'required']);
+        
+        Comment::create([
+            'user_id' => Auth::id(),
+            'cafe_id' => $this->cafeId,
+            'type' => 'discussion',
+            'body' => $this->body,
+            'rating_score' => null,
+        ]);
+    }
+
+    public function toggleReply($commentId)
+    {
+        if ($this->replyingToId === $commentId) {
+            $this->replyingToId = null;
+            $this->reply_body = '';
+        } else {
+            $this->replyingToId = $commentId;
+            $this->reply_body = '';
+        }
+    }
+
+    public function submitReply($commentId){
+        $parentComment = Comment::findOrFail($commentId);
+        
+        if ($parentComment->type === 'review') {
+            if (Auth::id() !== $this->cafe->user_id) {
+                session()->flash('error', 'Hanya pemilik kafe yang dapat membalas ulasan.');
+                return;
+            }
+        }
+
+        $this->validate(['reply_body' => 'required|min:3']);
+
+        Comment::create([
+            'user_id' => Auth::id(),
+            'cafe_id' => $this->cafeId,
+            'parent_id' => $commentId, 
+            'type' => $parentComment->type, 
+            'body' => $this->reply_body,
+        ]);
+
+        $this->reset(['reply_body', 'replyingToId']);
+        session()->flash('success', 'Balasan berhasil dikirim!');
+    }
+
+    protected function storePhotos(){
+        $uploadedImages = [];
+    
+        foreach ($this->photos as $photo) {
+            $uploadedImages[] = $photo->store('cafes/reviews', 'public');
+        }
+        
+        return $uploadedImages;
+    }
+
+    public function deleteComment(){
+        if ($this->confirmingDeleteId) {
+            $comment = Comment::find($this->confirmingDeleteId);
+            
+            if ($comment && ($comment->user_id === Auth::id() || Auth::id() === $this->cafe->user_id)) {
+                $comment->delete();
+                
+                $this->confirmingDeleteId = null;
+                $this->dispatch('close-delete-modal-cafe-comment');
+                
+                session()->flash('success', 'Komentar berhasil dihapus.');
+            }
+        }
+    }
+
+    public function confirmDelete($commentId){
+        $this->confirmingDeleteId = $commentId;
+    }
+
+    public function render(){
+        $allComments = Comment::with(['user', 'replies.user'])
+            ->where('cafe_id', $this->cafeId)
+            ->whereNull('parent_id')
+            ->latest()
+            ->get();
+
+        return view('livewire.⚡cafe-comment-section', [
+            'reviews' => $allComments->where('type', 'review'),
+            'discussions' => $allComments->where('type', 'discussion'),
+            'cafe' => $this->cafe,
+        ]);
+    }
+}

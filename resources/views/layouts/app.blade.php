@@ -16,7 +16,7 @@
 </head>
 <body class="bg-cream font-sans text-gray-800 antialiased selection:bg-soft-green selection:text-white">
     @php
-        $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->name ?? 'User').'&background=D6CFC7&color=4B2E2B';
+        $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->username ?? 'User').'&background=D6CFC7&color=4B2E2B';
         if (auth()->check()) {
             $files = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
             foreach ($files as $file) {

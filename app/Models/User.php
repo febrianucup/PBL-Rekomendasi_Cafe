@@ -6,7 +6,11 @@ use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Favorite;
+use App\Models\Rating;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
@@ -38,5 +42,15 @@ class User extends Authenticatable
 
     public function ownerProfile():HasOne{
         return $this->HasOne(OwnerProfile::class, 'user_id');
+    }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class, 'user_id');
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class, 'user_id');
     }
 }

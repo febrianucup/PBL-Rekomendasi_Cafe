@@ -24,6 +24,7 @@ return new class extends Migration
             $table->decimal('longitude', 11, 8);
             $table->string('kecamatan')->nullable();
             $table->text('maps_link');
+            $table->decimal('rating', 2, 1)->default(4.5);
             $table->boolean('published')->default(false);
             $table->timestamps();
         });
