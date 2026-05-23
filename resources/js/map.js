@@ -15,8 +15,10 @@ document.addEventListener("DOMContentLoaded", function () {
             var map = L.map('map').setView([lat, lng], 16);
 
             // Gunakan tiles dari OpenStreetMap
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
+            L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '&copy; Google Maps'
             }).addTo(map);
 
             // Tambahkan Marker dan Popup

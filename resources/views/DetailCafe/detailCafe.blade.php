@@ -1,6 +1,7 @@
 @extends('layouts.public')
 
 @section('title', ($cafe->name ?? 'Cafe Detail'))
+
 @section('content')
 @vite('resources/js/map.js')
     @php
@@ -12,22 +13,11 @@
     @endphp
 
     <div class="w-full h-[550px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-       <div class="text-center mb-6 px-4">
-        <div class="inline-block text-left group">
-            <p class="text-[10px] uppercase tracking-[0.4em] text-gray-400 mb-2 ml-1">
-                Cafe Profile
-            </p>
-            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 tracking-tighter uppercase leading-none">
-                {{ $cafe->name }}
-            </h1>
-            <div class="mt-4 h-[3px] bg-black w-1/2 transition-all duration-500 group-hover:w-full"></div>
-        </div>
-    </div>
-        <div class="relative w-full h-[550px] overflow-hidden rounded-xl group"
+        <div class="relative w-full h-full overflow-hidden rounded-xl group"
             x-data='{ 
                 activeSlide: 0,
                 slides: @json($slides),
-                autoplayInterval:null,
+                autoplayInterval: null,
                 init() {
                     this.startAutoplay();
                 },
@@ -65,55 +55,60 @@
                 </template>
             </div>
 
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-10"></div>
 
             <template x-if="slides.length > 1">
                 <div class="absolute inset-0 flex items-center justify-between px-4 z-20">
                     <button @click="prev(); resetAutoplay()" type="button" 
-                        class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-sm">
+                        class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-sm text-lg">
                         &#10094;
                     </button>
                     
                     <button @click="next(); resetAutoplay()" type="button" 
-                        class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-sm">
+                        class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-sm text-lg">
                         &#10095;
                     </button>
                 </div>
             </template>
-            <div class="absolute bottom-10 left-10 md:left-16 text-white z-10">
+
+            <div class="absolute bottom-10 left-6 md:left-16 right-6 text-white z-10">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="bg-[#D4A373] text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded">
                         Cafe Profile
                     </span>
-                    <span class="flex items-center gap-1 text-sm font-semibold">
+                    <span class="flex items-center gap-1 text-sm font-semibold bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
                             <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.399 8.165-7.333-3.856-7.333 3.856 1.399-8.165-5.934-5.784 8.2-1.192zm0 5.701l-2.023 4.101-4.526.658 3.275 3.192-.772 4.507 4.046-2.126 4.046 2.126-.772-4.507 3.275-3.192-4.526-.658z"/>
                         </svg>
-                        {{ $cafe->rating ?? '4.8' }}
+                        {{ $averageRating>0 ? number_format($averageRating, 1) : '-' }}
                     </span>
                 </div>
-                <h1 class="text-4xl md:text-6xl font-bold tracking-tight">{{ $cafe->name }}</h1>
-                <p class="mt-2 text-sm md:text-lg text-white/90 max-w-2xl leading-relaxed">{{ $cafe->address }}</p>
-            </div>
-
-            <template x-if="slides.length > 1">
-                <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-                    <template x-for="(slide, index) in slides" :key="index">
-                        <button @click="activeSlide = index" type="button"
-                            :class="activeSlide === index ? 'bg-white w-6' : 'bg-white/50 w-2'"
-                            class="h-2 rounded-full transition-all duration-300"></button>
-                    </template>
+                <h1 class="text-3xl md:text-6xl font-bold tracking-tight uppercase drop-shadow-md">{{ $cafe->name }}</h1>
+                <p class="mt-2 text-sm md:text-lg text-white/90 max-w-2xl leading-relaxed drop-shadow-xs">{{ $cafe->address }}</p>
+                
+                <div class="mt-6 flex flex-wrap items-center gap-3">
+                    @auth
+                        <form action="{{ route('cafes.favorite', $cafe->id) }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
+                                {{ $isFavorited ? 'Hapus Favorite' : 'Tambah Favorite' }}
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
+                            Login untuk Favorite
+                        </a>
+                    @endauth
                 </div>
-            </template>
+            </div>
         </div>
     </div>
 
-    <main class="w-full max-w-7xl mx-auto py-16 px-4 mt-6 sm:px-6 lg:px-8 mt-36">
+    <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-16">
+        
         <section class="text-center mb-16 max-w-3xl mx-auto px-4">
             <span class="text-xs font-bold tracking-widest text-[#D4A373] uppercase block mb-2">Vibe & Features</span>
-            
             <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight mb-5">The Atmosphere</h2>
-            
             <p class="text-base md:text-lg leading-relaxed text-gray-600 font-normal mb-8">
                 {{ $cafe->description ?? 'No description available for this cafe.' }}
             </p>
@@ -121,11 +116,10 @@
             <div class="w-16 h-[2px] bg-gray-200 mx-auto mb-8"></div>
 
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
-                
-                <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-full shadow-sm transition-all duration-300 hover:bg-gray-100">
+                <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-full shadow-xs transition-all duration-300 hover:bg-gray-100">
                     <span class="w-2 h-2 rounded-full bg-[#D4A373]"></span>
                     <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 mr-1">Type:</span>
-                    <span class="text-sm font-bold text-gray-700">#{{ $cafe->type->name ?? 'Standard Cafe' }}</span>
+                    <span class="text-sm font-bold text-gray-700">#{{ $cafe->type->type_name ?? 'Standard Cafe' }}</span>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-2">
@@ -141,104 +135,81 @@
                         </span>
                     @endif
                 </div>
-
             </div>
         </section>
-        <section class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-xs border border-gray-100 mb-16">
             <p class="text-center text-sm uppercase tracking-widest text-gray-400">Lokasi & Kontak</p>
-            <h3 class="text-center text-2xl mt-2 mb-6">{{ $cafe->address }}</h3>
-            <div class="w-full h-80 bg-gray-800 rounded-lg mb-6 h-[550px]" 
+            <h3 class="text-center text-xl md:text-2xl mt-2 mb-6 font-semibold text-gray-800">{{ $cafe->address }}</h3>
+            
+            <div class="w-full h-[400px] md:h-[500px] bg-gray-100 rounded-lg mb-8 shadow-inner border border-gray-200" 
                 id="map"
                 data-lat="{{ $cafe->latitude }}"
                 data-lng="{{ $cafe->longitude }}"
                 data-name="{{ $cafe->name }}"
                 data-address="{{ $cafe->address }}">
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center border-t border-b py-6">
-                <div>
-                    <h4 class="font-bold text-sm text-gray-500 uppercase text-center">Contact</h4>
-                    <div x-data="{ 
-                            copyText: '{{ $cafe->num_phone }}', 
-                            copied: false 
-                        }" class="flex justify-center items-center gap-2 mt-2">
-                        
-                        <button @click="
-                            navigator.clipboard.writeText(copyText);
-                            copied = true;
-                            setTimeout(() => copied = false, 2000)
-                        " class="group flex flex-col items-center justify-center text-xs bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-xl transition-all duration-300 border border-gray-100 w-full max-w-[200px]">
-                            
-                            <p class="text-sm font-bold text-gray-800 mb-1">{{ $cafe->num_phone }}</p>
-                            
-                            <div class="flex items-center gap-1.5">
-                                <template x-if="!copied">
-                                    <span class="text-gray-400 flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                                        </svg>
-                                        Salin Nomor
-                                    </span>
-                                </template>
-                                
-                                <template x-if="copied">
-                                    <span class="text-green-600 font-semibold flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                        </svg>
-                                        Tersalin!
-                                    </span>
-                                </template>
-                            </div>
-                        </button>
-                    </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 py-6 border-t border-b border-gray-100">
+                <div class="flex flex-col items-center">
+                    <h4 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-3">Contact</h4>
+                    @if($cafe->num_phone)
+                        <div x-data="{ copyText: '{{ $cafe->num_phone }}', copied: false }" class="w-full max-w-[220px]">
+                            <button @click="navigator.clipboard.writeText(copyText); copied = true; setTimeout(() => copied = false, 2000)" 
+                                class="group flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-xl transition-all border border-gray-100 w-full">
+                                <p class="text-sm font-bold text-gray-800 mb-1">{{ $cafe->num_phone }}</p>
+                                <span class="text-xs text-gray-400 flex items-center gap-1">
+                                    <template x-if="!copied">
+                                        <span class="flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                                            Salin Nomor
+                                        </span>
+                                    </template>
+                                    <template x-if="copied">
+                                        <span class="text-green-600 font-medium flex items-center gap-1">✓ Tersalin!</span>
+                                    </template>
+                                </span>
+                            </button>
+                        </div>
+                    @else
+                        <span class="text-sm text-gray-400 italic">No phone available</span>
+                    @endif
                 </div>
-                <div>
-                    <h4 class="font-bold text-sm text-gray-500 uppercase text-center">Email</h4>
-                    <div x-data="{ 
-                            copyText: '{{ $cafe->email }}', 
-                            copied: false 
-                        }" class="flex justify-center items-center gap-2 mt-2">
-                        
-                        <button @click="
-                            navigator.clipboard.writeText(copyText);
-                            copied = true;
-                            setTimeout(() => copied = false, 2000)
-                        " class="group flex flex-col items-center justify-center text-xs bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-xl transition-all duration-300 border border-gray-100 w-full max-w-[200px]">
-                            
-                            <p class="text-sm font-bold text-gray-800 mb-1">{{ $cafe->email }}</p>
-                            
-                            <div class="flex items-center gap-1.5">
-                                <template x-if="!copied">
-                                    <span class="text-gray-400 flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                                        </svg>
-                                        Salin Email
-                                    </span>
-                                </template>
-                                
-                                <template x-if="copied">
-                                    <span class="text-green-600 font-semibold flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                        </svg>
-                                        Tersalin!
-                                    </span>
-                                </template>
-                            </div>
-                        </button>
-                    </div>
+
+                <div class="flex flex-col items-center">
+                    <h4 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-3">Email</h4>
+                    @if($cafe->email)
+                        <div x-data="{ copyText: '{{ $cafe->email }}', copied: false }" class="w-full max-w-[220px]">
+                            <button @click="navigator.clipboard.writeText(copyText); copied = true; setTimeout(() => copied = false, 2000)" 
+                                class="group flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-xl transition-all border border-gray-100 w-full">
+                                <p class="text-sm font-bold text-gray-800 mb-1 truncate w-full text-center">{{ $cafe->email }}</p>
+                                <span class="text-xs text-gray-400 flex items-center gap-1">
+                                    <template x-if="!copied">
+                                        <span class="flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                                            Salin Email
+                                        </span>
+                                    </template>
+                                    <template x-if="copied">
+                                        <span class="text-green-600 font-medium flex items-center gap-1">✓ Tersalin!</span>
+                                    </template>
+                                </span>
+                            </button>
+                        </div>
+                    @else
+                        <span class="text-sm text-gray-400 italic">No email available</span>
+                    @endif
                 </div>
-                <div>
-                    <h4 class="font-bold text-sm text-gray-500 uppercase mb-2">Opening Hours</h4>
-                    
+
+                <div class="flex flex-col items-center">
+                    <h4 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-3">Opening Hours</h4>
                     @if($cafe->operationalTime && $cafe->operationalTime->count() > 0)
-                        <ul class="space-y-1">
+                        <ul class="space-y-1 w-full max-w-[250px]">
                             @foreach ($cafe->operationalTime as $time)
-                                <li class="flex items-center justify-evenly text-sm text-gray-600 max-w-[300px] mx-auto">
-                                    <span class="font-medium w-1/3">{{ $time->day_range }}</span>
-                                    <span>:</span>
-                                    <span class="text-gray-500">
+                                <li class="flex items-center justify-between text-sm text-gray-600">
+                                    <span class="font-medium text-left w-20">{{ $time->day_range }}</span>
+                                    <span class="text-gray-400 mx-2">:</span>
+                                    <span class="text-gray-600 font-mono text-right flex-1">
                                         {{ \Carbon\Carbon::parse($time->open_time)->format('H:i') }} - 
                                         {{ \Carbon\Carbon::parse($time->close_time)->format('H:i') }}
                                     </span>
@@ -251,100 +222,56 @@
                 </div>
             </div>
 
-            <div class="text-center border-t border-b py-6 mb-6">
-                <h4 class="font-bold text-sm text-gray-500 uppercase">Address</h4>
-                <p class="mt-2 text-gray-800">{{ $cafe->address }}</p>
-            </div>
-
-            <div class="flex justify-between items-center">
-                 <a href="{{ $cafe->maps_link }}" class="bg-black text-white px-5 py-3 uppercase text-xs font-bold rounded-lg w-full text-center" target="_blank" rel="noopener">View in Gmaps</a>
+            <div class="mt-6">
+                 <a href="{{ $cafe->maps_link }}" class="block bg-black hover:bg-gray-800 text-white px-5 py-3.5 uppercase text-xs font-bold rounded-lg w-full text-center tracking-wider transition-colors" target="_blank" rel="noopener">
+                    View in Google Maps
+                 </a>
             </div>
         </section>
 
-        <section class="mt-16">
-            <h2 class="text-3xl text-center mb-8">Menu List</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 gap-y-2" id="menu">
+        <section class="bg-white p-6 md:p-8 rounded-xl shadow-xs border border-gray-100 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">Menu List</h2>
+            <div class="w-12 h-[3px] mx-auto mb-10"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="menu">
                 @if ($cafe->menuItems && $cafe->menuItems->count() > 0)
                     @foreach ($cafe->menuItems as $menu)
-                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
-                            <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
-                                <div class="aspect-[1/1] mb-3 overflow-hidden rounded-xl shadow-xs relative"> 
-                                    <img src="{{ $cafe->menuItems ? asset('storage/'.$menu->img_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=80' }}" alt="{{ $cafe->name }}" class="w-full h-full object-cover rounded-xl">
-                                </div>
+                        <div class="bg-[#F5F1EC]  p-4 rounded-xl shadow-xs border border-gray-100 flex items-center hover:shadow-md transition-shadow">
+                            <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100"> 
+                                <img src="{{ $menu->img_url ? asset('storage/'.$menu->img_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80' }}" 
+                                     alt="{{ $menu->name }}" class="w-full h-full object-cover">
                             </div>
-                            <div class="ml-4 sm:ml-6 flex-1">
-                                <h4 class="font-bold text-lg">{{ $menu->name }}</h4>
-                                <p class="text-sm text-gray-500 mt-1">{{ $menu->description }}</p>
-                                <span class="font-bold text-[#D4A373]">Rp {{ number_format($menu->price, 0, ',', '.') }}</span>
+                            <div class="ml-4 flex-1 min-w-0">
+                                <h4 class="font-bold text-base text-gray-800 truncate">{{ $menu->name }}</h4>
+                                <p class="text-xs text-gray-400 mt-1 line-clamp-2">{{ $menu->description ?? 'No description available' }}</p>
+                                <div class="mt-2 text-sm font-bold text-[#D4A373]">
+                                    Rp {{ number_format($menu->price, 0, ',', '.') }}
+                                </div>
                             </div>
                         </div>
                     @endforeach
-                    @if ($menus->hasPages())
-                        <div class="mt-8">
+                    
+                    @if (isset($menus) && $menus->hasPages())
+                        <div class="col-span-1 md:col-span-2 lg:col-span-3 mt-8">
                             {{ $menus->fragment('menu')->links() }}
                         </div>
                     @endif
                 @else
-                    <div class="col-span-2 text-center py-8 text-gray-500">
+                    <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12 text-gray-400 border border-dashed border-gray-200 rounded-xl bg-gray-50">
                         Belum ada menu yang tersedia.
                     </div>
                 @endif
             </div>
         </section>
-
-        <section class="mt-16 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl">Colomn Comment</h2>
-                <button id="btn-add-comment" class="text-sm underline">Add Comment</button>
-            </div>
-                <div id="comment-form-container" class="hidden mb-12 bg-white p-6 rounded-xl border border-gray-200">
-                    <textarea class="w-full p-3 border rounded-lg outline-none focus:ring-1 focus:ring-[#D4A373]" rows="3" placeholder="Write comment..."></textarea>
-                    <div class="flex justify-end mt-2">
-                        <button id="btn-close-comment" class="mr-4 text-sm text-gray-500">Cancel</button>
-                        <button class="bg-black text-white px-4 py-2 rounded text-sm">Post</button>
-                    </div>
+        <section x-data="{ activeTab: 'review' }" class="w-full mt-12 p-6 bg-white rounded-2xl border border-stone-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)] overflow-hidden">
+            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">Review and Comment</h2>
+            @auth
+                <livewire:cafe-comment-section :cafeId="$cafe->id" />
+            @else
+                <div class="text-center py-8">
+                    <p class="text-stone-600">Silakan <a href="{{ route('login') }}" class="text-blue-600 font-semibold underline">login</a> untuk memberikan komentar.</p>
                 </div>
-
-            <div class="mb-8">
-                <div class="flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-full bg-gray-300"></div>
-                    <div class="flex-1">
-                        <p class="font-bold">Muhammad Dwi Febrian <span class="text-xs font-normal text-gray-500">• 3D AGO</span></p>
-                        <p class="text-gray-700 mt-1">Tempat ini sangat minimalis dan nyaman untuk work from cafe ataupun nongkrong santai dengan teman-teman, menu nya juga banyak dan enak</p>
-                        <div class="mt-2">
-                            <button class="text-sm text-gray-500 font-semibold hover:text-black">Reply</button>
-                        </div>
-                        
-                        <!-- Reply Comment Form Placeholder -->
-                        <div class="hidden mt-3" id="reply-form-1">
-                            <textarea class="w-full border border-gray-300 rounded p-2 text-sm" rows="2" placeholder="Write a reply..."></textarea>
-                            <button class="mt-2 bg-black text-white px-3 py-1 text-xs rounded">Send Reply</button>
-                        </div>
-
-                        <div class="mt-3 bg-gray-50 p-4 rounded-lg border-l-4 border-[#D4A373]">
-                            <p class="font-bold text-sm">KING BARCA<span class="text-xs font-normal text-gray-500">• 1D AGO</span></p>
-                            <p class="text-sm text-gray-600">Iya lagi, baru kemarin gw kesana emang enak banget tempatnya apalagi buat gw yang lagi fokus skripsian dan sterss BARCA kalah di UCL</p>
-                            <div class="mt-2">
-                                <button class="text-xs text-gray-500 font-semibold hover:text-black">Reply</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <script>
-                // Simple script to toggle reply form visibility for frontend demonstration
-                document.querySelectorAll('button.text-gray-500').forEach(button => {
-                    button.addEventListener('click', function() {
-                        if(this.textContent === 'Reply') {
-                            let form = this.parentElement.nextElementSibling;
-                            if(form && form.tagName === 'DIV' && form.querySelector('textarea')) {
-                                form.classList.toggle('hidden');
-                            }
-                        }
-                    });
-                });
-            </script>
+            @endauth
         </section>
     </main>
 @endsection

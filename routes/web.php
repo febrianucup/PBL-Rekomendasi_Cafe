@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CommentImageController;
+
 
 Route::get('lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'id'])) {
@@ -21,6 +24,11 @@ Route::get('lang/{locale}', function ($locale) {
 Route::get('/', [CafeController::class, 'index'])->name('cafes.index');
 
 Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
+
+Route::post('/favorites/toggle/{id}', [CafeController::class, 'toggleFavorite'])->name('favorites.toggle');
+Route::post('/detail/{id}/favorite', [CafeController::class, 'toggleFavorite'])->name('cafes.favorite');
+Route::post('/detail/{id}/rate', [CafeController::class, 'submitRating'])->name('cafes.rate');
+Route::get('/favorites', [CafeController::class, 'favoritesList'])->name('favorites.list');
 
 Route::middleware('guest')->group(function(){
     Route::get('/login', [LoginController::class, 'loginForm'])->name('login/form');
@@ -76,9 +84,11 @@ Route::middleware(['auth'])->group(function(){
 
         Route::delete('/cafe/{id}', [CafeController::class, 'delete'])->name('cafe.delete');
 
-        Route::get('/cafe/{id}/show', [CafeController::class, 'showOwner'])->name('cafe.show');
+        Route::get('/cafe/{id}', [CafeController::class, 'showOwner'])->name('cafe.show');
+        Route::get('/cafe/{id}/show', [CafeController::class, 'showOwner'])->name('cafe.show.alt');
         Route::get('/cafe/{id}/edit', [CafeController::class, 'edit'])->name('cafe.edit');
         Route::put('/cafe/{id}', [CafeController::class, 'updateCafe'])->name('cafe.update');
+        Route::delete('/cafe/{id}', [CafeController::class, 'delete'])->name('cafe.delete');
     });
 });
 
@@ -87,48 +97,7 @@ Route::middleware(['auth'])->group(function(){
         return view('profile-settings.settings');
     })->name('profile.settings');
 
-    Route::post('/settings', function (\Illuminate\Http\Request $request) {
-        $user = Auth::user();
-        if (!$user) {
-            // For testing if not logged in
-            return back()->with('error', 'You must be logged in to update profile. (Currently testing without auth)');
-        }
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'current_password' => 'nullable|string',
-            'password' => 'nullable|string|min:8|confirmed',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ]);
-
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-
-        if (!empty($validated['password'])) {
-            if (!\Illuminate\Support\Facades\Hash::check($validated['current_password'], $user->password)) {
-                return back()->withErrors(['current_password' => 'Current password does not match']);
-            }
-            $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
-        }
-
-        if ($request->hasFile('avatar')) {
-            $file = $request->file('avatar');
-            $filename = 'avatar_' . $user->id . '.' . $file->getClientOriginalExtension();
-            
-            $existing = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
-            foreach ($existing as $exFile) {
-                if (str_starts_with(basename($exFile), 'avatar_' . $user->id . '.')) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($exFile);
-                }
-            }
-            $file->storeAs('avatars', $filename, 'public');
-        }
-
-        $user->save();
-
-        return back()->with('success', 'Profile updated successfully.');
-    })->name('profile.settings.update');
+    Route::put('/settings', [UsersController::class, 'update'])->name('profile.settings.update');
 });
 
 Route::post('/logout', function () {
@@ -165,3 +134,5 @@ Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkReques
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
     ->middleware('guest')
     ->name('password.email');
+
+Route::post('/comments/upload-image', [CommentImageController::class, 'upload'])->name('comments.upload-image')->middleware('auth');

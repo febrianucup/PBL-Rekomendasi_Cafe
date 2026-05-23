@@ -103,10 +103,10 @@
 
         <div class="mt-4 pt-4 border-t-2 border-cream flex items-center gap-3 px-2">
             <div class="h-10 w-10 rounded-full bg-light-beige overflow-hidden">
-                <img src="{{ $avatarUrl ?? 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name) }}" class="h-full w-full object-cover">
+                <img src="{{ $avatarUrl ?? 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->username) }}" class="h-full w-full object-cover">
             </div>
             <div class="text-sm truncate">
-                <p class="font-semibold text-dark-brown">{{ auth()->user()->name }}</p>
+                <p class="font-semibold text-dark-brown">{{ auth()->user()->username }}</p>
                 <p class="text-xs text-gray-400">{{ auth()->user()->role->name ?? 'User' }}</p>
             </div>
         </div>

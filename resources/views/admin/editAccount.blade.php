@@ -51,12 +51,13 @@
                 <label class="block text-sm font-semibold text-dark-brown mb-2">
                     Full Name
                 </label>
+
                 <input 
                     type="text"
                     name="name"
                     value="{{ old('name', $user->name) }}"
-                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
-                    required
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 bg-gray-100 text-gray-500 cursor-not-allowed"
+                    readonly
                 >
             </div>
 
@@ -65,12 +66,13 @@
                 <label class="block text-sm font-semibold text-dark-brown mb-2">
                     Email Address
                 </label>
+
                 <input 
                     type="email"
                     name="email"
                     value="{{ old('email', $user->email) }}"
-                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
-                    required
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 bg-gray-100 text-gray-500 cursor-not-allowed"
+                    readonly
                 >
             </div>
 
@@ -120,6 +122,25 @@
                 >{{ old('alamat', $user->ownerProfile->address ?? '') }}</textarea>
             </div>
             @endif
+            <!-- Status -->
+            <div>
+                <label class="block text-sm font-semibold text-dark-brown mb-2">
+                    Status
+                </label>
+
+                <select 
+                    name="status"
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
+                >
+                    <option value="active" {{ $user->status == 'active' ? 'selected' : '' }}>
+                        Active
+                    </option>
+
+                    <option value="inactive" {{ $user->status == 'inactive' ? 'selected' : '' }}>
+                        Inactive
+                    </option>
+                </select>
+            </div>
 
             <!-- Buttons -->
             <div class="flex flex-col sm:flex-row gap-4 pt-6">

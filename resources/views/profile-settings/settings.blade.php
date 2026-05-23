@@ -19,7 +19,7 @@
 
         <form method="POST" action="{{ route('profile.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
             @csrf
-            
+            @method('PUT')
             @php
                 $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->name ?? 'Admin User').'&background=D6CFC7&color=4B2E2B';
                 if (auth()->check()) {
