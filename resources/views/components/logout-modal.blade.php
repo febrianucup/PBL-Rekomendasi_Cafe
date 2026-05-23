@@ -1,17 +1,14 @@
-<!-- resources/views/components/logout-modal.blade.php -->
 <div x-data="{ open: false }" 
      @open-logout-modal.window="open = true" 
      x-cloak>
     
     <template x-teleport="body">
         <div x-show="open" class="fixed inset-0 z-[99] flex items-center justify-center">
-            <!-- Backdrop -->
-            <div x-show="open" 
+                <div x-show="open" 
                  x-transition.opacity
                  @click="open = false" 
                  class="absolute inset-0 bg-dark-brown/40 backdrop-blur-sm"></div>
 
-            <!-- Modal Box -->
             <div x-show="open" 
                  x-transition.scale.90
                  class="relative w-full max-w-sm bg-white p-8 rounded-[32px] shadow-2xl border border-cream mx-4 text-center">

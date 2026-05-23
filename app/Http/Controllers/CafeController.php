@@ -18,11 +18,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use App\Models\Favorite;
 use App\Models\Navbar;
+use App\Models\Rating;
 use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Village;
 use Illuminate\Validation\Validator;
+use App\Models\Comment;
 
 class CafeController extends Controller
 {
@@ -31,8 +34,12 @@ class CafeController extends Controller
         $tagFilter = $request->input('tag');
         $kecamatanFilter = strtoupper($request->input('daerah'));
         $typesFilter=strtoupper($request->input('type'));
+        
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $sortByDistance = $request->input('sort_by_distance') === 'true';
 
-        $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos'])->where('published', true);
+        $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos', 'ratings'])->where('published', true);
 
         if ($search){
             $cafeQuery->where(function($query) use ($search){
@@ -65,6 +72,20 @@ class CafeController extends Controller
             });
         }
 
+        $minRating = $request->input('min_rating');
+        if ($minRating) {
+            $cafeQuery->where('rating', '>=', $minRating);
+        }
+
+        if ($latitude && $longitude && $sortByDistance) {
+            $cafeQuery->select('*')
+                ->selectRaw(
+                    '(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance',
+                    [$latitude, $longitude, $latitude]
+                )
+                ->orderBy('distance', 'asc');
+        }
+
         $cafe = $cafeQuery->get();
 
         $user=Auth::user();
@@ -76,17 +97,59 @@ class CafeController extends Controller
         $navbars = Navbar::orderBy('sort_order', 'asc')->get();
         $tags = Tags::all();
         $types = Type::all();
+        $averageRating = $cafe->avg('rating');
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types'));
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types', 'averageRating'));
     }
 
     public function show($id){
-        $cafe=Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
+        $cafe = Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
             ->findOrFail($id);
-        $user=Auth::user();
-        $menus=Menu::whereCafeId($id)->paginate(6);
+        $user = Auth::user();
+        $menus = Menu::whereCafeId($id)->paginate(6);
 
-        return view('DetailCafe.detailCafe', compact('cafe', 'user', 'menus'));
+        $userRating = null;
+        $isFavorited = false;
+
+        // if ($user) {
+        //     $userRating = $cafe->ratings()->where('user_id', $user->id)->value('score');
+        //     $isFavorited = Favorite::where('user_id', $user->id)->where('cafe_id', $id)->exists();
+        // }
+
+        // if (!$isFavorited) {
+        //     $isFavorited = in_array($id, session()->get('favorites', []));
+        // }
+
+        $averageRating = Comment::where('cafe_id', $id)->whereNotNull('rating_score')->avg('rating_score');
+        // $reviews = $cafe->comments()->reviews()->latest()->get();
+        // $discussions = $cafe->comments()->discussions()->latest()->get();
+        
+        return view('DetailCafe.detailCafe', compact('cafe', 'user', 'menus', 'userRating', 'isFavorited', 'averageRating'));
+    }
+
+    public function submitRating(Request $request, $id)
+    {
+        $request->validate([
+            'rating' => ['required', 'integer', 'between:1,5'],
+        ]);
+
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Silakan login untuk memberikan rating.');
+        }
+
+        $cafe = Cafes::findOrFail($id);
+
+        Rating::updateOrCreate(
+            ['user_id' => $user->id, 'cafe_id' => $id],
+            ['score' => $request->rating]
+        );
+
+        $averageRating = $cafe->ratings()->avg('score');
+        $cafe->rating = $averageRating ? round($averageRating, 1) : $cafe->rating;
+        $cafe->save();
+
+        return back()->with('success', 'Terima kasih, rating kamu telah tersimpan.');
     }
 
     public function ownerDashboard($id = null)
@@ -194,6 +257,7 @@ class CafeController extends Controller
                     'maps_link'=>$credentials['maps'],
                     'kecamatan'=>$credentials['kecamatan'] ? District::find($credentials['kecamatan'])->name : null,
                     'published' => $isPublished,
+                    'rating' => 0,
                 ]);
 
                 if($request->has('tags')){
@@ -336,20 +400,19 @@ class CafeController extends Controller
 
                 if (isset($credentials['menu_items'])) {
                     $keepMenuIds = collect($credentials['menu_items'])->pluck('id')->filter()->toArray();
-
                     $cafe->menuItems()->whereNotIn('id', $keepMenuIds)->delete();
 
                     foreach ($credentials['menu_items'] as $index => $item) {
-                        
                         if (isset($item['id']) && $item['id'] != '') {
                             $menuItem = $cafe->menuItems()->findOrFail($item['id']);
                             $imagePath = $menuItem->img_url;
                         } else {
                             $menuItem = new Menu();
                             $menuItem->cafe_id = $cafe->id;
-                            $imagePath = 'cafes/menus/default-menu.jpg';
+                            $imagePath = null; // Diubah menjadi null, bukan default gambar agar dinamis 🎯
                         }
 
+                        // Pengecekan file upload index aman 🎯
                         if ($request->hasFile("menu_items.$index.image")) {
                             if ($menuItem->exists && $menuItem->img_url && Storage::disk('public')->exists($menuItem->img_url)) {
                                 Storage::disk('public')->delete($menuItem->img_url);
@@ -361,7 +424,6 @@ class CafeController extends Controller
                         $menuItem->description = $item['description'];
                         $menuItem->price = $item['price'];
                         $menuItem->img_url = $imagePath;
-                        
                         $menuItem->save();
                     }
                 }
@@ -372,8 +434,8 @@ class CafeController extends Controller
             return back()->withInput()->withErrors(['error' => $e->getMessage()]);
         }
     }
-    public function delete($id)
-    {
+
+    public function delete($id){
         $cafe = Cafes::with(['photos', 'thumbnail', 'operationalTime', 'menuItems', 'tags'])->findOrFail($id);
 
         if (auth()->user()->id !== $cafe->user_id && auth()->user()->role !== 'admin') {
@@ -415,5 +477,99 @@ class CafeController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menghapus cafe: ' . $e->getMessage());
         }
+    }
+
+    public function toggleFavorite(Request $request, $id)
+    {
+        $id = (int)$id;
+        $user = Auth::user();
+        $favorited = false;
+
+        $favorites = session()->get('favorites', []);
+
+        if ($user) {
+            $favorite = Favorite::where('user_id', $user->id)->where('cafe_id', $id)->first();
+
+            if ($favorite) {
+                $favorite->delete();
+                $favorited = false;
+                $favorites = array_diff($favorites, [$id]);
+            } else {
+                Favorite::create(['user_id' => $user->id, 'cafe_id' => $id]);
+                $favorited = true;
+                if (!in_array($id, $favorites)) {
+                    $favorites[] = $id;
+                }
+            }
+        } else {
+            if (in_array($id, $favorites)) {
+                $favorites = array_diff($favorites, [$id]);
+                $favorited = false;
+            } else {
+                $favorites[] = $id;
+                $favorited = true;
+            }
+        }
+
+        session()->put('favorites', array_values($favorites));
+
+        $isFavorited = $favorited || in_array($id, $favorites);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'favorited' => $isFavorited,
+                'message' => $isFavorited ? 'Kafe ditambahkan ke favorit!' : 'Kafe dihapus dari favorit!'
+            ]);
+        }
+
+        return redirect()->back()->with('success', $isFavorited ? 'Kafe ditambahkan ke favorit!' : 'Kafe dihapus dari favorit!');
+    }
+
+    public function favoritesList(Request $request)
+    {
+        $favorites = session()->get('favorites', []);
+
+        if (Auth::check()) {
+            $dbFavorites = Favorite::where('user_id', Auth::id())->pluck('cafe_id')->toArray();
+            $favorites = array_values(array_unique(array_merge($favorites, $dbFavorites)));
+        }
+        
+        $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos'])
+            ->whereIn('id', $favorites)
+            ->where('published', true);
+            
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $sortByDistance = $request->input('sort_by_distance') === 'true';
+        $minRating = $request->input('min_rating');
+
+        if ($minRating) {
+            $cafeQuery->where('rating', '>=', $minRating);
+        }
+        
+        if ($latitude && $longitude && $sortByDistance) {
+            $cafeQuery->select('*')
+                ->selectRaw(
+                    '(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance',
+                    [$latitude, $longitude, $latitude]
+                )
+                ->orderBy('distance', 'asc');
+        }
+        
+        $cafe = $favorites ? $cafeQuery->get() : collect();
+        $user = Auth::user();
+        
+        $malangCity = City::whereIn('name', ['Kota Malang', 'Kabupaten Malang'])->pluck('code');
+        $daftarDaerah = District::whereIn('city_code', $malangCity)->orderBy('name', 'asc')->get();
+        
+        $setting = LandingPageSetting::first() ?? new LandingPageSetting();
+        $navbars = Navbar::orderBy('sort_order', 'asc')->get();
+        $tags = Tags::all();
+        $types = Type::all();
+        
+        $isFavoritesPage = true;
+        
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types', 'isFavoritesPage'));
     }
 }

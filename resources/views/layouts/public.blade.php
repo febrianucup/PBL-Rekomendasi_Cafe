@@ -7,14 +7,15 @@
     <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @vite('resources/js/addcoment.js')
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -29,7 +30,7 @@
         [x-cloak] { 
             display: none !important; 
         }
-            .leaflet-control-container {
+        .leaflet-control-container {
             position: relative;
             z-index: 10;
         } 
@@ -55,7 +56,6 @@
             color: #ffa63a;
             transition: color 0.3s;
         }
-
     </style>
 </head>
 <body class="text-gray-900 min-h-screen flex flex-col">
@@ -216,7 +216,5 @@
     </main>
 
     <x-logout-modal />
-
-    @stack('scripts')
 </body>
 </html>

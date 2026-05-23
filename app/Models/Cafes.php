@@ -26,6 +26,7 @@ class Cafes extends Model
         'maps_link',
         'kecamatan',
         'published',
+        'rating',
     ];
 
     public function type():BelongsTo{
@@ -54,5 +55,22 @@ class Cafes extends Model
 
     public function menuItems():HasMany{
         return $this->hasMany(Menu::class, 'cafe_id');
+    }
+
+    public function ratings(): HasMany{
+        return $this->hasMany(Comment::class, 'cafe_id')->whereNotNull('rating_score');
+    }
+
+    public function favorites(): HasMany{
+        return $this->hasMany(Favorite::class, 'cafe_id');
+    }
+
+    public function updateAverageRating(){
+        $average = $this->ratings()->avg('rating_score');
+        $this->update(['rating' => round($average, 1) ?? 0]);
+    }
+
+    public function comments(){
+        return $this->hasMany(Comment::class, 'cafe_id');
     }
 }

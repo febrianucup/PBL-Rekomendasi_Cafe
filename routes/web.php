@@ -11,10 +11,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CommentImageController;
+
 
 Route::get('/', [CafeController::class, 'index'])->name('cafes.index');
 
 Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
+
+Route::post('/favorites/toggle/{id}', [CafeController::class, 'toggleFavorite'])->name('favorites.toggle');
+Route::post('/detail/{id}/favorite', [CafeController::class, 'toggleFavorite'])->name('cafes.favorite');
+Route::post('/detail/{id}/rate', [CafeController::class, 'submitRating'])->name('cafes.rate');
+Route::get('/favorites', [CafeController::class, 'favoritesList'])->name('favorites.list');
 
 Route::middleware('guest')->group(function(){
     Route::get('/login', [LoginController::class, 'loginForm'])->name('login/form');
@@ -109,3 +116,5 @@ Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkReques
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
     ->middleware('guest')
     ->name('password.email');
+
+Route::post('/comments/upload-image', [CommentImageController::class, 'upload'])->name('comments.upload-image')->middleware('auth');

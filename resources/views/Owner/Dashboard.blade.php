@@ -10,7 +10,7 @@
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-light-beige">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold text-dark-brown mb-2">Welcome back, {{ auth()->user()->name }}!</h1>
+                    <h1 class="text-2xl font-bold text-dark-brown mb-2">Welcome back, {{ auth()->user()->username }}!</h1>
                     <p class="text-muted">Manage your cafe collection and grow your business.</p>
                 </div>
                 <div class="text-right">
