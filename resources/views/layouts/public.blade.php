@@ -73,8 +73,12 @@
                 @else
                         <a href="/" class="text-grey border-black pb-1 hover:text-black transition">Beranda</a>
                 @endisset
+
+                <a href="/" class="text-black border-b border-black pb-1">Beranda</a>
+                <a href="/kontak" class="hover:text-black transition">Kontak</a>
             </nav>
 
+            
             <div class="flex items-center space-x-6">
                 <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 mr-4">
                     <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">EN</a>

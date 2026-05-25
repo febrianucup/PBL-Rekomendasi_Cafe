@@ -12,6 +12,9 @@ use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CommentImageController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 
 
 Route::get('lang/{locale}', function ($locale) {
@@ -22,7 +25,9 @@ Route::get('lang/{locale}', function ($locale) {
 })->name('lang.switch');
 
 Route::get('/', [CafeController::class, 'index'])->name('cafes.index');
-
+Route::get('/kontak', function () {
+    return view('contact'); // Pastikan file kontak.blade.php ada
+});
 Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
 
 Route::post('/favorites/toggle/{id}', [CafeController::class, 'toggleFavorite'])->name('favorites.toggle');
@@ -136,3 +141,7 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
     ->name('password.email');
 
 Route::post('/comments/upload-image', [CommentImageController::class, 'upload'])->name('comments.upload-image')->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::post('/settings', [ProfileController::class, 'update'])->name('profile.settings.update');
+
+});

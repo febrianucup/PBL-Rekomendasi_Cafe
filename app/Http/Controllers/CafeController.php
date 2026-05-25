@@ -87,12 +87,11 @@ class CafeController extends Controller
         }
 
         $cafe = $cafeQuery->get();
-
         $user=Auth::user();
 
         $malangCity=City::whereIn('name', ['Kota Malang', 'Kabupaten Malang'])->pluck('code');
         $daftarDaerah=District::whereIn('city_code', $malangCity)->orderBy('name', 'asc')->get();
-        
+
         $setting = LandingPageSetting::first() ?? new LandingPageSetting();
         $navbars = Navbar::orderBy('sort_order', 'asc')->get();
         $tags = Tags::all();
@@ -100,7 +99,25 @@ class CafeController extends Controller
         $averageRating = $cafe->avg('rating');
 
         return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types', 'averageRating'));
+      }
+
+    public function contactIndex()
+    {
+        return view('contact.index'); 
     }
+    public function contactStore(Request $request)
+    {
+        $validatedData = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'email'      => 'required|email|max:255',
+            'phone'      => 'nullable|string|max:20',
+            'subject'    => 'required|string|max:255',
+            'message'    => 'required|string',
+        ]);
+        return redirect()->back()->with('success', 'Terima kasih! Pesan Anda telah berhasil dikirim.');
+    }
+    
 
     public function show($id){
         $cafe = Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
