@@ -21,14 +21,19 @@ HTML
     <form method="POST" action="{{ route('profile.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
         @csrf
 
-        @php
-        $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->username ?? 'Admin User').'&background=D6CFC7&color=4B2E2B';
-        if (auth()->check()) {
-            $files = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
-            foreach ($files as $file) {
-                if (str_starts_with(basename($file), 'avatar_' . auth()->id() . '.')) {
-                    $avatarUrl = asset('storage/' . $file);
-                    break;
+        <form method="POST" action="{{ route('profile.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
+            @csrf
+            @method('PUT')
+            @php
+                $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->name ?? 'Admin User').'&background=D6CFC7&color=4B2E2B';
+                if (auth()->check()) {
+                    $files = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
+                    foreach ($files as $file) {
+                        if (str_starts_with(basename($file), 'avatar_' . auth()->id() . '.')) {
+                            $avatarUrl = asset('storage/' . $file);
+                            break;
+                        }
+                    }
                 }
             }
         }

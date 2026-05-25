@@ -42,7 +42,7 @@
         @endif
 
         <!-- Edit Form -->
-        <form action="{{ route('accounts.update', $user->id) }}" method="POST" class="space-y-6">
+        <form action="{{ $user->role && $user->role->name === 'owner' ? route('admin.owners.update', $user->id) : route('accounts.update', $user->id) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
 
@@ -51,12 +51,13 @@
                 <label class="block text-sm font-semibold text-dark-brown mb-2">
                     Full Name
                 </label>
+
                 <input 
                     type="text"
                     name="name"
                     value="{{ old('name', $user->name) }}"
-                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
-                    required
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 bg-gray-100 text-gray-500 cursor-not-allowed"
+                    readonly
                 >
             </div>
 
@@ -65,12 +66,13 @@
                 <label class="block text-sm font-semibold text-dark-brown mb-2">
                     Email Address
                 </label>
+
                 <input 
                     type="email"
                     name="email"
                     value="{{ old('email', $user->email) }}"
-                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
-                    required
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 bg-gray-100 text-gray-500 cursor-not-allowed"
+                    readonly
                 >
             </div>
 
@@ -82,12 +84,60 @@
                 <select 
                     name="role"
                     class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
+                    {{ $user->role && $user->role->name === 'owner' ? 'disabled' : '' }}
                 >
-                    <option value="owner" {{ $user->role == 'owner' ? 'selected' : '' }}>
+                    <option value="owner" {{ $user->role && $user->role->name == 'owner' ? 'selected' : '' }}>
                         Owner
                     </option>
-                    <option value="guest" {{ $user->role == 'guest' ? 'selected' : '' }}>
+                    <option value="guest" {{ $user->role && $user->role->name == 'guest' ? 'selected' : '' }}>
                         Guest
+                    </option>
+                </select>
+            </div>
+
+            @if($user->role && $user->role->name === 'owner')
+            <!-- Nomor Telepon -->
+            <div>
+                <label class="block text-sm font-semibold text-dark-brown mb-2">
+                    Nomor Telepon
+                </label>
+                <input 
+                    type="text"
+                    name="no_telp"
+                    value="{{ old('no_telp', $user->ownerProfile->no_telp ?? '') }}"
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
+                    required
+                >
+            </div>
+
+            <!-- Alamat -->
+            <div>
+                <label class="block text-sm font-semibold text-dark-brown mb-2">
+                    Alamat
+                </label>
+                <textarea 
+                    name="alamat"
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
+                    required
+                >{{ old('alamat', $user->ownerProfile->address ?? '') }}</textarea>
+            </div>
+            @endif
+            <!-- Status -->
+            <div>
+                <label class="block text-sm font-semibold text-dark-brown mb-2">
+                    Status
+                </label>
+
+                <select 
+                    name="status"
+                    class="w-full border border-light-beige rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-soft-green"
+                >
+                    <option value="active" {{ $user->status == 'active' ? 'selected' : '' }}>
+                        Active
+                    </option>
+
+                    <option value="inactive" {{ $user->status == 'inactive' ? 'selected' : '' }}>
+                        Inactive
                     </option>
                 </select>
             </div>

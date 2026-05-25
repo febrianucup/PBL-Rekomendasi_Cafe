@@ -10,16 +10,30 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CommentImageController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 
+
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'id'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+})->name('lang.switch');
 
 Route::get('/', [CafeController::class, 'index'])->name('cafes.index');
 Route::get('/kontak', function () {
     return view('contact'); // Pastikan file kontak.blade.php ada
 });
 Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
+
+Route::post('/favorites/toggle/{id}', [CafeController::class, 'toggleFavorite'])->name('favorites.toggle');
+Route::post('/detail/{id}/favorite', [CafeController::class, 'toggleFavorite'])->name('cafes.favorite');
+Route::post('/detail/{id}/rate', [CafeController::class, 'submitRating'])->name('cafes.rate');
+Route::get('/favorites', [CafeController::class, 'favoritesList'])->name('favorites.list');
 
 Route::middleware('guest')->group(function(){
     Route::get('/login', [LoginController::class, 'loginForm'])->name('login/form');
@@ -34,6 +48,8 @@ Route::middleware(['auth'])->group(function(){
         });
         
         Route::get('/cafes', [\App\Http\Controllers\Admin\CafeController::class, 'index'])->name('admin.cafes');
+        Route::get('/cafes/create', [\App\Http\Controllers\Admin\CafeController::class, 'create'])->name('admin.cafes.create');
+        Route::post('/cafes', [\App\Http\Controllers\Admin\CafeController::class, 'store'])->name('admin.cafes.store');
         Route::delete('/cafes/{id}', [\App\Http\Controllers\Admin\CafeController::class, 'destroy'])->name('admin.cafes.destroy');
         
         Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
@@ -42,13 +58,23 @@ Route::middleware(['auth'])->group(function(){
         Route::patch('/comments/{id}/status', [\App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])->name('admin.comments.status');
         Route::delete('/comments/{id}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('admin.comments.destroy');
 
+        Route::get('/owners', [\App\Http\Controllers\Admin\OwnerController::class, 'index'])->name('admin.owners.index');
+        Route::get('/owners/create', [\App\Http\Controllers\Admin\OwnerController::class, 'create'])->name('admin.owners.create');
+        Route::post('/owners', [\App\Http\Controllers\Admin\OwnerController::class, 'store'])->name('admin.owners.store');
+        Route::get('/owners/{id}/edit', [\App\Http\Controllers\Admin\OwnerController::class, 'edit'])->name('admin.owners.edit');
+        Route::put('/owners/{id}', [\App\Http\Controllers\Admin\OwnerController::class, 'update'])->name('admin.owners.update');
+        Route::delete('/owners/{id}', [\App\Http\Controllers\Admin\OwnerController::class, 'destroy'])->name('admin.owners.destroy');
+
+
         Route::get('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'index'])->name('admin.beranda_settings');
         Route::post('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'update'])->name('admin.beranda_settings.update');
 
         Route::get('/accounts/{id}', [AccountController::class, 'show'])->name('accounts.show');
         Route::get('/accounts/{id}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
         Route::put('/accounts/{id}', [AccountController::class, 'update'])->name('accounts.update');
+        Route::patch('/accounts/{id}/status', [AccountController::class, 'updateStatus'])->name('accounts.status');
         Route::delete('/accounts/{id}', [AccountController::class, 'destroy'])->name('accounts.destroy');
+        Route::get('/navbar-settings', [NavbarController::class, 'index'])->name('admin.navbar');
     });
 
     Route::middleware('isOwner')->group(function(){
@@ -63,9 +89,11 @@ Route::middleware(['auth'])->group(function(){
 
         Route::delete('/cafe/{id}', [CafeController::class, 'delete'])->name('cafe.delete');
 
-        Route::get('/cafe/{id}/show', [CafeController::class, 'showOwner'])->name('cafe.show');
+        Route::get('/cafe/{id}', [CafeController::class, 'showOwner'])->name('cafe.show');
+        Route::get('/cafe/{id}/show', [CafeController::class, 'showOwner'])->name('cafe.show.alt');
         Route::get('/cafe/{id}/edit', [CafeController::class, 'edit'])->name('cafe.edit');
         Route::put('/cafe/{id}', [CafeController::class, 'updateCafe'])->name('cafe.update');
+        Route::delete('/cafe/{id}', [CafeController::class, 'delete'])->name('cafe.delete');
     });
 });
 
@@ -74,48 +102,7 @@ Route::middleware(['auth'])->group(function(){
         return view('profile-settings.settings');
     })->name('profile.settings');
 
-    Route::post('/settings', function (\Illuminate\Http\Request $request) {
-        $user = Auth::user();
-        if (!$user) {
-            // For testing if not logged in
-            return back()->with('error', 'You must be logged in to update profile. (Currently testing without auth)');
-        }
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'current_password' => 'nullable|string',
-            'password' => 'nullable|string|min:8|confirmed',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ]);
-
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-
-        if (!empty($validated['password'])) {
-            if (!\Illuminate\Support\Facades\Hash::check($validated['current_password'], $user->password)) {
-                return back()->withErrors(['current_password' => 'Current password does not match']);
-            }
-            $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
-        }
-
-        if ($request->hasFile('avatar')) {
-            $file = $request->file('avatar');
-            $filename = 'avatar_' . $user->id . '.' . $file->getClientOriginalExtension();
-            
-            $existing = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
-            foreach ($existing as $exFile) {
-                if (str_starts_with(basename($exFile), 'avatar_' . $user->id . '.')) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($exFile);
-                }
-            }
-            $file->storeAs('avatars', $filename, 'public');
-        }
-
-        $user->save();
-
-        return back()->with('success', 'Profile updated successfully.');
-    })->name('profile.settings.update');
+    Route::put('/settings', [UsersController::class, 'update'])->name('profile.settings.update');
 });
 
 Route::post('/logout', function () {
@@ -153,6 +140,7 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
     ->middleware('guest')
     ->name('password.email');
 
+Route::post('/comments/upload-image', [CommentImageController::class, 'upload'])->name('comments.upload-image')->middleware('auth');
 Route::middleware('auth')->group(function () {
     Route::post('/settings', [ProfileController::class, 'update'])->name('profile.settings.update');
 

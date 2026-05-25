@@ -7,6 +7,8 @@
     <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -48,7 +50,7 @@
 
     <!-- PAGE CONTENT -->
     <div class="max-w-2xl mx-auto px-6 py-8">
-        <form method="POST" action="{{ route('add-cafe.submit') }}" enctype="multipart/form-data">
+        <form id="cafe-form" method="POST" action="{{ route('add-cafe.submit') }}" enctype="multipart/form-data">
             @csrf
 
             @if(session('success'))
@@ -69,28 +71,28 @@
 
             <!-- BACK LINK -->
             <a href="{{ url('/cafe') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
-                ← BACK TO BRANCHES
+                ← {{ __('messages.back_to_branches') }}
             </a>
 
         <!-- PAGE TITLE -->
-        <h1 class="text-3xl font-semibold text-dark mb-1">Add Cafe</h1>
-        <p class="text-xs text-muted mb-8 max-w-sm">Refine your café's presence. Update your story, operating rhythm, and sensory offerings for your community.</p>
+        <h1 class="text-3xl font-semibold text-dark mb-1">{{ __('messages.add_cafe_title') }}</h1>
+        <p class="text-xs text-muted mb-8 max-w-sm">{{ __('messages.add_cafe_desc') }}</p>
 
         <!-- SECTION: General Information -->
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">General Information</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.general_information') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
 
                 <!-- Cafe Name -->
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Cafe Name</label>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.cafe_name') }}</label>
                     <input type="text" name="name" value="{{ auth()->user()->ownerProfile->cafe_name ?? old('name') }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                 </div>
 
                 <!-- Brand Editorial Description -->
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Brand Editorial Description</label>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.brand_editorial_description') }}</label>
                     <textarea name="description" rows="4"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted resize-none" required>{{ old('description') }}</textarea>
                 </div>
@@ -98,10 +100,10 @@
                 <!-- Establishment Type + Atmospheric Tag -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Establishment Type</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.establishment_type') }}</label>
                         <div class="relative">
                             <select name="type_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer" required>
-                                <option value="">Select a type</option>
+                                <option value="">{{ __('messages.select_a_type') }}</option>
                                 @foreach($types as $type)
                                     <option value="{{ $type->id }}" {{ old('type_id') == $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
                                 @endforeach
@@ -115,7 +117,7 @@
                         selectedTags: @json(old("tags", [])).map(String) 
                     }'>
                         <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">
-                            Atmospheric Tags (Multi-select)
+                            {{ __('messages.atmospheric_tags') }}
                         </label>
 
                         <div class="flex flex-wrap items-center gap-2 mt-1">
@@ -132,8 +134,8 @@
                         </div>
 
                         <div class="mt-4 p-3 bg-cream rounded-xl border border-border">
-                            <p class="text-[10px] text-muted uppercase tracking-wider mb-1">Data Terpilih (ID):</p>
-                            <code class="text-xs text-active font-bold" x-text="selectedTags.length > 0 ? selectedTags.join(', ') : 'Belum ada yang dipilih'"></code>
+                            <p class="text-[10px] text-muted uppercase tracking-wider mb-1">{{ __('messages.selected_data') }}</p>
+                            <code class="text-xs text-active font-bold" x-text="selectedTags.length > 0 ? selectedTags.join(', ') : '{{ __('messages.nothing_selected') }}'"></code>
                         </div>
                     </div>
 
@@ -159,10 +161,10 @@
             }
         }'>
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-base font-semibold text-dark">Opening Hours</h2>
+                <h2 class="text-base font-semibold text-dark">{{ __('messages.opening_hours') }}</h2>
                 <button type="button" @click="addSchedule()" 
                     class="text-[11px] text-active border border-active rounded-full px-3 py-1 hover:bg-active hover:text-white transition-colors">
-                    + Add Schedule
+                    {{ __('messages.add_schedule') }}
                 </button>
             </div>
 
@@ -171,7 +173,7 @@
                     <div class="flex items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group">
                         
                         <div class="w-32">
-                            <input type="text" x-model="schedule.day_range" placeholder="e.g. Monday"
+                            <input type="text" x-model="schedule.day_range" placeholder="{{ __('messages.eg_monday') }}"
                                 :name="`open_time[${index}][day_range]`"
                                 class="text-sm font-semibold text-dark bg-transparent border-b border-transparent focus:border-active focus:outline-none w-full" required />
                         </div>
@@ -201,24 +203,24 @@
 
         <!-- SECTION: Contact Details -->
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Contact Details</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.contact_details') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Phone Number</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.phone_number') }}</label>
                         <input type="tel" name="phone_number" value="{{ old('phone_number') }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Email Address</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.email_address') }}</label>
                         <input type="email" name="email" value="{{ auth()->user()->email ?? old('email') }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Address</label>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.address') }}</label>
                     <input type="text" name="address" value="{{ auth()->user()->ownerProfile->address ?? old('address') }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                 </div>
@@ -228,47 +230,84 @@
 
         <!-- SECTION: Location & Maps -->
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Location & Maps</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.location_and_maps') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+                
+                <!-- Search Location -->
+                <div>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">Cari Lokasi / Alamat</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="map-search-input" placeholder="Ketik nama jalan, cafe, atau tempat..."
+                            class="flex-grow bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                        <button type="button" id="btn-search-map" class="bg-active text-white text-xs font-semibold rounded-xl px-5 py-2.5 hover:bg-[#2d372e] transition-colors">
+                            Cari
+                        </button>
+                    </div>
+                </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
-                        <input type="text" name="latitude" placeholder="e.g., 47.6062" value="{{ old('latitude') }}"
-                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Longitude</label>
-                        <input type="text" name="longitude" placeholder="e.g., -122.3321" value="{{ old('longitude') }}"
-                            class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
-                    </div>
+                <!-- Leaflet Map Container -->
+                <div>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">Pilih di Peta (Geser penanda / klik peta untuk menentukan koordinat)</label>
+                    <div id="map" class="h-64 rounded-xl border border-border z-0"></div>
+                </div>
+
+                <!-- Hidden Coordinates Input -->
+                <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude') }}" />
+                <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude') }}" />
+
+                <!-- Visual Readonly Coordinate Display -->
+                <div class="bg-cream border border-border rounded-xl p-3 text-xs text-muted flex justify-around items-center">
+                    <div>Latitude: <strong id="val-latitude" class="text-dark">{{ old('latitude', '-') }}</strong></div>
+                    <div class="h-4 w-[1px] bg-border"></div>
+                    <div>Longitude: <strong id="val-longitude" class="text-dark">{{ old('longitude', '-') }}</strong></div>
+                </div>
+
+                <!-- Cafe Rating Field -->
+                <!-- <div>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">Rating Awal Cafe</label>
+                    <input type="number" name="rating" id="rating" min="1" max="5" step="0.1" value="{{ old('rating', '4.5') }}"
+                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                </div> -->
+
+                <div class="mb-4">
+                    <label for="kecamatan" class="block text-sm font-medium text-gray-700 mb-1">Kecamatan</label>
+                    <select name="kecamatan" id="kecamatan" required
+                            class="w-full h-full border-gray-300 rounded-md shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                        <option value="">-- Pilih Kecamatan --</option>
+                        @foreach($daftarDaerah as $kecamatan)
+                            <option value="{{ $kecamatan->id }}">
+                                {{ ucwords(strtolower($kecamatan->name)) }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 
                 <div>
                     <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
-                    <input type="url" name="maps" placeholder="https://maps.google.com/maps?q=..." value="{{ old('maps') }}"
+                    <input type="url" name="maps" id="maps" placeholder="https://maps.google.com/maps?q=..." value="{{ old('maps') }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
+                </div>
             </div>
         </section>
 
         <!-- SECTION: Photo Gallery -->
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Photo Gallery</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.photo_gallery') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5">
                 <div class="grid grid-cols-4 gap-3" id="photo-gallery">
 
                     <!-- Upload Area -->
                     <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" onclick="document.getElementById('photo-input').click()" id="photo-upload-area">
                         <span class="text-lg text-muted">⊕</span>
-                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
+                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">{{ __('messages.upload') }}</span>
                         <input type="file" name="photos[]" id="photo-input" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)" />
                     </div>
                 </div>
-                <p class="text-[10px] text-muted mt-3">Upload multiple images (recommended: at least 4-6 photos). Maximum 12 images.</p>
+                <p class="text-[10px] text-muted mt-3">{{ __('messages.upload_multiple_images') }}</p>
             </div>
         </section>
         <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Thumbnail</h2>
+            <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.thumbnail') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5">
 
                 <div class="grid grid-cols-4 gap-3" id="thumbnail-gallery">
@@ -278,7 +317,7 @@
                         onclick="document.getElementById('thumbnail-input').click()" 
                         id="thumbnail-upload-area">
                         <span class="text-lg text-muted">⊕</span>
-                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">Upload</span>
+                        <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">{{ __('messages.upload') }}</span>
                         <input type="file" name="thumbnail" id="thumbnail-input" accept="image/*" style="display: none;" onchange="handleThumbnailInput(event)" />
                     </div>
 
@@ -287,7 +326,7 @@
         </section>
 
         <section class="mb-10">
-        <h2 class="text-base font-semibold text-dark mb-4">Featured Menu</h2>
+        <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.featured_menu') }}</h2>
         <div class="bg-white border border-border rounded-2xl overflow-hidden" id="menu-section">
 
             <div id="menu-list">
@@ -296,55 +335,75 @@
             <div id="new-menu-form" class="hidden px-5 py-4 border-b border-border space-y-3">
                 <div class="grid grid-cols-12 gap-3">
                     <div class="col-span-12 md:col-span-4">
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Menu Name</label>
-                        <input type="text" id="menu-name" placeholder="Menu name" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.menu_name') }}</label>
+                        <input type="text" id="menu-name" placeholder="{{ __('messages.menu_name') }}" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
                     </div>
                     <div class="col-span-12 md:col-span-5">
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Description</label>
-                        <input type="text" id="menu-description" placeholder="Short description" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.description') }}</label>
+                        <input type="text" id="menu-description" placeholder="{{ __('messages.description') }}" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" />
                     </div>
                     <div class="col-span-12 md:col-span-3">
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Price (Rupiah)</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.price_rupiah') }}</label>
                         <input type="text" id="menu-price" placeholder="Rp 35.000" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" onblur="formatPriceInput(this)" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-12 gap-3 items-end">
                     <div class="col-span-12 md:col-span-4">
-                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Photo</label>
+                        <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.photo') }}</label>
                         <div class="flex items-center gap-3">
-                            <button type="button" onclick="document.getElementById('menu-image-input').click()" class="bg-[#F2EEE7] border border-border text-dark text-sm font-semibold rounded-xl px-4 py-2.5 hover:bg-stat transition-colors">Upload Image</button>
-                            <span id="menu-image-name" class="text-[10px] text-muted">No file chosen</span>
+                            <button type="button" onclick="document.getElementById('menu-image-input').click()" class="bg-[#F2EEE7] border border-border text-dark text-sm font-semibold rounded-xl px-4 py-2.5 hover:bg-stat transition-colors">{{ __('messages.upload_image') }}</button>
+                            <span id="menu-image-name" class="text-[10px] text-muted">{{ __('messages.no_file_chosen') }}</span>
                         </div>
                         <input type="file" id="menu-image-input" accept="image/*" style="display: none;" onchange="handleMenuImageUpload(event)" />
                     </div>
                     <div class="col-span-12 md:col-span-8">
                         <div id="menu-image-preview" class="h-20 rounded-2xl border border-border bg-[#F7F5F0] flex items-center justify-center text-[10px] text-muted overflow-hidden">
-                            Preview image akan muncul di sini
+                            {{ __('messages.preview_image_here') }}
                         </div>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button type="button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">Add Menu</button>
-                    <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">Cancel</button>
+                    <button type="button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">{{ __('messages.add_menu') }}</button>
+                    <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">{{ __('messages.cancel') }}</button>
                 </div>
             </div>
 
             <div class="flex items-center justify-center px-5 py-3.5 cursor-pointer hover:bg-stat transition-colors" onclick="toggleNewMenuForm(true)">
-                <span class="text-xs text-muted font-medium">+ add menu item</span>
+                <span class="text-xs text-muted font-medium">{{ __('messages.add_menu_item') }}</span>
             </div>
 
         </div>
     </section>
 
+    <section class='mb-10'>
+                <!-- From Uiverse.io by Javierrocadev --> 
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input class="sr-only peer" value="1" type="checkbox" name="is_published">
+            <div class="group peer ring-0 bg-gray-50 border-2 border-amber-900 rounded-full outline-none duration-700 after:duration-200 w-14 h-7  shadow-md peer-checked:bg-[#6B4F3B]  peer-focus:outline-none after:content-[''] after:rounded-full after:absolute after:bg-amber-900 after:outline-none after:h-5 after:w-5 after:top-1 after:left-1  peer-checked:after:translate-x-7 peer-hover:after:scale-95">
+
+                <svg y="0" xmlns="http://www.w3.org/2000/svg" x="0" width="100" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" height="100" class="absolute  top-1 left-1 fill-green-400 w-5 h-5">
+                <path d="M50,18A19.9,19.9,0,0,0,30,38v8a8,8,0,0,0-8,8V74a8,8,0,0,0,8,8H70a8,8,0,0,0,8-8V54a8,8,0,0,0-8-8H38V38a12,12,0,0,1,23.6-3,4,4,0,1,0,7.8-2A2₀.₁,2₀.₁,0,₀,₀,5₀,₁₈Z" class="svg-fill-primary">
+                </path>
+                </svg>
+
+                <svg y="0" xmlns="http://www.w3.org/2000/svg" x="0" width="100" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" height="100" class="absolute top-1 left-8 fill-red-600 w-5 h-5">
+                <path fill-rule="evenodd" d="M30,46V38a20,20,0,0,1,40,0v8a8,8,0,0,1,8,8V74a8,8,0,0,1-8,8H30a8,8,0,0,1-8-8V54A8,8,0,0,1,30,46Zm32-8v8H38V38a12,12,0,0,1,24,0Z">
+                </path>
+                </svg>
+            </div>
+                <span class="ml-3 text-sm font-medium text-[#1B1B18] font-semibold" >Publish</span>
+        </label>
+    </section>
+
         <!-- BOTTOM ACTIONS -->
         <div class="flex items-center gap-3 pb-10">
             <button type="submit" class="flex-1 bg-darkbrown text-white text-sm font-semibold rounded-full py-3.5 hover:bg-[#1e1a16] transition-colors">
-                Publish Changes
+                {{ __('messages.publish_changes') }}
             </button>
             <button type="reset" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-8 py-3.5 hover:bg-stat transition-colors">
-                Discard
+                {{ __('messages.discard') }}
             </button>
         </div>
         </form>
@@ -429,9 +488,9 @@
             document.getElementById('menu-description').value = '';
             document.getElementById('menu-price').value = '';
             document.getElementById('menu-image-input').value = '';
-            document.getElementById('menu-image-name').textContent = 'No file chosen';
+            document.getElementById('menu-image-name').textContent = '{{ __("messages.no_file_chosen") }}';
             const preview = document.getElementById('menu-image-preview');
-            preview.innerHTML = 'Preview image akan muncul di sini';
+            preview.innerHTML = '{{ __("messages.preview_image_here") }}';
             delete preview.dataset.image;
         }
 
@@ -580,6 +639,128 @@
             };
             return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
+
+        // Leaflet Map Initialization and Geocoding Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            let initialLat = -7.983908;
+            let initialLng = 112.621391;
+            
+            const latInput = document.getElementById('latitude');
+            const lngInput = document.getElementById('longitude');
+            const mapsInput = document.getElementById('maps');
+            
+            const oldLat = latInput.value;
+            const oldLng = lngInput.value;
+            if (oldLat && oldLng) {
+                initialLat = parseFloat(oldLat);
+                initialLng = parseFloat(oldLng);
+            }
+
+            const map = L.map('map').setView([initialLat, initialLng], 12);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            const marker = L.marker([initialLat, initialLng], {
+                draggable: true
+            }).addTo(map);
+
+            // Update coordinates when marker is dragged
+            marker.on('dragend', function(e) {
+                const latLng = marker.getLatLng();
+                updateInputs(latLng.lat, latLng.lng);
+            });
+
+            // Update coordinates when map is clicked
+            map.on('click', function(e) {
+                const latLng = e.latlng;
+                marker.setLatLng(latLng);
+                updateInputs(latLng.lat, latLng.lng);
+            });
+
+            function updateInputs(lat, lng) {
+                // Update hidden inputs
+                latInput.value = lat.toFixed(8);
+                lngInput.value = lng.toFixed(8);
+                mapsInput.value = `https://www.google.com/maps?q=${lat.toFixed(8)},${lng.toFixed(8)}`;
+                // Update visual display
+                const valLat = document.getElementById('val-latitude');
+                const valLng = document.getElementById('val-longitude');
+                if (valLat) valLat.textContent = lat.toFixed(6);
+                if (valLng) valLng.textContent = lng.toFixed(6);
+            }
+
+            // Validate that coordinates are set before form submit
+            const cafeForm = document.getElementById('cafe-form');
+            if (cafeForm) {
+                cafeForm.addEventListener('submit', function(e) {
+                    if (!latInput.value || !lngInput.value) {
+                        e.preventDefault();
+                        const coordBox = document.getElementById('val-latitude');
+                        if (coordBox) {
+                            coordBox.closest('.bg-cream').style.borderColor = '#ef4444';
+                            coordBox.closest('.bg-cream').style.boxShadow = '0 0 0 2px #fee2e2';
+                        }
+                        alert('⚠️ Harap klik atau geser penanda di peta terlebih dahulu untuk menentukan lokasi kafe.');
+                        document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return false;
+                    }
+                });
+            }
+
+            // Geocode Kecamatan when selected
+            // const kecamatanSelect = document.getElementById('kecamatan');
+            // kecamatanSelect.addEventListener('change', function() {
+            //     const selectedOption = this.options[this.selectedIndex];
+            //     if (selectedOption && selectedOption.value) {
+            //         const kecamatanName = selectedOption.text.trim();
+            //         const query = `Kecamatan ${kecamatanName}, Malang, Jawa Timur, Indonesia`;
+            //         geocodeAddress(query);
+            //     }
+            // });
+
+            // Geocode Search Input
+            const btnSearch = document.getElementById('btn-search-map');
+            const searchInput = document.getElementById('map-search-input');
+            btnSearch.addEventListener('click', function() {
+                const query = searchInput.value.trim();
+                if (query) {
+                    let fullQuery = query;
+                    if (!query.toLowerCase().includes('malang')) {
+                        fullQuery += ', Malang, Jawa Timur, Indonesia';
+                    }
+                    geocodeAddress(fullQuery);
+                }
+            });
+
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    btnSearch.click();
+                }
+            });
+
+            function geocodeAddress(query) {
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const lat = parseFloat(data[0].lat);
+                            const lon = parseFloat(data[0].lon);
+                            map.setView([lat, lon], 14);
+                            marker.setLatLng([lat, lon]);
+                            updateInputs(lat, lon);
+                        } else {
+                            alert('Lokasi tidak ditemukan. Coba cari dengan kata kunci lain.');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Gagal mencari lokasi. Pastikan koneksi internet aktif.');
+                    });
+            }
+        });
     </script>
 
 </body>

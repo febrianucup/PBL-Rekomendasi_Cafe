@@ -35,12 +35,14 @@
              alt="Cafe Image">
 
         <div class="relative z-10 h-full p-12 flex flex-col justify-center">
-            <h1 class="serif-title italic text-5xl md:text-6xl text-white leading-tight mb-6 fade-in">
-                SAFE<br>(Saran Cafe)
+            <h1 class="serif-title text-6xl md:text-7xl text-white leading-none mb-6 fade-in tracking-[0.08em]">
+                SAFE<br>
+                <span class="block text-base md:text-lg font-normal tracking-[0.35em] uppercase not-italic mt-1 ml-2">
+                    SARAN KAFE
+                </span>
             </h1>
             <p class="text-white/90 text-sm md:text-base max-w-xs leading-relaxed font-light fade-in" style="animation-delay: 0.2s;">
-                Curating the world's most evocative coffee spaces.
-                Your seat is waiting.
+                {{ __('messages.login_desc') }}
             </p>
             
             <div class="mt-auto pt-10 fade-in" style="animation-delay: 0.4s;">
@@ -54,15 +56,22 @@
         </div>
     </div>
 
-    <div class="w-full md:w-1/2 h-screen overflow-y-auto bg-[#F9F8F3] p-8 md:p-16 flex flex-col justify-center">
+    <div class="relative w-full md:w-1/2 h-screen overflow-y-auto bg-[#F9F8F3] p-8 md:p-16 flex flex-col justify-center">
+        <!-- Language Switcher -->
+        <div class="absolute top-8 right-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500">
+            <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">EN</a>
+            <span>|</span>
+            <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">ID</a>
+        </div>
+
         <div class="max-w-sm mx-auto w-full fade-in" style="animation-delay: 0.3s;">
 
             <header class="mb-10">
                 <h2 class="serif-title text-3xl text-[#3E2723] mb-2">
-                    Welcome back
+                    {{ __('messages.welcome_back') }}
                 </h2>
                 <p class="text-gray-500 text-sm leading-relaxed">
-                    Please enter your details to continue your journey.
+                    {{ __('messages.login_instruction') }}
                 </p>
             </header>
 
@@ -93,7 +102,7 @@
                 @endif
 
                 <div class="space-y-1.5">
-                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Email Address</label>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.email_address') }}</label>
                     <input type="email" name="email" value="{{ old('email') }}" required
                         class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('email') || $errors->has('loginError')) ring-2 ring-red-500 @endif"
                         placeholder="your@email.com">
@@ -101,8 +110,8 @@
 
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center">
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Password</label>
-                        <a href="{{ route('password.request') }}" class="text-[10px] text-[#5D4037] hover:underline font-bold uppercase tracking-wider">Forgot?</a>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.password') }}</label>
+                        <a href="{{ route('password.request') }}" class="text-[10px] text-[#5D4037] hover:underline font-bold uppercase tracking-wider">{{ __('messages.forgot') }}</a>
                     </div>
                     <input type="password" name="password" required
                         class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('loginError')) ring-2 ring-red-500 @endif"
@@ -115,18 +124,18 @@
 
                         class="rounded border-gray-300 text-[#5D4037] focus:ring-[#5D4037] w-4 h-4 transition-colors">
 
-                    <label for="remember" class="text-sm text-gray-500">Keep me signed in</label>
+                    <label for="remember" class="text-sm text-gray-500">{{ __('messages.keep_signed_in') }}</label>
 
                 </div>
 
                 <button type="submit" class="w-full py-4 mt-6 bg-[#5D4037] text-white text-xs font-bold tracking-[0.15em] uppercase rounded-full hover:bg-[#4E342E] active:scale-[0.98] transition-all shadow-lg">
-                    Sign In
+                    {{ __('messages.sign_in') }}
                 </button>
             </form>     
             <div class="mt-12 text-center">
                 <p class="text-xs text-gray-500">
-                    New here?
-                    <a href="{{ route('register') }}" class="text-[#3E2723] font-bold hover:underline ml-1 cursor-pointer">Create account</a>
+                    {{ __('messages.new_here') }}
+                    <a href="{{ route('register') }}" class="text-[#3E2723] font-bold hover:underline ml-1 cursor-pointer">{{ __('messages.create_account') }}</a>
                 </p>
             </div>
             

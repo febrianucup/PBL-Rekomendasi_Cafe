@@ -13,11 +13,20 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('cafe_id')->constrained('cafes')->onDelete('cascade');
-            $table->text('content');
-            $table->enum('status', ['pending', 'approved', 'reported', 'archived'])->default('pending');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('cafe_id')->references('id')->on('cafes')->onDelete('cascade');
+
+            // Cukup hapus ->after('cafe_id') karena posisinya sudah otomatis di sini 🎯
+            $table->unsignedBigInteger('parent_id')->nullable(); 
+            
+            $table->text('body');
+            $table->integer('rating_score')->nullable(); // Balasan tidak wajib punya rating
+            $table->text('images')->nullable();
+            $table->string('type')->default('review'); // 'review' atau 'discussion'
             $table->timestamps();
+
+            // Deklarasi Foreign Key ke dirinya sendiri
+            $table->foreign('parent_id')->references('id')->on('comments')->onDelete('cascade');
         });
     }
 

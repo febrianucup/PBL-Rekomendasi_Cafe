@@ -1,16 +1,16 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-8">
+<div x-data="{ confirmDelete: false }" class="max-w-5xl mx-auto space-y-8">
 
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
             <h2 class="font-serif text-4xl font-bold text-dark-brown">
-                Account Profile
+                Profil Akun
             </h2>
             <p class="text-gray-500 mt-2 text-lg">
-                Detailed overview of this member account.
+                Ikhtisar detail dari akun anggota ini.
             </p>
         </div>
 
@@ -19,7 +19,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
             </svg>
-            Back to List
+            Kembali ke Daftar
         </a>
     </div>
 
@@ -63,9 +63,27 @@
 
             <!-- Action Buttons -->
             <div class="flex gap-3">
+                @if($user->status === 'pending')
+                    <form action="{{ route('accounts.status', $user->id) }}" method="POST" class="inline">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status" value="active">
+                        <button type="submit" class="bg-soft-green text-white px-6 py-4 rounded-full font-bold hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
+                            Terima
+                        </button>
+                    </form>
+                    <form action="{{ route('accounts.status', $user->id) }}" method="POST" class="inline">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status" value="rejected">
+                        <button type="submit" class="bg-[#DC143C] text-white px-6 py-4 rounded-full font-bold hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
+                            Tolak
+                        </button>
+                    </form>
+                @endif
                 <a href="{{ route('accounts.edit', $user->id) }}"
                    class="bg-dark-brown text-white px-8 py-4 rounded-full font-bold hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
-                    Edit Account
+                    Edit Akun
                 </a>
             </div>
         </div>
@@ -73,7 +91,7 @@
       <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="bg-cream rounded-2xl p-6">
                 <p class="text-gray-500 text-sm uppercase tracking-wider font-semibold mb-2">
-                    User ID
+                    ID Pengguna
                 </p>
                 <p class="text-2xl font-bold text-dark-brown">
                     #{{ $user->id }}
@@ -82,7 +100,7 @@
 
             <div class="bg-cream rounded-2xl p-6">
                 <p class="text-gray-500 text-sm uppercase tracking-wider font-semibold mb-2">
-                    Joined Date
+                    Tanggal Bergabung
                 </p>
                 <p class="text-2xl font-bold text-dark-brown">
                     {{ $user->created_at->format('F d, Y') }}
@@ -91,9 +109,9 @@
 
             <div class="bg-cream rounded-2xl p-6">
                 <p class="text-gray-500 text-sm uppercase tracking-wider font-semibold mb-2">
-                    Email Status
+                    Status Akun
                 </p>
-                <p class="text-2xl font-bold text-soft-green">
+                <p class="text-2xl font-bold {{ $user->status === 'active' ? 'text-soft-green' : ($user->status === 'pending' ? 'text-yellow-600' : 'text-red-600') }} capitalize">
                    {{ $user->status }}
                 </p>
             </div>
@@ -102,24 +120,40 @@
         <!-- Danger Zone -->
         @if(auth()->id() !== $user->id)
         <div class="mt-14 pt-8 border-t border-light-beige/40">
-            <p class="text-gray-500 mb-6">Once deleted, this account and all its associated data will be permanently removed. This action cannot be undone.</p>
+            <p class="text-gray-500 mb-6">Setelah dihapus, akun ini dan seluruh data terkaitnya akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.</p>
 
-            <form action="{{ route('accounts.destroy', $user->id) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                
-                <button 
-                    type="submit"
-                    onclick="return confirm('Are you sure you want to permanently delete {{ $user->username }}?')"
-                    class="bg-[#DC143C] text-white px-8 py-4 rounded-full font-bold hover:bg-[#8B0000] hover:text-white transition-all duration-200"
-                >
-                    Delete Member Account
-                </button>
-            </form>
+            <button 
+                @click="confirmDelete = true"
+                type="button"
+                class="bg-[#DC143C] text-white px-8 py-4 rounded-full font-bold hover:bg-[#8B0000] hover:text-white transition-all duration-200"
+            >
+                Hapus Akun Anggota
+            </button>
+
+            <!-- Delete Confirmation Modal -->
+            <template x-teleport="body">
+                <div x-show="confirmDelete" class="fixed inset-0 z-[99] flex items-center justify-center" x-cloak>
+                    <!-- Backdrop -->
+                    <div x-show="confirmDelete" x-transition.opacity @click="confirmDelete = false" class="absolute inset-0 bg-dark-brown/40 backdrop-blur-sm"></div>
+                    <!-- Modal Box -->
+                    <div x-show="confirmDelete" x-transition.scale.90 class="relative w-full max-w-sm bg-white p-8 rounded-[32px] shadow-2xl border border-cream mx-4 text-center">
+                        <h3 class="text-xl font-bold text-dark-brown mb-2">Konfirmasi Hapus</h3>
+                        <p class="text-gray-500 mb-8">Apakah Anda yakin ingin menghapus akun <strong>{{ $user->username }}</strong> secara permanen?</p>
+                        <div class="flex gap-3">
+                            <button @click="confirmDelete = false" type="button" class="flex-1 px-6 py-3 rounded-2xl border border-cream text-gray-500 font-semibold hover:bg-cream transition-colors">Batal</button>
+                            <form action="{{ route('accounts.destroy', $user->id) }}" method="POST" class="flex-1 m-0">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full px-6 py-3 rounded-2xl bg-red-500 text-white font-semibold hover:bg-red-600 transition-all">Ya, Hapus</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
         @else
         <div class="mt-14 pt-8 border-t border-light-beige/40">
-            <p class="text-gray-400 italic text-sm text-center italic">You cannot delete your own account from the management panel.</p>
+            <p class="text-gray-400 italic text-sm text-center">Anda tidak dapat menghapus akun Anda sendiri dari panel manajemen.</p>
         </div>
         @endif
 
