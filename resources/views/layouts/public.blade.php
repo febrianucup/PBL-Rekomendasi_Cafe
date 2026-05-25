@@ -27,7 +27,9 @@
             
             <nav class="hidden md:flex space-x-8 text-sm uppercase tracking-widest text-gray-500">
                 <a href="/" class="text-black border-b border-black pb-1">Beranda</a>
+                <a href="/kontak" class="hover:text-black transition">Kontak</a>
             </nav>
+
             
             <div class="flex items-center space-x-6">
                 <form class="flex items-center">   

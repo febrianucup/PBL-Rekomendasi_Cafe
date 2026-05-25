@@ -10,9 +10,15 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NavbarController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+
 
 Route::get('/', [CafeController::class, 'index'])->name('cafes.index');
-
+Route::get('/kontak', function () {
+    return view('contact'); // Pastikan file kontak.blade.php ada
+});
 Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
 
 Route::middleware('guest')->group(function(){
@@ -146,3 +152,8 @@ Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkReques
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
     ->middleware('guest')
     ->name('password.email');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/settings', [ProfileController::class, 'update'])->name('profile.settings.update');
+
+});

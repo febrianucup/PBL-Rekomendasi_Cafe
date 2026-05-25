@@ -20,6 +20,22 @@ use App\Models\Navbar;
 
 class CafeController extends Controller
 {
+    public function contactIndex()
+    {
+        return view('contact.index'); 
+    }
+    public function contactStore(Request $request)
+    {
+        $validatedData = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'email'      => 'required|email|max:255',
+            'phone'      => 'nullable|string|max:20',
+            'subject'    => 'required|string|max:255',
+            'message'    => 'required|string',
+        ]);
+        return redirect()->back()->with('success', 'Terima kasih! Pesan Anda telah berhasil dikirim.');
+    }
     public function index(){
         $cafe=Cafes::with(['type', 'thumbnail', 'photos'])->get();
         $user=Auth::user();
@@ -27,8 +43,9 @@ class CafeController extends Controller
         $setting = \App\Models\LandingPageSetting::first() ?? new \App\Models\LandingPageSetting();
         $navbars = Navbar::orderBy('sort_order', 'asc')->get();
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', ')navbars');
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars'));
     }
+    
 
     public function show($id){
         $cafe=Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
@@ -362,5 +379,6 @@ class CafeController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menghapus cafe: ' . $e->getMessage());
         }
-    }
+    
+        }
 }
