@@ -6,8 +6,8 @@
     @endif
 
     <div class="flex gap-4 mb-6 border-b border-stone-200">
-        <button wire:click="$set('commentType', 'review')" class="pb-2 font-bold {{ $commentType === 'review' ? 'border-b-2 border-black' : 'text-stone-400' }}">Review</button>
-        <button wire:click="$set('commentType', 'discussion')" class="pb-2 font-bold {{ $commentType === 'discussion' ? 'border-b-2 border-black' : 'text-stone-400' }}">Komentar</button>
+        <button type="button" wire:click="$set('commentType', 'review')" class="pb-2 font-bold {{ $commentType === 'review' ? 'border-b-2 border-black' : 'text-stone-400' }}">Review</button>
+        <button type="button" wire:click="$set('commentType', 'discussion')" class="pb-2 font-bold {{ $commentType === 'discussion' ? 'border-b-2 border-black' : 'text-stone-400' }}">Komentar</button>
     </div>
 
     @php
@@ -40,8 +40,7 @@
                     </label>
                     <button type="submit" class="px-6 py-2 bg-black text-white rounded-xl text-xs font-bold">Kirim</button>
                 </div>
-
-                {{-- PREVIEW FOTO --}}
+                
                 @if($photos)
                     <div x-data class="flex gap-2 mt-3 flex-wrap">
                         @foreach($photos as $index => $photo)

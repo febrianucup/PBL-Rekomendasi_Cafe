@@ -35,8 +35,6 @@ HTML
                         }
                     }
                 }
-            }
-        }
         @endphp
 
         <div class="flex items-center gap-6 pb-8 border-b border-light-beige/30">

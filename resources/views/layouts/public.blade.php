@@ -73,8 +73,8 @@
                 @else
                         <a href="/" class="text-grey border-black pb-1 hover:text-black transition">Beranda</a>
                 @endisset
-
-                <a href="/" class="text-black border-b border-black pb-1">Beranda</a>
+{{-- 
+                <a href="/" class="text-black border-b border-black pb-1">Beranda</a> --}}
                 <a href="/kontak" class="hover:text-black transition">Kontak</a>
             </nav>
 
@@ -179,8 +179,12 @@
                 @endif
 
                 @auth
-                    <div x-data="{ open: false }" @click.away="open = false" class="relative inline-block text-left">
-                        <button @click="open = !open" class="flex items-center gap-2 font-bold focus:outline-none text-sm">
+                    <div x-data="{ open: false }" @click.outside="open = false" class="relative inline-block text-left">
+                        <button 
+                            @click="open = !open" 
+                            class="flex items-center gap-2 font-bold focus:outline-none text-sm"
+                            :aria-expanded="open"
+                        >
                             {{ \Illuminate\Support\Str::limit(auth()->user()->username ?? 'User Profile', 8, '...') }}
                             <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -192,9 +196,14 @@
                             x-transition:enter="transition ease-out duration-100"
                             x-transition:enter-start="opacity-0 scale-95"
                             x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
                             class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-md shadow-lg z-50">
+                            
                             <div class="py-1">
                                 <span class="block px-4 py-2 text-xs text-gray-400 uppercase tracking-wider">Profile</span>
+                                
                                 @if (auth()->user()->role->name == 'owner')
                                     <a href="{{ route('owner.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black">
                                         Owner Dashboard
@@ -204,12 +213,13 @@
                                         Admin Dashboard
                                     </a>
                                 @endif
+                                
                                 <a href="{{ route('profile.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black">Settings</a>
                                 <div class="border-t border-gray-100 mt-1"></div>
                                 
                                 <form action="{{ route('logout') }}" method="POST" class="block">
                                     @csrf
-                                    <button type="button" @click='$dispatch("open-logout-modal")' class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</button>
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Logout</button>
                                 </form>
                             </div>
                         </div>
