@@ -22,22 +22,25 @@ class UsersController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'current_password' => 'nullable|string',
+            'current_password' => 'nullable|required_with:password|string',
             'password' => 'nullable|string|min:8|confirmed',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $user->username = $validated['name'];
+        $user->username = $validated['username'];
         $user->email = $validated['email'];
 
-        if (!empty($validated['password'])) {
-            if (!Hash::check($validated['current_password'], $user->password)) {
-                return back()->withErrors(['current_password' => 'Current password does not match']);
-            }
-            $user->password = Hash::make($validated['password']);
+        if ($request->filled('password')) {
+        // Cek apakah password lama benar
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Password lama salah.']);
         }
+        
+        // Simpan password baru
+        $user->password = Hash::make($request->password);
+    }
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
