@@ -79,6 +79,9 @@
                             @endif
                         </td>
                         <td class="px-8 py-5 text-right flex justify-end gap-2">
+                            @if($cafe->user_id === auth()->id())
+                                <a href="{{ route('admin.cafes.edit', $cafe->id) }}" class="text-blue-500 hover:text-blue-700 transition-colors font-medium">Edit</a>
+                            @endif
                             <button @click="confirmDelete = true" type="button" class="text-soft-red hover:text-red-700 transition-colors font-medium">
                                 Hapus
                             </button>

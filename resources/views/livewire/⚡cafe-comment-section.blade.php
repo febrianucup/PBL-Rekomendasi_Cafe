@@ -1,7 +1,12 @@
 <div class="space-y-10 w-full h-full">
     @if (session()->has('success'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition class="fixed top-5 right-5 z-[9999] px-5 py-3 rounded-xl bg-green-300 text-brown shadow-xl text-sm font-semibold">
+        <div wire:poll.3s="$set('hideFlash', true)" class="{{ $hideFlash ? 'hidden' : '' }} fixed top-5 right-5 z-[9999] px-5 py-3 rounded-xl bg-green-300 text-brown shadow-xl text-sm font-semibold transition-all duration-500">
             {{ session('success') }}
+        </div>
+    @endif
+    @if (session()->has('error'))
+        <div wire:poll.3s="$set('hideFlash', true)" class="{{ $hideFlash ? 'hidden' : '' }} fixed top-5 right-5 z-[9999] px-5 py-3 rounded-xl bg-red-400 text-white shadow-xl text-sm font-semibold transition-all duration-500">
+            {{ session('error') }}
         </div>
     @endif
 
@@ -32,6 +37,7 @@
                 @endif
 
                 <textarea wire:model="body" class="w-full min-h-[120px] p-4 border border-stone-200 rounded-xl" placeholder="Tulis {{ $commentType === 'review' ? 'Ulasan' : 'Diskusi' }} Anda..."></textarea>
+                @error('body') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
 
                 <div class="flex justify-between items-center mt-3">
                     <label class="cursor-pointer text-xs font-medium text-stone-500 hover:text-black bg-stone-200 px-3 py-1 rounded-lg">
@@ -42,17 +48,16 @@
                 </div>
                 
                 @if($photos)
-                    <div x-data class="flex gap-2 mt-3 flex-wrap">
+                    <div class="flex gap-2 mt-3 flex-wrap">
                         @foreach($photos as $index => $photo)
                         <div wire:key="photo-preview-{{ $index }}" class="w-40 h-40 rounded-xl overflow-hidden border border-stone-200">
-                            <img src="{{ $photo->temporaryUrl() }}" class="w-full h-full object-cover cursor-pointer" @click="$dispatch('open-image', '{{ $photo->temporaryUrl() }}')"
-                            >
+                            <img src="{{ $photo->temporaryUrl() }}" class="w-full h-full object-cover cursor-pointer" wire:click="$dispatch('open-image', { url: '{{ $photo->temporaryUrl() }}' })">
                         </div>
                     @endforeach
                     </div>
                 @endif
             </form>
-        @elseif($commentType === 'review' && $hasReviewed)
+        @elseif($commentType === 'review' && $hasReviewed && !$isOwner && !$isAdmin)
             <p class="text-sm text-stone-500 bg-stone-100 p-4 rounded-xl text-center">
                 Terima kasih telah memberikan ulasan untuk kafe ini.
             </p>
@@ -78,7 +83,7 @@
 
                 <div class="flex gap-3">
                     @if(Auth::id() === $comment->user_id)
-                        <button type="button" class="text-red-500 text-xs font-semibold" wire:click="confirmDelete({{ $comment->id }})" @click="$dispatch('open-delete-modal-cafe-comment')">
+                        <button type="button" class="text-red-500 text-xs font-semibold" wire:click="confirmDelete({{ $comment->id }})">
                             Hapus
                         </button>
                     @endif
@@ -98,20 +103,21 @@
             @if($comment->images)
                 <div class="flex gap-2 flex-wrap">
                     @foreach(json_decode($comment->images, true) as $img)
-                        <img src="{{ asset('storage/' . $img) }}" class="w-25 h-25 object-cover rounded-lg cursor-pointer" @click.stop="$dispatch('open-image', '{{ asset('storage/' . $img) }}')">
+                        <img src="{{ asset('storage/' . $img) }}" class="w-25 h-25 object-cover rounded-lg cursor-pointer" wire:click="$dispatch('open-image', { url: '{{ asset('storage/' . $img) }}' })">
                     @endforeach
                 </div>
             @endif
             
             @if(($commentType === 'review' && Auth::id() === $cafe->user_id) || $commentType === 'discussion')
                 <button type="button" class="text-blue-500 text-xs font-semibold hover:underline" wire:click="toggleReply({{ $comment->id }})">
-                    {{ $replyingToId === $comment->id ? 'Batal' : 'Balas' }}
+                    {{ $replyingToId == $comment->id ? 'Batal' : 'Balas' }}
                 </button>
 
-                @if($replyingToId === $comment->id)
+                @if($replyingToId == $comment->id)
                     <div class="mt-3 pl-4 border-l-2 border-stone-300">
                         <form wire:submit.prevent="submitReply({{ $comment->id }})">
                             <textarea wire:model.blur="reply_body" class="w-full p-2 text-sm border border-stone-200 rounded-lg" placeholder="Tulis balasan..."></textarea>
+                            @error('reply_body') <div class="text-red-500 text-xs mt-1">{{ $message }}</div> @enderror
                             <button type="submit" class="mt-2 px-4 py-1 bg-black text-white rounded-lg text-xs font-bold">
                                 Kirim Balasan
                             </button>
@@ -141,7 +147,7 @@
                                 </div>
                                 <div class="flex gap-3">
                                     @if(Auth::id() === $reply->user_id)
-                                        <button type="button" class="text-red-500 text-xs font-semibold" wire:click="confirmDelete({{ $reply->id }})" @click="$dispatch('open-delete-modal-cafe-comment')">
+                                        <button type="button" class="text-red-500 text-xs font-semibold" wire:click="confirmDelete({{ $reply->id }})">
                                             Hapus
                                         </button>
                                     @endif
@@ -159,16 +165,17 @@
         <p class="text-center text-stone-400 py-4">Belum ada data.</p>
     @endforelse
 
-    <div x-data="{ open: false }" 
-        @open-delete-modal-cafe-comment.window="open = true" 
-        @close-delete-modal-cafe-comment.window="open = false" 
-        x-cloak>
-        
+    @if($isDeleteModalOpen)
         <x-delete-modal id="cafe-comment" title="Hapus Komentar" message="Apakah Anda yakin ingin menghapus komentar ini?">
-            <button wire:click="deleteComment" class="flex-1 px-6 py-3 rounded-2xl bg-dark-brown text-white font-semibold hover:shadow-lg transition-all">
-                Ya, Hapus
-            </button>
+            <div class="flex gap-4">
+                <button wire:click="closeDeleteModal" class="flex-1 px-6 py-3 rounded-2xl bg-stone-200 text-stone-700 font-semibold hover:shadow-lg transition-all">
+                    Batal
+                </button>
+                <button wire:click="deleteComment" class="flex-1 px-6 py-3 rounded-2xl bg-dark-brown text-white font-semibold hover:shadow-lg transition-all">
+                    Ya, Hapus
+                </button>
+            </div>
         </x-delete-modal>
-    </div>
+    @endif
     <x-image-modal />
 </div>

@@ -14,7 +14,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CommentImageController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
+// use App\Http\Controllers\UsersController;
 
 
 Route::get('lang/{locale}', function ($locale) {
@@ -50,6 +50,8 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/cafes', [\App\Http\Controllers\Admin\CafeController::class, 'index'])->name('admin.cafes');
         Route::get('/cafes/create', [\App\Http\Controllers\Admin\CafeController::class, 'create'])->name('admin.cafes.create');
         Route::post('/cafes', [\App\Http\Controllers\Admin\CafeController::class, 'store'])->name('admin.cafes.store');
+        Route::get('/cafes/{id}/edit', [\App\Http\Controllers\Admin\CafeController::class, 'edit'])->name('admin.cafes.edit');
+        Route::put('/cafes/{id}', [\App\Http\Controllers\Admin\CafeController::class, 'update'])->name('admin.cafes.update');
         Route::delete('/cafes/{id}', [\App\Http\Controllers\Admin\CafeController::class, 'destroy'])->name('admin.cafes.destroy');
         
         Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
@@ -98,11 +100,9 @@ Route::middleware(['auth'])->group(function(){
 });
 
 Route::middleware(['auth'])->group(function(){
-    Route::get('/profile/settings', function () {
-        return view('profile-settings.settings');
-    })->name('profile.settings');
+    Route::get('/profile/settings', [UsersController::class, 'show'])->name('profile.settings.show');
 
-    Route::put('/settings', [UsersController::class, 'update'])->name('profile.settings.update');
+    Route::put('/profile/settings', [UsersController::class, 'update'])->name('profile.settings.update');
 });
 
 Route::post('/logout', function () {
@@ -141,7 +141,3 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
     ->name('password.email');
 
 Route::post('/comments/upload-image', [CommentImageController::class, 'upload'])->name('comments.upload-image')->middleware('auth');
-Route::middleware('auth')->group(function () {
-    Route::post('/settings', [ProfileController::class, 'update'])->name('profile.settings.update');
-
-});

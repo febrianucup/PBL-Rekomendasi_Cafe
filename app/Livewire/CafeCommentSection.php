@@ -19,10 +19,12 @@ class CafeCommentSection extends Component
     public $rating_score = 5;
     public $photos = [];
     public $replyingToId = null; 
-    public $reply_body = [];
+    public $reply_body = '';
     public $cafe;
     public $confirmingDeleteId = null;
     public $hasReviewed = false;
+    public $hideFlash = false;
+    public $isDeleteModalOpen = false;
 
     public function mount($cafeId){
         $this->cafeId = $cafeId;
@@ -71,6 +73,7 @@ class CafeCommentSection extends Component
         $this->reset(['body', 'rating_score']);
         $this->photos = [];
         $this->hasReviewed = true;
+        $this->hideFlash = false;
         session()->flash('success', 'Berhasil terkirim!');
     }
 
@@ -100,7 +103,7 @@ class CafeCommentSection extends Component
 
     public function toggleReply($commentId)
     {
-        if ($this->replyingToId === $commentId) {
+        if ($this->replyingToId == $commentId) {
             $this->replyingToId = null;
             $this->reply_body = '';
         } else {
@@ -130,6 +133,7 @@ class CafeCommentSection extends Component
         ]);
 
         $this->reset(['reply_body', 'replyingToId']);
+        $this->hideFlash = false;
         session()->flash('success', 'Balasan berhasil dikirim!');
     }
 
@@ -151,15 +155,22 @@ class CafeCommentSection extends Component
                 $comment->delete();
                 
                 $this->confirmingDeleteId = null;
-                $this->dispatch('close-delete-modal-cafe-comment');
+                $this->isDeleteModalOpen = false;
+                $this->hideFlash = false;
                 
                 session()->flash('success', 'Komentar berhasil dihapus.');
             }
         }
     }
 
+    public function closeDeleteModal() {
+        $this->isDeleteModalOpen = false;
+        $this->confirmingDeleteId = null;
+    }
+
     public function confirmDelete($commentId){
         $this->confirmingDeleteId = $commentId;
+        $this->isDeleteModalOpen = true;
     }
 
     public function render(){
