@@ -101,7 +101,7 @@
                     Semua Rekomendasi Cafe
                 @endif
             </h2>
-        <div class="flex justify-end items-center mb-6">
+        <div class="flex justify-end gap-2 items-center mb-6">
             <button id="btn-nearest" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full border border-black transition-all duration-300 {{ request('sort_by_distance') == 'true' ? 'bg-black text-white hover:bg-gray-800' : 'bg-transparent text-black hover:bg-gray-100' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />

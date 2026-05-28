@@ -88,7 +88,7 @@
                 
                 @php
                     $isOwner = (Auth::id() === $cafe->user_id);
-                    $isAdmin = (auth()->user()->role->name === 'admin');
+                    $isAdmin = (auth()->check() && auth()->user()->role && auth()->user()->role->name === 'admin');
                 @endphp
 
                 @if (!$isOwner && !$isAdmin)
