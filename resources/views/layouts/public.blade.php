@@ -27,9 +27,9 @@
         h1, h2, h3 {
             font-family: 'Playfair Display', serif;
         }
-        header { 
+        /* header { 
             background-color: #F5F1EC; 
-        }
+        } */
         [x-cloak] { 
             display: none !important; 
         }
@@ -59,12 +59,11 @@
             color: #ffa63a;
             transition: color 0.3s;
         }
-        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body class="text-gray-900 min-h-screen flex flex-col">
     
-    <header class="w-full border-b border-gray-300 sticky top-0 z-[999] transition-all duration-500 ease-in-out" x-data="{isScrolled:false,mobileMenu:false}" @scroll.window="isScrolled = window.scrollY > 10" :class="isScrolled ? 'bg-white/70 backdrop-blur-md shadow-xl' : 'bg-transparent'">
+    <header class="w-full border-b border-gray-300 sticky top-0 z-[999] transition-all duration-500 ease-in-out" x-data="{isScrolled:false,mobileMenu:false}" @scroll.window="isScrolled = window.scrollY > 10" :class="isScrolled ? 'bg-[#F5F1EC]/80 backdrop-blur-xl shadow-xl' : 'bg-[#F5F1EC]'">
 
         <div class="mr-4 ml-4 mx-auto px-4 lg:px-8">
             <div class="flex items-center justify-between py-4 gap-4 h-20">

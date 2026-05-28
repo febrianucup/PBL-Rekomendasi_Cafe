@@ -111,7 +111,7 @@
             </button>
             <a href="{{ request()->fullUrlWithQuery(['sort_by_rating' => request('sort_by_rating') == 'true' ? null : 'true', 'sort_by_distance' => null, 'latitude' => null, 'longitude' => null]) }}"
             class="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full border {{ request('sort_by_rating') == 'true' ? 'bg-black text-white' : 'bg-transparent text-black' }}">
-                Rating Tertinggi
+                ★ Rating Tertinggi
             </a>
         </div>
 
