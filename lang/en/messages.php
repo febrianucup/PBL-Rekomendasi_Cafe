@@ -6,6 +6,8 @@ return [
     'all_spaces' => 'All Spaces',
     'no_tags' => 'No tags available',
     'no_cafe' => 'No cafes available at the moment.',
+    'no_favorite'=>'No Favorite Available.',
+    'no_favorite_desc'=>'You Can Add Your Favorite Cafe.',
     'no_cafe_desc' => 'Please check back later for data updates.',
     
     // Admin Dashboard & Sidebar

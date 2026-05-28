@@ -14,6 +14,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CommentImageController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FavoriteController;
 // use App\Http\Controllers\UsersController;
 
 
@@ -30,10 +31,9 @@ Route::get('/kontak', function () {
 });
 Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
 
-Route::post('/favorites/toggle/{id}', [CafeController::class, 'toggleFavorite'])->name('favorites.toggle');
-Route::post('/detail/{id}/favorite', [CafeController::class, 'toggleFavorite'])->name('cafes.favorite');
+Route::post('/detail/{id}/favorite', [FavoriteController::class, 'favoriteToggle'])->name('cafes.favorite');
 Route::post('/detail/{id}/rate', [CafeController::class, 'submitRating'])->name('cafes.rate');
-Route::get('/favorites', [CafeController::class, 'favoritesList'])->name('favorites.list');
+Route::get('/favorite', [FavoriteController::class, 'show']);
 
 Route::middleware('guest')->group(function(){
     Route::get('/login', [LoginController::class, 'loginForm'])->name('login/form');
