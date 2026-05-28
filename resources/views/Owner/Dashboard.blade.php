@@ -112,8 +112,8 @@
                                                 <td class="px-8 py-5">
                                                     <div class="flex items-center gap-4">
                                                         <div class="flex items-center gap-1.5 bg-cream px-3 py-1.5 rounded-lg inline-flex">
-                                                            <span class="text-dark-brown font-semibold">4.8</span>
                                                             <span class="text-soft-green text-xs">★</span>
+                                                            <span class="text-dark-brown font-semibold">{{ $cafe->ratings->avg('rating_score') ?number_format($cafe->ratings->avg('rating_score'), 1) : '-' }}</span>
                                                         </div>
                                                     </div>
                                                 </td>

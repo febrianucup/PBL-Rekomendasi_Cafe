@@ -38,6 +38,7 @@ class CafeController extends Controller
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
         $sortByDistance = $request->input('sort_by_distance') === 'true';
+        $sortByRating = $request->input('sort_by_rating') === 'true';
 
         $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos', 'ratings'])->where('published', true);
 
@@ -72,10 +73,10 @@ class CafeController extends Controller
             });
         }
 
-        $minRating = $request->input('min_rating');
-        if ($minRating) {
-            $cafeQuery->where('rating', '>=', $minRating);
-        }
+        // $minRating = $request->input('min_rating');
+        // if ($minRating) {
+        //     $cafeQuery->where('rating', '>=', $minRating);
+        // }
 
         if ($latitude && $longitude && $sortByDistance) {
             $cafeQuery->select('*')
@@ -84,6 +85,8 @@ class CafeController extends Controller
                     [$latitude, $longitude, $latitude]
                 )
                 ->orderBy('distance', 'asc');
+        }elseif($sortByRating){
+            $cafeQuery->withAvg('ratings', 'rating_score')->orderBy('ratings_avg_rating_score', 'desc');
         }
 
         $cafe = $cafeQuery->get();
@@ -96,9 +99,8 @@ class CafeController extends Controller
         $navbars = Navbar::orderBy('sort_order', 'asc')->get();
         $tags = Tags::all();
         $types = Type::all();
-        $averageRating = $cafe->avg('rating');
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types', 'averageRating'));
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types'));
       }
 
     public function contactIndex()
@@ -144,30 +146,30 @@ class CafeController extends Controller
         return view('DetailCafe.detailCafe', compact('cafe', 'user', 'menus', 'userRating', 'isFavorited', 'averageRating'));
     }
 
-    public function submitRating(Request $request, $id)
-    {
-        $request->validate([
-            'rating' => ['required', 'integer', 'between:1,5'],
-        ]);
+    // public function submitRating(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'rating' => ['required', 'integer', 'between:1,5'],
+    //     ]);
 
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'Silakan login untuk memberikan rating.');
-        }
+    //     $user = Auth::user();
+    //     if (!$user) {
+    //         return redirect()->route('login')->with('error', 'Silakan login untuk memberikan rating.');
+    //     }
 
-        $cafe = Cafes::findOrFail($id);
+    //     $cafe = Cafes::findOrFail($id);
 
-        Rating::updateOrCreate(
-            ['user_id' => $user->id, 'cafe_id' => $id],
-            ['score' => $request->rating]
-        );
+    //     Rating::updateOrCreate(
+    //         ['user_id' => $user->id, 'cafe_id' => $id],
+    //         ['score' => $request->rating]
+    //     );
 
-        $averageRating = $cafe->ratings()->avg('score');
-        $cafe->rating = $averageRating ? round($averageRating, 1) : $cafe->rating;
-        $cafe->save();
+    //     $averageRating = $cafe->ratings()->avg('score');
+    //     $cafe->rating = $averageRating ? round($averageRating, 1) : $cafe->rating;
+    //     $cafe->save();
 
-        return back()->with('success', 'Terima kasih, rating kamu telah tersimpan.');
-    }
+    //     return back()->with('success', 'Terima kasih, rating kamu telah tersimpan.');
+    // }
 
     public function ownerDashboard($id = null)
     {
@@ -180,6 +182,8 @@ class CafeController extends Controller
         $cafes = Cafes::where('user_id', $id)
             ->with(['thumbnail', 'type'])
             ->get();
+        
+        // $averageRating = Comment::where('cafe_id', $id)->whereNotNull('rating_score')->avg('rating_score');
 
         return view('Owner.Dashboard', compact('cafes'));
     }

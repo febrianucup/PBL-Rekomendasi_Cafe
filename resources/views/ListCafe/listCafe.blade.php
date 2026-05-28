@@ -92,16 +92,16 @@
                 <span class="text-gray-400 italic">{{ __('messages.no_tags') }}</span>
             @endif
         </div>
-        
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-lg font-bold text-gray-800 font-sans">
+        <h2 class="text-lg font-bold text-gray-800 font-sans">
                 @if(request('sort_by_distance') == 'true')
                     Cafe Terdekat Dari Lokasi Anda
+                @elseif(request('sort_by_rating') == 'true')
+                    Urut Berdasarkan Rating
                 @else
                     Semua Rekomendasi Cafe
                 @endif
             </h2>
-            
+        <div class="flex justify-end items-center mb-6">
             <button id="btn-nearest" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full border border-black transition-all duration-300 {{ request('sort_by_distance') == 'true' ? 'bg-black text-white hover:bg-gray-800' : 'bg-transparent text-black hover:bg-gray-100' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -109,6 +109,10 @@
                 </svg>
                 {{ request('sort_by_distance') == 'true' ? 'Menampilkan Terdekat' : 'Urutkan Terdekat' }}
             </button>
+            <a href="{{ request()->fullUrlWithQuery(['sort_by_rating' => request('sort_by_rating') == 'true' ? null : 'true', 'sort_by_distance' => null, 'latitude' => null, 'longitude' => null]) }}"
+            class="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full border {{ request('sort_by_rating') == 'true' ? 'bg-black text-white' : 'bg-transparent text-black' }}">
+                Rating Tertinggi
+            </a>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 content-start flex-grow">
@@ -136,7 +140,7 @@
                             </div>
                             <div class="text-xs font-bold bg-white px-2 py-1 rounded-md shadow-xs border border-gray-100 flex items-center gap-0.5">
                                 <span class="text-amber-500">★</span>
-                                <span class="text-gray-800">{{ number_format($avarangeRating ?? 4.8, 1) }}</span>
+                                <span class="text-gray-800">{{ $cafes->ratings->avg('rating_score') ?number_format($cafes->ratings->avg('rating_score'), 1) : '-' }}</span>
                             </div>
                         </div>
                     </a>
@@ -163,6 +167,7 @@
                         url.searchParams.delete('longitude');
                         window.location.href = url.pathname + url.search;
                     } else {
+                        url.searchParams.delete('sort_by_rating');
                         if (navigator.geolocation) {
                             btnNearest.innerHTML = `
                                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-current inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

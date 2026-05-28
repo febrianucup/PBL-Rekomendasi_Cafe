@@ -33,7 +33,7 @@ Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
 
 Route::post('/detail/{id}/favorite', [FavoriteController::class, 'favoriteToggle'])->name('cafes.favorite');
 Route::post('/detail/{id}/rate', [CafeController::class, 'submitRating'])->name('cafes.rate');
-Route::get('/favorite', [FavoriteController::class, 'show']);
+Route::get('/favorite', [FavoriteController::class, 'show'])->name('favorite.cafes');
 
 Route::middleware('guest')->group(function(){
     Route::get('/login', [LoginController::class, 'loginForm'])->name('login/form');
