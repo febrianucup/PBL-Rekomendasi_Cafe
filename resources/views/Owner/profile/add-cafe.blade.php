@@ -218,13 +218,6 @@
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
                 </div>
-
-                <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.address') }}</label>
-                    <input type="text" name="address" value="{{ auth()->user()->ownerProfile->address ?? old('address') }}"
-                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
-                </div>
-
             </div>
         </section>
 
@@ -280,6 +273,12 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Address</label>
+                    <input type="text" name="address" value="{{ old('address', $cafe->address ?? '') }}"
+                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                 </div>
                 
                 <div>

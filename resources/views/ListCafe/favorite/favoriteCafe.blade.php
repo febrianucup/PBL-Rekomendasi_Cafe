@@ -2,82 +2,7 @@
 
 @section('title', 'Cafe List')
 @section('content')
-    <div class="text-center mb-6 mt-6">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-3 tracking-tight">{{ $setting->title ?? 'Beranda' }}</h1>
-        <p class="text-gray-500 text-sm md:text-base max-w-lg mx-auto">{{ $setting->description ?? 'Deskripsi default' }}</p>
-    </div>
-        
-    <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
-        @php
-            $sliderImages = $setting->slider_images && count($setting->slider_images) > 0 
-                ? array_map(function($img) { 
-                    $imagePath = is_array($img) ? ($img['image'] ?? '') : $img;
-                    return asset("storage/" . $imagePath); 
-                }, $setting->slider_images) 
-                : [
-                    "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80",
-                    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80",
-                    "https://images.unsplash.com/photo-1468436139062-f60a71c5c892?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80"
-                ];
-        @endphp
-        
-        <section class="w-full h-[550px] mb-12 mt-8 bg-gray-200 relative group overflow-hidden rounded-xl"
-            x-data='{ 
-                activeSlide: 0,
-                slides: @json($sliderImages),
-                autoplayInterval:null,
-                init() {
-                    this.startAutoplay();
-                },
-                next() {
-                    this.activeSlide = (this.activeSlide + 1) % this.slides.length;
-                },
-                prev() {
-                    this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
-                },
-                startAutoplay() {
-                    if (this.slides.length > 1) {
-                        this.autoplayInterval = setInterval(() => {
-                            this.next();
-                        }, 4000); 
-                    }
-                },
-                resetAutoplay() {
-                    clearInterval(this.autoplayInterval);
-                    this.startAutoplay();
-                }
-            }'>
-
-            <div class="w-full h-full relative z-0">
-                <template x-for="(slide, index) in slides" :key="index">
-                    <div x-show="activeSlide === index"
-                        x-transition:enter="transition ease-out duration-700"
-                        x-transition:enter-start="opacity-0 scale-105"
-                        x-transition:enter-end="opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-700"
-                        x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0"
-                        class="absolute inset-0 w-full h-full">
-                        <img :src="slide" alt="Cafe Image" class="w-full h-full object-cover">
-                    </div>
-                </template>
-            </div>
-
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10"></div>
-
-            <template x-if="slides.length > 1">
-                <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-                    <template x-for="(slide, index) in slides" :key="index">
-                        <button @click="activeSlide = index; resetAutoplay()" type="button"
-                            :class="activeSlide === index ? 'bg-white w-6' : 'bg-white/50 w-2'"
-                            class="h-2 rounded-full transition-all duration-300"></button>
-                    </template>
-                </div>
-            </template>
-        </section>
-    </div>
-
-    <main class="flex-grow w-full mx-auto px-6 py-12 flex flex-col">
+<main class="flex-grow w-full mx-auto px-6 py-12 flex flex-col">
         <div class="flex justify-center space-x-6 md:space-x-8 text-xs font-semibold uppercase tracking-widest mb-10 border-b border-gray-200 pb-4 overflow-x-auto whitespace-nowrap">
             <a href="{{ request()->fullUrlWithQuery(['tag' => null]) }}" class="{{ !request('tag') ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
                 All Cafe
@@ -95,20 +20,16 @@
         
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-lg font-bold text-gray-800 font-sans">
-                @if(request('sort_by_distance') == 'true')
-                    Cafe Terdekat Dari Lokasi Anda
-                @else
-                    Semua Rekomendasi Cafe
-                @endif
+                    Semua Cafe Favorit Anda
             </h2>
             
-            <button id="btn-nearest" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full border border-black transition-all duration-300 {{ request('sort_by_distance') == 'true' ? 'bg-black text-white hover:bg-gray-800' : 'bg-transparent text-black hover:bg-gray-100' }}">
+            {{-- <button id="btn-nearest" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full border border-black transition-all duration-300 {{ request('sort_by_distance') == 'true' ? 'bg-black text-white hover:bg-gray-800' : 'bg-transparent text-black hover:bg-gray-100' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                 </svg>
                 {{ request('sort_by_distance') == 'true' ? 'Menampilkan Terdekat' : 'Urutkan Terdekat' }}
-            </button>
+            </button> --}}
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 content-start flex-grow">
@@ -143,13 +64,13 @@
                 </div>
             @empty
                 <div class="col-span-1 sm:col-span-2 md:col-span-4 flex-grow flex flex-col items-center justify-center py-24 text-gray-400">
-                    <p class="text-lg italic font-medium">{{ __('messages.no_cafe') }}</p>
-                    <p class="text-xs mt-1">{{ __('messages.no_cafe_desc') }}</p>
+                    <p class="text-lg italic font-medium">{{ __('messages.no_favorite') }}</p>
+                    <p class="text-xs mt-1">{{ __('messages.no_favorite_desc') }}</p>
                 </div>
             @endforelse
         </div>
     </main>
-
+{{-- 
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -189,6 +110,6 @@
                 });
             }
         });
-    </script>
-    @endpush
+    </script> --}}
+    {{-- @endpush --}}
 @endsection

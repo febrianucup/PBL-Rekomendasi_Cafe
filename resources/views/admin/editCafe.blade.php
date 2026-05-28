@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Add Cafe - Saran Kafe</title>
+    <title>Edit Cafe - Saran Kafe</title>
     <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -50,8 +50,9 @@
 
     <!-- PAGE CONTENT -->
     <div class="max-w-2xl mx-auto px-6 py-8">
-        <form method="POST" action="{{ route('admin.cafes.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.cafes.update', $cafe->id) }}" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
 
             @if(session('success'))
                 <div class="mb-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
@@ -75,8 +76,8 @@
             </a>
 
         <!-- PAGE TITLE -->
-        <h1 class="text-3xl font-semibold text-dark mb-1">{{ __('messages.add_cafe_title') }}</h1>
-        <p class="text-xs text-muted mb-8 max-w-sm">{{ __('messages.add_cafe_desc') }}</p>
+        <h1 class="text-3xl font-semibold text-dark mb-1">Edit Cafe</h1>
+        <p class="text-xs text-muted mb-8 max-w-sm">Edit informasi cafe</p>
 
         <!-- SECTION: Owner Selection -->
         <section class="mb-8">
@@ -86,9 +87,9 @@
                     <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Pemilik Cafe</label>
                     <div class="relative">
                         <select name="owner_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer">
-                            <option value="">Pilih Owner</option>
+                            <option value="">Pilih Owner (Bila dikosongkan akan di set ke Anda)</option>
                             @foreach($owners as $owner)
-                                <option value="{{ $owner->id }}" {{ old('owner_id') == $owner->id ? 'selected' : '' }}>{{ $owner->username }} - {{ $owner->email }}</option>
+                                <option value="{{ $owner->id }}" {{ old('owner_id', $cafe->user_id) == $owner->id ? 'selected' : '' }}>{{ $owner->username }} - {{ $owner->email }}</option>
                             @endforeach
                         </select>
                         <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
@@ -102,10 +103,9 @@
             <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.general_information') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
 
-                <!-- Cafe Name -->
                 <div>
                     <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.cafe_name') }}</label>
-                    <input type="text" name="name" value="{{ old('name') }}"
+                    <input type="text" name="name" value="{{ old('name', $cafe->name) }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                 </div>
 
@@ -113,7 +113,7 @@
                 <div>
                     <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.brand_editorial_description') }}</label>
                     <textarea name="description" rows="4"
-                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted resize-none" required>{{ old('description') }}</textarea>
+                        class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted resize-none" required>{{ old('description', $cafe->description) }}</textarea>
                 </div>
 
                 <!-- Establishment Type + Atmospheric Tag -->
@@ -124,7 +124,7 @@
                             <select name="type_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer" required>
                                 <option value="">{{ __('messages.select_a_type') }}</option>
                                 @foreach($types as $type)
-                                    <option value="{{ $type->id }}" {{ old('type_id') == $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
+                                    <option value="{{ $type->id }}" {{ old('type_id', $cafe->type_id) == $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
                                 @endforeach
                             </select>
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
@@ -133,7 +133,7 @@
 
                     <div x-data='{ 
                         tags: @json($tags->toArray()), 
-                        selectedTags: @json(old("tags", [])).map(String) 
+                        selectedTags: @json(old("tags", $cafe->tags->pluck("id")->toArray())).map(String) 
                     }'>
                         <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">
                             {{ __('messages.atmospheric_tags') }}
@@ -163,15 +163,24 @@
 
         <!-- SECTION: Opening Hours -->
         @php
-            $defaultSchedules = old('open_time') ?: [
+            $defaultSchedules = old('open_time', $cafe->operationalTime->toArray()) ?: [
                 ['day_range' => 'Mon - Fri', 'open_time' => '07:00', 'close_time' => '19:00'],
                 ['day_range' => 'Saturday', 'open_time' => '08:00', 'close_time' => '21:00'],
                 ['day_range' => 'Sunday', 'open_time' => '09:00', 'close_time' => '17:00'],
             ];
+            
+            // Format time correctly for input type="time"
+            $formattedSchedules = array_map(function($schedule) {
+                return [
+                    'day_range' => $schedule['day_range'],
+                    'open_time' => substr($schedule['open_time'], 0, 5),
+                    'close_time' => substr($schedule['close_time'], 0, 5),
+                ];
+            }, $defaultSchedules);
         @endphp
 
         <section class="mb-8" x-data='{
-            schedules: @json($defaultSchedules),
+            schedules: @json($formattedSchedules),
             addSchedule() {
                 this.schedules.push({ day_range: "", open_time: "00:00", close_time: "00:00" });
             },
@@ -228,12 +237,12 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.phone_number') }}</label>
-                        <input type="tel" name="phone_number" value="{{ old('phone_number') }}"
+                        <input type="tel" name="phone_number" value="{{ old('phone_number', $cafe->num_phone) }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
                     <div>
                         <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.email_address') }}</label>
-                        <input type="email" name="email" value="{{ auth()->user()->email ?? old('email') }}"
+                        <input type="email" name="email" value="{{ old('email', $cafe->email) }}"
                             class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                     </div>
                 </div>
@@ -264,14 +273,14 @@
                 </div>
 
                 <!-- Hidden Coordinates Input -->
-                <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude') }}" />
-                <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude') }}" />
+                <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude', $cafe->latitude) }}" />
+                <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude', $cafe->longitude) }}" />
 
                 <!-- Visual Readonly Coordinate Display -->
                 <div class="bg-cream border border-border rounded-xl p-3 text-xs text-muted flex justify-around items-center">
-                    <div>Latitude: <strong id="val-latitude" class="text-dark">{{ old('latitude', '-') }}</strong></div>
+                    <div>Latitude: <strong id="val-latitude" class="text-dark">{{ old('latitude', $cafe->latitude ?? '-') }}</strong></div>
                     <div class="h-4 w-[1px] bg-border"></div>
-                    <div>Longitude: <strong id="val-longitude" class="text-dark">{{ old('longitude', '-') }}</strong></div>
+                    <div>Longitude: <strong id="val-longitude" class="text-dark">{{ old('longitude', $cafe->longitude ?? '-') }}</strong></div>
                 </div>
 
                 <!-- Cafe Rating Field -->
@@ -287,7 +296,7 @@
                             class="w-full h-full border-gray-300 rounded-md shadow-sm focus:border-amber-500 focus:ring-amber-500">
                         <option value="">-- Pilih Kecamatan --</option>
                         @foreach($daftarDaerah as $kecamatan)
-                            <option value="{{ $kecamatan->id }}">
+                            <option value="{{ $kecamatan->id }}" {{ old('kecamatan', $cafe->kecamatan) == $kecamatan->name ? 'selected' : '' }}>
                                 {{ ucwords(strtolower($kecamatan->name)) }}
                             </option>
                         @endforeach
@@ -302,7 +311,7 @@
                 
                 <div>
                     <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Google Maps Link</label>
-                    <input type="url" name="maps" id="maps" placeholder="https://maps.google.com/maps?q=..." value="{{ old('maps') }}"
+                    <input type="url" name="maps" id="maps" placeholder="https://maps.google.com/maps?q=..." value="{{ old('maps', $cafe->maps_link) }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                 </div>
             </div>
@@ -320,6 +329,13 @@
                         <span class="text-[10px] text-muted mt-1 uppercase tracking-wider">{{ __('messages.upload') }}</span>
                         <input type="file" name="photos[]" id="photo-input" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)" />
                     </div>
+
+                    @foreach($cafe->photos as $photo)
+                    <div class="relative group rounded-xl overflow-hidden aspect-square">
+                        <img src="{{ asset('storage/' . $photo->photo_url) }}" alt="cafe photo" class="w-full h-full object-cover" />
+                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                    </div>
+                    @endforeach
                 </div>
                 <p class="text-[10px] text-muted mt-3">{{ __('messages.upload_multiple_images') }}</p>
             </div>
@@ -339,6 +355,13 @@
                         <input type="file" name="thumbnail" id="thumbnail-input" accept="image/*" style="display: none;" onchange="handleThumbnailInput(event)" />
                     </div>
 
+                    @if($cafe->thumbnail)
+                    <div class="relative group rounded-xl overflow-hidden aspect-square">
+                        <img src="{{ asset('storage/' . $cafe->thumbnail->photo_url) }}" alt="thumbnail" class="w-full h-full object-cover" />
+                        <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                    </div>
+                    @endif
+
                 </div> <!-- Penutup thumbnail-gallery -->
             </div> <!-- Penutup bg-white -->
         </section>
@@ -348,7 +371,32 @@
         <div class="bg-white border border-border rounded-2xl overflow-hidden" id="menu-section">
 
             <div id="menu-list">
-                </div>
+                @foreach($cafe->menuItems as $index => $item)
+                    <div class="menu-item flex items-center justify-between px-5 py-4 border-b border-border">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl overflow-hidden {{ $item->img_url ? '' : 'bg-[#f5f1ec] flex items-center justify-center text-xs text-muted' }}">
+                                @if($item->img_url)
+                                    <img src="{{ asset('storage/' . $item->img_url) }}" alt="menu image" class="w-full h-full object-cover" />
+                                @else
+                                    IMG
+                                @endif
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-dark">{{ $item->name }}</p>
+                                <p class="text-xs text-muted">{{ $item->description }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="menu-price text-sm font-semibold text-dark">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                            <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this, {{ $index }})">✕</button>
+                        </div>
+                        <input type="hidden" name="menu_items[{{ $index }}][id]" value="{{ $item->id }}">
+                        <input type="hidden" name="menu_items[{{ $index }}][name]" value="{{ $item->name }}">
+                        <input type="hidden" name="menu_items[{{ $index }}][description]" value="{{ $item->description }}">
+                        <input type="hidden" name="menu_items[{{ $index }}][price]" value="{{ $item->price }}">
+                    </div>
+                @endforeach
+            </div>
 
             <div id="new-menu-form" class="hidden px-5 py-4 border-b border-border space-y-3">
                 <div class="grid grid-cols-12 gap-3">
@@ -398,7 +446,7 @@
     <section class='mb-10'>
                 <!-- From Uiverse.io by Javierrocadev --> 
         <label class="relative inline-flex items-center cursor-pointer">
-            <input class="sr-only peer" value="1" type="checkbox" name="is_published">
+            <input class="sr-only peer" value="1" type="checkbox" name="is_published" {{ old('is_published', $cafe->published) ? 'checked' : '' }}>
             <div class="group peer ring-0 bg-gray-50 border-2 border-amber-900 rounded-full outline-none duration-700 after:duration-200 w-14 h-7  shadow-md peer-checked:bg-[#6B4F3B]  peer-focus:outline-none after:content-[''] after:rounded-full after:absolute after:bg-amber-900 after:outline-none after:h-5 after:w-5 after:top-1 after:left-1  peer-checked:after:translate-x-7 peer-hover:after:scale-95">
 
                 <svg y="0" xmlns="http://www.w3.org/2000/svg" x="0" width="100" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" height="100" class="absolute  top-1 left-1 fill-green-400 w-5 h-5">

@@ -6,13 +6,10 @@
     <title>@yield('title', 'Dashboard') | Safe</title>
     <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        [x-cloak] { display: none !important; }
-    </style>
 </head>
 <body class="bg-cream font-sans text-gray-800 antialiased selection:bg-soft-green selection:text-white">
     @php
@@ -57,5 +54,6 @@
             <x-logout-modal />
         </main>
     </div>
+    @livewireScripts
 </body>
 </html>

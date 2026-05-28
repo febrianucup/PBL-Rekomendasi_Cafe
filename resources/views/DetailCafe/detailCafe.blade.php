@@ -71,7 +71,7 @@
                 </div>
             </template>
 
-            <div class="absolute bottom-10 left-6 md:left-16 right-6 text-white z-10">
+            <div class="absolute bottom-10 left-6 md:left-16 right-6 text-white z-30 pointer-events-none">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="bg-[#D4A373] text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded">
                         Cafe Profile
@@ -86,20 +86,27 @@
                 <h1 class="text-3xl md:text-6xl font-bold tracking-tight uppercase drop-shadow-md">{{ $cafe->name }}</h1>
                 <p class="mt-2 text-sm md:text-lg text-white/90 max-w-2xl leading-relaxed drop-shadow-xs">{{ $cafe->address }}</p>
                 
-                <div class="mt-6 flex flex-wrap items-center gap-3">
-                    @auth
-                        <form action="{{ route('cafes.favorite', $cafe->id) }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
-                                {{ $isFavorited ? 'Hapus Favorite' : 'Tambah Favorite' }}
-                            </button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}" class="bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
-                            Login untuk Favorite
-                        </a>
-                    @endauth
-                </div>
+                @php
+                    $isOwner = (Auth::id() === $cafe->user_id);
+                    $isAdmin = (auth()->user()->role->name === 'admin');
+                @endphp
+
+                @if (!$isOwner && !$isAdmin)
+                    <div class="mt-6 flex flex-wrap items-center gap-3">
+                        @auth
+                            <form action="{{ route('cafes.favorite', $cafe->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" x-on:click.stop class="pointer-events-auto bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
+                                    {{ auth()->user()->favoriteCafes->contains($cafe->id) ? '💔 Hapus dari Favorit' : '❤️ Tambah ke Favorit' }}
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
+                                Login untuk Favorite
+                            </a>
+                        @endauth
+                    </div>
+                @endif
             </div>
         </div>
     </div>

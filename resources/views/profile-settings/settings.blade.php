@@ -1,4 +1,3 @@
-HTML
 @extends('layouts.app')
 
 @section('title', 'Account Settings')
@@ -18,25 +17,21 @@ HTML
     </div>
     @endif
 
+
     <form method="POST" action="{{ route('profile.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
         @csrf
-
-        <form method="POST" action="{{ route('profile.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
-            @csrf
-            @method('PUT')
-            @php
-                $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->name ?? 'Admin User').'&background=D6CFC7&color=4B2E2B';
-                if (auth()->check()) {
-                    $files = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
-                    foreach ($files as $file) {
-                        if (str_starts_with(basename($file), 'avatar_' . auth()->id() . '.')) {
-                            $avatarUrl = asset('storage/' . $file);
-                            break;
-                        }
+        @method('PUT')
+        @php
+            $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->name ?? 'Admin User').'&background=D6CFC7&color=4B2E2B';
+            if (auth()->check()) {
+                $files = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
+                foreach ($files as $file) {
+                    if (str_starts_with(basename($file), 'avatar_' . auth()->id() . '.')) {
+                        $avatarUrl = asset('storage/' . $file);
+                        break;
                     }
                 }
             }
-        }
         @endphp
 
         <div class="flex items-center gap-6 pb-8 border-b border-light-beige/30">
@@ -68,12 +63,12 @@ HTML
             </div>
         </div>
 
-        <div x-data="{ showForm: false }" class="mt-6">
-            <button type="button" @click="showForm = !showForm" class="px-6 py-2 bg-[#4A3B32] text-white text-sm font-bold rounded-xl hover:bg-opacity-80 transition-all">
+        <div class="mt-6">
+            {{-- <button type="button" @click="showForm = !showForm" class="px-6 py-2 bg-[#4A3B32] text-white text-sm font-bold rounded-xl hover:bg-opacity-80 transition-all">
                 Change Password
-            </button>
+            </button> --}}
 
-            <div x-show="showForm" x-transition.duration.300ms class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-light-beige/30 space-y-6 mt-6" style="display: none;">
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-light-beige/30 space-y-6 mt-6">
                 <h3 class="font-serif text-2xl font-bold text-dark-brown">Security</h3>
 
                 <div class="space-y-2 mb-4">
