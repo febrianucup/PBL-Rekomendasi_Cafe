@@ -236,17 +236,19 @@
             </div>
         </section>
 
-        <section class="bg-white p-6 md:p-8 rounded-xl shadow-xs border border-gray-100 mb-16">
+        <section x-data class="bg-white p-6 md:p-8 rounded-xl shadow-xs border border-gray-100 mb-16">
             <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">Menu List</h2>
             <div class="w-12 h-[3px] mx-auto mb-10"></div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="menu">
                 @if ($cafe->menuItems && $cafe->menuItems->count() > 0)
                     @foreach ($cafe->menuItems as $menu)
+                        @php
+                            $imageUrl = $menu->img_url ? asset('storage/'.$menu->img_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80';
+                        @endphp
                         <div class="bg-[#F5F1EC]  p-4 rounded-xl shadow-xs border border-gray-100 flex items-center hover:shadow-md transition-shadow">
                             <div class="w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100"> 
-                                <img src="{{ $menu->img_url ? asset('storage/'.$menu->img_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80' }}" 
-                                     alt="{{ $menu->name }}" class="w-full h-full object-cover">
+                                <img src="{{ $imageUrl }}" alt="{{ $menu->name }}" class="w-full h-full object-cover cursor-pointer" @click="$dispatch('open-image', '{{ $imageUrl }}')">
                             </div>
                             <div class="ml-4 flex-1 min-w-0">
                                 <h4 class="font-bold text-base text-gray-800 truncate">{{ $menu->name }}</h4>
@@ -280,5 +282,7 @@
                 </div>
             @endauth
         </section>
+        <x-image-modal />
     </main>
+    {{-- @include('components.image-modal') --}}
 @endsection
