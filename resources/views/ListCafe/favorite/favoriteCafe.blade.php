@@ -57,7 +57,7 @@
                             </div>
                             <div class="text-xs font-bold bg-white px-2 py-1 rounded-md shadow-xs border border-gray-100 flex items-center gap-0.5">
                                 <span class="text-amber-500">★</span>
-                                <span class="text-gray-800">{{ number_format($avarangeRating ?? 4.8, 1) }}</span>
+                                <span class="text-gray-800">{{ $cafes->ratings->avg('rating_score') ?number_format($cafes->ratings->avg('rating_score'), 1) : '-' }}</span>
                             </div>
                         </div>
                     </a>
