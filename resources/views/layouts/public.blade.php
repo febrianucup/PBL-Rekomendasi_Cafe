@@ -16,7 +16,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
 
@@ -79,6 +78,13 @@
                         Beranda
                     </a>
 
+                    @auth
+                        @if(auth()->user()->role->name !== 'owner' && auth()->user()->role->name !== 'admin')
+                            <a href="/favorite" class="hover:text-black transition {{ request()->is('favorite') ? 'text-black border-b border-black pb-1' : '' }}">
+                                Favorite
+                            </a>
+                        @endif
+                        @endauth
                     @isset($navbars)
                         @foreach($navbars as $menu)
                             @if($menu->url !== '/')
@@ -208,7 +214,7 @@
 
                     @endif
 
-                         @auth
+                @auth
 
                     <div x-data="{open:false}" @click.outside="open=false" class="relative inline-block text-left">
 
@@ -393,10 +399,10 @@
     <main class="flex-grow">
         @yield('content')
     </main>
+    <x-footer />
     <x-logout-modal />
 
     @stack('scripts')
-    @extends('components.footer')
     @livewireScripts
 </body>
 </html>

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Favorite;
 use App\Models\Rating;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -44,13 +45,15 @@ class User extends Authenticatable
         return $this->HasOne(OwnerProfile::class, 'user_id');
     }
 
-    public function ratings(): HasMany
-    {
+    public function ratings(): HasMany{
         return $this->hasMany(Rating::class, 'user_id');
     }
 
-    public function favorites(): HasMany
-    {
+    public function favorites(): HasMany{
         return $this->hasMany(Favorite::class, 'user_id');
+    }
+
+    public function favoriteCafes(): BelongsToMany{
+        return $this->belongsToMany(Cafes::class, 'favorites', 'user_id', 'cafe_id');
     }
 }
