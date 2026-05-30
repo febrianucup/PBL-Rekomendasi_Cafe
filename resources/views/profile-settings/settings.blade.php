@@ -21,22 +21,9 @@
     <form method="POST" action="{{ route('profile.settings.update') }}" enctype="multipart/form-data" class="space-y-8">
         @csrf
         @method('PUT')
-        @php
-            $avatarUrl = 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()?->name ?? 'Admin User').'&background=D6CFC7&color=4B2E2B';
-            if (auth()->check()) {
-                $files = \Illuminate\Support\Facades\Storage::disk('public')->files('avatars');
-                foreach ($files as $file) {
-                    if (str_starts_with(basename($file), 'avatar_' . auth()->id() . '.')) {
-                        $avatarUrl = asset('storage/' . $file);
-                        break;
-                    }
-                }
-            }
-        @endphp
-
         <div class="flex items-center gap-6 pb-8 border-b border-light-beige/30">
-            <div class="h-20 w-20 rounded-full bg-light-beige overflow-hidden ring-4 ring-cream flex-shrink-0">
-                <img src="{{ $avatarUrl }}" alt="Admin" class="h-full w-full object-cover">
+            <div class="h-20 w-20 rounded-full bg-light-beige text-black flex items-center justify-center font-bold text-4xl">
+                {{ collect(explode(' ', auth()->user()->username ?? 'Guest'))->take(2)->map(fn($w) => strtoupper(substr($w, 0, 1)))->implode('') }}
             </div>
             <div>
                 <h3 class="font-bold text-dark-brown text-xl">Profile Picture</h3>
