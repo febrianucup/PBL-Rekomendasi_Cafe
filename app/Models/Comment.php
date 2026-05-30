@@ -10,6 +10,10 @@ class Comment extends Model
 {
     protected $fillable = ['user_id', 'cafe_id', 'parent_id', 'body', 'rating_score', 'images', 'type'];
 
+    protected $cast = [
+        'rating_score'=>'float'
+    ];
+    
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
