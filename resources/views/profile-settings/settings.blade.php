@@ -26,7 +26,7 @@
                 {{ collect(explode(' ', auth()->user()->username ?? 'Guest'))->take(2)->map(fn($w) => strtoupper(substr($w, 0, 1)))->implode('') }}
             </div>
             <div>
-                <h3 class="font-bold text-dark-brown text-xl">Profile Picture</h3>
+                <h3 class="font-bold text-dark-brown text-xl">{{ auth()->user()->username }}</h3>
             </div>
         </div>
 
