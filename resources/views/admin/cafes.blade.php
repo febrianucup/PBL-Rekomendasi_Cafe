@@ -27,9 +27,8 @@
         </div>
         <div class="bg-dark-brown rounded-3xl p-8 shadow-[0_8px_30px_rgb(75,46,43,0.15)] relative overflow-hidden text-white">
             <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/5 rounded-full"></div>
-            <p class="text-light-beige font-medium mb-2 relative z-10">Status Kurasi</p>
-            <h3 class="font-serif text-4xl font-bold relative z-10 mt-1">Sangat Baik</h3>
-            <p class="text-sm text-light-beige/70 mt-2 relative z-10">+12 minggu ini</p>
+            <p class="text-light-beige font-medium mb-2 relative z-10">Views</p>
+            <h3 class="font-serif text-4xl font-bold relative z-10 mt-1">{{ $cafes->sum('views_count') }}</h3>
         </div>
     </div>
 

@@ -73,4 +73,8 @@ class Cafes extends Model
     public function comments(){
         return $this->hasMany(Comment::class, 'cafe_id');
     }
+
+    public function views(){
+        return $this->hasMany(CafeView::class, 'cafe_id');
+    }
 }

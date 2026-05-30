@@ -10,7 +10,7 @@
             @if(isset($tags) && $tags->isNotEmpty())
                 @foreach($tags as $tag)
                     <a href="{{ request()->fullUrlWithQuery(['tag' => $tag->tag_name]) }}" class="{{ request('tag') == $tag->tag_name ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
-                        {{ $tag->tag_name }}
+                        #{{ $tag->tag_name }}
                     </a>
                 @endforeach
             @else
