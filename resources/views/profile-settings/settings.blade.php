@@ -22,7 +22,7 @@
         @csrf
         @method('PUT')
         <div class="flex items-center gap-6 pb-8 border-b border-light-beige/30">
-            <div class="h-20 w-20 rounded-full bg-light-beige text-black flex items-center justify-center font-bold text-3xl">
+            <div class="h-20 w-20 rounded-full bg-light-beige text-black flex items-center justify-center font-bold text-4xl">
                 {{ collect(explode(' ', auth()->user()->username ?? 'Guest'))->take(2)->map(fn($w) => strtoupper(substr($w, 0, 1)))->implode('') }}
             </div>
             <div>
