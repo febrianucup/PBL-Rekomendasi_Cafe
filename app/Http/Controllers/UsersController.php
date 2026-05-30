@@ -33,26 +33,13 @@ class UsersController extends Controller
         $user->email = $validated['email'];
 
         if ($request->filled('password')) {
-        // Cek apakah password lama benar
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Password lama salah.']);
-        }
-        
-        // Simpan password baru
-        $user->password = Hash::make($request->password);
-    }
-
-        if ($request->hasFile('avatar')) {
-            $file = $request->file('avatar');
-            $filename = 'avatar_' . $user->id . '.' . $file->getClientOriginalExtension();
-            
-            $existing = Storage::disk('public')->files('avatars');
-            foreach ($existing as $exFile) {
-                if (str_starts_with(basename($exFile), 'avatar_' . $user->id . '.')) {
-                    Storage::disk('public')->delete($exFile);
-                }
+            // Cek apakah password lama benar
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors(['current_password' => 'Password lama salah.']);
             }
-            $file->storeAs('avatars', $filename, 'public');
+            
+            // Simpan password baru
+            $user->password = Hash::make($request->password);
         }
 
         $user->save();

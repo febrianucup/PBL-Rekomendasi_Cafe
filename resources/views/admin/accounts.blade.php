@@ -18,9 +18,6 @@
             <a href="{{ route('admin.owners.create') }}" class="bg-dark-brown text-white px-6 py-3.5 rounded-full font-bold shadow-sm hover:shadow-md hover:bg-[#1e1a16] transition-all duration-300">
                 + Tambah Owner
             </a>
-            <button class="bg-white border border-light-beige/50 text-dark-brown px-6 py-3.5 rounded-full font-bold shadow-sm hover:shadow-md hover:bg-cream transition-all duration-300">
-                Ekspor Data
-            </button>
         </div>
     </div>
 

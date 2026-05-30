@@ -85,7 +85,7 @@
             @if(isset($tags) && $tags->isNotEmpty())
                 @foreach($tags as $tag)
                     <a href="{{ request()->fullUrlWithQuery(['tag' => $tag->tag_name]) }}" class="{{ request('tag') == $tag->tag_name ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
-                        {{ $tag->tag_name }}
+                       #{{ $tag->tag_name }}
                     </a>
                 @endforeach
             @else
@@ -97,24 +97,87 @@
                     Cafe Terdekat Dari Lokasi Anda
                 @elseif(request('sort_by_rating') == 'true')
                     Urut Berdasarkan Rating
+                @elseif(request('sort_by_views') == 'true')
+                    Cafe dengan Views Terbanyak
                 @else
                     Semua Rekomendasi Cafe
                 @endif
             </h2>
-        <div class="flex justify-end gap-2 items-center mb-6">
-            <button id="btn-nearest" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full border border-black transition-all duration-300 {{ request('sort_by_distance') == 'true' ? 'bg-black text-white hover:bg-gray-800' : 'bg-transparent text-black hover:bg-gray-100' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                </svg>
-                {{ request('sort_by_distance') == 'true' ? 'Menampilkan Terdekat' : 'Urutkan Terdekat' }}
-            </button>
-            <a href="{{ request()->fullUrlWithQuery(['sort_by_rating' => request('sort_by_rating') == 'true' ? null : 'true', 'sort_by_distance' => null, 'latitude' => null, 'longitude' => null]) }}"
-            class="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full border {{ request('sort_by_rating') == 'true' ? 'bg-black text-white' : 'bg-transparent text-black' }}">
-                ★ Rating Tertinggi
-            </a>
-        </div>
+        <div class="flex justify-end mb-6 mr-6">
+            <div class="relative inline-block text-left" 
+                x-data="{ open: false }" 
+                @click.away="open = false">
+                
+                <button type="button" 
+                        @click="open = !open"
+                        class="flex items-center gap-2 px-5 py-2.5 list-none cursor-pointer border border-gray-300 px-3 py-2 rounded-md text-sm hover:bg-gray-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m11.25-3v10.5m0 0l-3.75-3.75m3.75 3.75l3.75-3.75" />
+                    </svg>
+                    <span>
+                        @if(request('sort_by_distance') == 'true')
+                            Terdekat
+                        @elseif(request('sort_by_rating') == 'true')
+                            Rating
+                        @elseif(request('sort_by_views') == 'true')
+                            Views
+                        @else
+                            Filter
+                        @endif
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" 
+                        class="w-3 h-3 ml-1 transition-transform duration-300"
+                        :class="{ 'rotate-180': open }">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
 
+                <div x-show="open"
+                    x-transition:enter="transition ease-out duration-100"
+                    x-transition:enter-start="transform opacity-0 scale-95"
+                    x-transition:enter-end="transform opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-75"
+                    x-transition:leave-start="transform opacity-100 scale-100"
+                    x-transition:leave-end="transform opacity-0 scale-95"
+                    class="absolute left-0 mt-2 w-36 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-50"
+                    style="display: none;"> <div class="py-1">
+                        <button id="btn-nearest" 
+                                @click="open = false"
+                                class="w-full text-left flex items-center gap-2 px-4 py-2.5 text-xs font-medium transition-colors hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                            </svg>
+                            Jarak Terdekat
+                        </button>
+
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by_rating' => request('sort_by_rating') == 'true' ? null : 'true', 'sort_by_distance' => null, 'latitude' => null, 'longitude' => null, 'sort_by_views' => null]) }}"
+                        @click="open = false"
+                        class="flex items-center gap-2 px-4 py-2.5 text-xs font-medium transition-colors hover:bg-gray-100">
+                            <span>★</span> Rating Tertinggi
+                        </a>
+
+                        <a href="{{ request()->fullUrlWithQuery(['sort_by_views' => request('sort_by_views') == 'true' ? null : 'true', 'sort_by_distance' => null, 'latitude' => null, 'longitude' => null, 'sort_by_rating' => null]) }}"
+                        @click="open = false"
+                        class="flex items-center gap-2 px-4 py-2.5 text-xs font-medium transition-colors hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                            Views Terbanyak
+                        </a>
+                        @if(request('sort_by_distance') || request('sort_by_rating') || request('sort_by_views'))
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <a href="{{ request()->fullUrlWithQuery(['sort_by_rating' => null, 'sort_by_distance' => null, 'latitude' => null, 'longitude' => null, 'sort_by_views' => null]) }}"
+                            @click="open = false"
+                            class="flex items-center justify-center py-2 text-[11px] font-semibold text-red-600 hover:bg-red-50 transition-colors">
+                                Hapus Filter
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 content-start flex-grow">
             @forelse($cafe as $cafes)
                 <div class="group">
@@ -135,6 +198,14 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                                         </svg>
                                         {{ number_format($cafes->distance, 1) }} km dari Anda
+                                    </p>
+                                @elseif(isset($cafes->views_count))
+                                    <p class="text-[11px] text-amber-800 font-semibold mt-1.5 flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                        </svg>
+                                       {{ $cafes->views_count }}
                                     </p>
                                 @endif
                             </div>
@@ -168,6 +239,7 @@
                         window.location.href = url.pathname + url.search;
                     } else {
                         url.searchParams.delete('sort_by_rating');
+                        url.searchParams.delete('sort_by_views');
                         if (navigator.geolocation) {
                             btnNearest.innerHTML = `
                                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-current inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

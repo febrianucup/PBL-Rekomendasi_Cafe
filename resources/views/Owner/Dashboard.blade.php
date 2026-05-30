@@ -84,6 +84,7 @@
                             <th class="px-8 py-4 font-medium">Cafe</th>
                             <th class="px-8 py-4 font-medium">Rating</th>
                             <th class="px-8 py-4 font-medium">Status</th>
+                            <th class="px-8 py-4 font-medium">Views</th>
                             <th class="px-8 py-4 font-medium text-right">Action</th>
                         </tr>
                     </thead>
@@ -124,6 +125,22 @@
                                                         @else
                                                             <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-soft-red/10 text-soft-red border border-soft-red/20">Unpublished</span>
                                                         @endif
+                                                        
+                                                    </div>
+                                                </td>
+                                                <td class="px-8 py-5">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="flex items-center gap-1.5 bg-cream px-3 py-1.5 rounded-lg inline-flex">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                                        </svg>
+                                                        @if ($cafe->published == true)
+                                                            <span class="text-dark-brown font-semibold">{{ $cafe->views_count }}</span>
+                                                        @else
+                                                            <span class="text-dark-brown font-semibold">-</span>
+                                                        @endif
+                                                    </div>
                                                         
                                                     </div>
                                                 </td>

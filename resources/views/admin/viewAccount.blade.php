@@ -81,10 +81,6 @@
                         </button>
                     </form>
                 @endif
-                <a href="{{ route('accounts.edit', $user->id) }}"
-                   class="bg-dark-brown text-white px-8 py-4 rounded-full font-bold hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
-                    Edit Akun
-                </a>
             </div>
         </div>
 
@@ -104,15 +100,6 @@
                 </p>
                 <p class="text-2xl font-bold text-dark-brown">
                     {{ $user->created_at->format('F d, Y') }}
-                </p>
-            </div>
-
-            <div class="bg-cream rounded-2xl p-6">
-                <p class="text-gray-500 text-sm uppercase tracking-wider font-semibold mb-2">
-                    Status Akun
-                </p>
-                <p class="text-2xl font-bold {{ $user->status === 'active' ? 'text-soft-green' : ($user->status === 'pending' ? 'text-yellow-600' : 'text-red-600') }} capitalize">
-                   {{ $user->status }}
                 </p>
             </div>
         </div>

@@ -26,6 +26,7 @@ use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Village;
 use Illuminate\Validation\Validator;
 use App\Models\Comment;
+use App\Models\CafeView;
 
 class CafeController extends Controller
 {
@@ -39,6 +40,7 @@ class CafeController extends Controller
         $longitude = $request->input('longitude');
         $sortByDistance = $request->input('sort_by_distance') === 'true';
         $sortByRating = $request->input('sort_by_rating') === 'true';
+        $sortByViews = $request->input('sort_by_views') === 'true';
 
         $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos', 'ratings'])->where('published', true);
 
@@ -87,6 +89,8 @@ class CafeController extends Controller
                 ->orderBy('distance', 'asc');
         }elseif($sortByRating){
             $cafeQuery->withAvg('ratings', 'rating_score')->orderBy('ratings_avg_rating_score', 'desc');
+        }elseif($sortByViews){
+            $cafeQuery->withCount('views')->orderBy('views_count','desc');   
         }
 
         $cafe = $cafeQuery->get();
@@ -121,7 +125,7 @@ class CafeController extends Controller
     }
     
 
-    public function show($id){
+    public function show(Request $request, $id){
         $cafe = Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
             ->findOrFail($id);
         $user = Auth::user();
@@ -140,6 +144,26 @@ class CafeController extends Controller
         // }
 
         $averageRating = Comment::where('cafe_id', $id)->whereNotNull('rating_score')->avg('rating_score');
+
+        $currentUserId = auth()->id();
+        $currentIp = $request->ip();
+
+        $alreadyViewed = CafeView::where('cafe_id', $id)
+            ->where(function($query) use ($currentIp, $currentUserId){
+                if($currentUserId){
+                    $query->where('user_id', $currentUserId);
+                }else{
+                    $query->where('ip_address', $currentIp);
+                }
+        })->where('created_at', '>=', now()->subHours(1) )->exists();
+
+        if(!$alreadyViewed && auth()->user()->role->name !== 'admin' && auth()->user()->role->name !== 'owner'){
+            CafeView::create([
+                'cafe_id' => $cafe->id,
+                'ip_address' => $currentIp,
+                'user_id' => $currentUserId
+            ]);
+        }
         // $reviews = $cafe->comments()->reviews()->latest()->get();
         // $discussions = $cafe->comments()->discussions()->latest()->get();
         
@@ -181,6 +205,7 @@ class CafeController extends Controller
 
         $cafes = Cafes::where('user_id', $id)
             ->with(['thumbnail', 'type'])
+            ->withCount('views')
             ->get();
         
         // $averageRating = Comment::where('cafe_id', $id)->whereNotNull('rating_score')->avg('rating_score');

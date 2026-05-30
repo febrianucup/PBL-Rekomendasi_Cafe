@@ -298,7 +298,7 @@
 
                     @endauth
 
-                                  <button @click="mobileMenu=!mobileMenu"
+                    <button @click="mobileMenu=!mobileMenu"
                         class="lg:hidden p-2 border border-gray-300 rounded-md">
 
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -338,6 +338,8 @@
                             @endif
                         @endforeach
                     @endisset
+
+                    <a href="/favorite">Favorite<a>
 
                     <a href="/kontak">Kontak</a>
 

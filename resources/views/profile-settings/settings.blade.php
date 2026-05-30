@@ -40,12 +40,6 @@
             </div>
             <div>
                 <h3 class="font-bold text-dark-brown text-xl">Profile Picture</h3>
-                <p class="text-sm text-gray-500 mt-1 mb-3">Update your avatar. Recommended size: 256x256px.</p>
-                <div class="relative inline-block">
-                    <input type="file" name="avatar" id="avatar" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                    <label for="avatar" class="inline-block px-5 py-2 bg-cream text-dark-brown text-xs font-bold uppercase tracking-wider rounded-full hover:bg-light-beige transition-all cursor-pointer">Change Avatar</label>
-                </div>
-                @error('avatar') <span class="text-soft-red text-xs block mt-1">{{ $message }}</span> @enderror
             </div>
         </div>
 
