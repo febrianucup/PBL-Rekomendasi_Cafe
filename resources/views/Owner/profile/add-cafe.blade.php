@@ -48,8 +48,8 @@
         </div>
     </nav>
 
-    <!-- PAGE CONTENT -->
-    <div class="max-w-2xl mx-auto px-6 py-8">
+    <!-- PAGE CONTENT (Diubah menjadi w-full) -->
+    <div class="w-full mx-auto px-6 py-8 md:px-12 lg:px-20">
         <form id="cafe-form" method="POST" action="{{ route('add-cafe.submit') }}" enctype="multipart/form-data">
             @csrf
 
@@ -399,7 +399,7 @@
     </section>
 
         <!-- BOTTOM ACTIONS -->
-        <div class="flex items-center gap-3 pb-10">
+        <div class="flex items-center gap-3 pb-10 mt-8">
             <button type="submit" class="flex-1 bg-darkbrown text-white text-sm font-semibold rounded-full py-3.5 hover:bg-[#1e1a16] transition-colors">
                 {{ __('messages.publish_changes') }}
             </button>
@@ -408,7 +408,6 @@
             </button>
         </div>
         </form>
-
     </div>
 
     <script>
