@@ -14,14 +14,16 @@ use Illuminate\Support\Facades\Http;
 use Laravolt\Indonesia\Models\City;
 use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Village;
+use App\Models\Comment;
 
 class CafeController extends Controller
 {
     public function index()
     {
         // Load cafes with their relationships
-        $cafes = Cafes::with(['thumbnail', 'users'])->get();
-        return view('admin.cafes', compact('cafes'));
+        $cafes = Cafes::with(['thumbnail', 'users', 'ratings'])->withCount('views')->get();
+        $averageRating = (float) Comment::whereNotNull('rating_score')->avg('rating_score');
+        return view('admin.cafes', compact('cafes', 'averageRating'));
     }
 
     public function create()

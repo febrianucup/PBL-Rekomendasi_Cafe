@@ -15,6 +15,8 @@ use App\Http\Controllers\CommentImageController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FavoriteController;
+use \App\Http\Controllers;
+use App\Http\Controllers\PromosiController;
 // use App\Http\Controllers\UsersController;
 
 
@@ -33,7 +35,7 @@ Route::get('/detail/{id}', [CafeController::class, 'show'])->name('cafes.show');
 
 Route::post('/detail/{id}/favorite', [FavoriteController::class, 'favoriteToggle'])->name('cafes.favorite');
 Route::post('/detail/{id}/rate', [CafeController::class, 'submitRating'])->name('cafes.rate');
-Route::get('/favorite', [FavoriteController::class, 'show']);
+Route::get('/favorite', [FavoriteController::class, 'show'])->name('favorite.cafes');
 
 Route::middleware('guest')->group(function(){
     Route::get('/login', [LoginController::class, 'loginForm'])->name('login/form');
@@ -80,6 +82,12 @@ Route::middleware(['auth'])->group(function(){
     });
 
     Route::middleware('isOwner')->group(function(){
+        Route::get('/promosi', [PromosiController::class, 'index'])->name('owner.promosi');
+        Route::get('/promosi/create', [PromosiController::class, 'create'])->name('owner.promosi.create');
+        Route::post('/promosi', [PromosiController::class, 'store'])->name('owner.promosi.store');
+        Route::get('/promosi/{id}/edit', [PromosiController::class, 'edit'])->name('owner.promosi.edit');
+        Route::put('/promosi/{id}', [PromosiController::class, 'update'])->name('owner.promosi.update');
+        Route::delete('/promosi/{id}', [PromosiController::class, 'destroy'])->name('owner.promosi.destroy');
         Route::get('/dashboard/{id?}', [CafeController::class, 'ownerDashboard'])->name('owner.dashboard');
 
         Route::get('/add-cafe', [CafeController::class, 'create'])->name('add-cafe');

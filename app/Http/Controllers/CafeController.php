@@ -26,6 +26,7 @@ use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Village;
 use Illuminate\Validation\Validator;
 use App\Models\Comment;
+use App\Models\CafeView;
 
 class CafeController extends Controller
 {
@@ -38,6 +39,8 @@ class CafeController extends Controller
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
         $sortByDistance = $request->input('sort_by_distance') === 'true';
+        $sortByRating = $request->input('sort_by_rating') === 'true';
+        $sortByViews = $request->input('sort_by_views') === 'true';
 
         $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos', 'ratings'])->where('published', true);
 
@@ -72,10 +75,10 @@ class CafeController extends Controller
             });
         }
 
-        $minRating = $request->input('min_rating');
-        if ($minRating) {
-            $cafeQuery->where('rating', '>=', $minRating);
-        }
+        // $minRating = $request->input('min_rating');
+        // if ($minRating) {
+        //     $cafeQuery->where('rating', '>=', $minRating);
+        // }
 
         if ($latitude && $longitude && $sortByDistance) {
             $cafeQuery->select('*')
@@ -84,6 +87,10 @@ class CafeController extends Controller
                     [$latitude, $longitude, $latitude]
                 )
                 ->orderBy('distance', 'asc');
+        }elseif($sortByRating){
+            $cafeQuery->withAvg('ratings', 'rating_score')->orderBy('ratings_avg_rating_score', 'desc');
+        }elseif($sortByViews){
+            $cafeQuery->withCount('views')->orderBy('views_count','desc');   
         }
 
         $cafe = $cafeQuery->get();
@@ -96,9 +103,8 @@ class CafeController extends Controller
         $navbars = Navbar::orderBy('sort_order', 'asc')->get();
         $tags = Tags::all();
         $types = Type::all();
-        $averageRating = $cafe->avg('rating');
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types', 'averageRating'));
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types'));
       }
 
     public function contactIndex()
@@ -119,8 +125,18 @@ class CafeController extends Controller
     }
     
 
-    public function show($id){
-        $cafe = Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
+    public function show(Request $request, $id){
+        $cafe = Cafes::with([
+                'type',
+                'tags',
+                'photos',
+                'thumbnail',
+                'operationalTime',
+                'menuItems',
+                'promotions' => function ($query) {
+                    $query->active()->latest('start_date');
+                },
+            ])
             ->findOrFail($id);
         $user = Auth::user();
         $menus = Menu::whereCafeId($id)->paginate(6);
@@ -138,36 +154,56 @@ class CafeController extends Controller
         // }
 
         $averageRating = Comment::where('cafe_id', $id)->whereNotNull('rating_score')->avg('rating_score');
+
+        $currentUserId = auth()->id();
+        $currentIp = $request->ip();
+
+        $alreadyViewed = CafeView::where('cafe_id', $id)
+            ->where(function($query) use ($currentIp, $currentUserId){
+                if($currentUserId){
+                    $query->where('user_id', $currentUserId);
+                }else{
+                    $query->where('ip_address', $currentIp);
+                }
+        })->where('created_at', '>=', now()->subHours(1) )->exists();
+
+        if(!$alreadyViewed && auth()->user()->role->name !== 'admin' && auth()->user()->role->name !== 'owner'){
+            CafeView::create([
+                'cafe_id' => $cafe->id,
+                'ip_address' => $currentIp,
+                'user_id' => $currentUserId
+            ]);
+        }
         // $reviews = $cafe->comments()->reviews()->latest()->get();
         // $discussions = $cafe->comments()->discussions()->latest()->get();
         
         return view('DetailCafe.detailCafe', compact('cafe', 'user', 'menus', 'userRating', 'isFavorited', 'averageRating'));
     }
 
-    public function submitRating(Request $request, $id)
-    {
-        $request->validate([
-            'rating' => ['required', 'integer', 'between:1,5'],
-        ]);
+    // public function submitRating(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'rating' => ['required', 'integer', 'between:1,5'],
+    //     ]);
 
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'Silakan login untuk memberikan rating.');
-        }
+    //     $user = Auth::user();
+    //     if (!$user) {
+    //         return redirect()->route('login')->with('error', 'Silakan login untuk memberikan rating.');
+    //     }
 
-        $cafe = Cafes::findOrFail($id);
+    //     $cafe = Cafes::findOrFail($id);
 
-        Rating::updateOrCreate(
-            ['user_id' => $user->id, 'cafe_id' => $id],
-            ['score' => $request->rating]
-        );
+    //     Rating::updateOrCreate(
+    //         ['user_id' => $user->id, 'cafe_id' => $id],
+    //         ['score' => $request->rating]
+    //     );
 
-        $averageRating = $cafe->ratings()->avg('score');
-        $cafe->rating = $averageRating ? round($averageRating, 1) : $cafe->rating;
-        $cafe->save();
+    //     $averageRating = $cafe->ratings()->avg('score');
+    //     $cafe->rating = $averageRating ? round($averageRating, 1) : $cafe->rating;
+    //     $cafe->save();
 
-        return back()->with('success', 'Terima kasih, rating kamu telah tersimpan.');
-    }
+    //     return back()->with('success', 'Terima kasih, rating kamu telah tersimpan.');
+    // }
 
     public function ownerDashboard($id = null)
     {
@@ -179,7 +215,10 @@ class CafeController extends Controller
 
         $cafes = Cafes::where('user_id', $id)
             ->with(['thumbnail', 'type'])
+            ->withCount('views')
             ->get();
+        
+        // $averageRating = Comment::where('cafe_id', $id)->whereNotNull('rating_score')->avg('rating_score');
 
         return view('Owner.Dashboard', compact('cafes'));
     }
@@ -309,7 +348,7 @@ class CafeController extends Controller
 
                 if($request->has('menu_items')){
                     foreach($credentials['menu_items'] as $index=>$items){
-                        $imagePath=null;
+                        $imagePath = '';
                         if ($request->hasFile("menu_items.$index.image")) {
                             $imagePath = $request->file("menu_items.$index.image")->store('cafes/menus', 'public');
                         }
@@ -424,9 +463,9 @@ class CafeController extends Controller
                             $menuItem = $cafe->menuItems()->findOrFail($item['id']);
                             $imagePath = $menuItem->img_url;
                         } else {
-                            $menuItem = new Menu();
-                            $menuItem->cafe_id = $cafe->id;
-                            $imagePath = null; // Diubah menjadi null, bukan default gambar agar dinamis 🎯
+                                $menuItem = new Menu();
+                                $menuItem->cafe_id = $cafe->id;
+                                $imagePath = ''; // Use empty string instead of null to satisfy DB constraint
                         }
 
                         // Pengecekan file upload index aman 🎯
