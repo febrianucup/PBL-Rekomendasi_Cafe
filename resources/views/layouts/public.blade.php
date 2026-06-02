@@ -124,7 +124,7 @@
 
                     <div class="hidden lg:flex items-center">
 
-                        <form action="{{ request()->route('cafes.index') ? route('cafes.index') : route('favorite.cafes') }}" method="GET" class="flex items-center gap-2 mr-4">
+                        <form action="{{ request()->routeIs('favorite.cafes') ? route('favorite.cafes') : route('cafes.index') }}" method="GET" class="flex items-center gap-2 mr-4">
 
                             <div class="relative">
 
@@ -345,9 +345,9 @@
 
                 </nav>
 
-                          @if(request()->routeIs('cafes.index'))
+                          @if(request()->routeIs(['cafes.index', 'favorite.cafes']))
 
-                <form action="{{ route('cafes.index') }}" method="GET" class="space-y-3">
+                <form action="{{ request()->routeIs('favorite.cafes') ? route('favorite.cafes') : route('cafes.index') }}" method="GET" class="space-y-3">
 
                     <input type="text"
                         name="search"
