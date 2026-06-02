@@ -78,7 +78,7 @@ class PromosiController extends Controller
 
     private function attachPromotionTag(Cafes $cafe): void
     {
-        $promotionTag = Tags::firstOrCreate(['tag_name' => 'promosi']);
+        $promotionTag = Tags::firstOrCreate(['tag_name' => 'promo']);
         $cafe->tags()->syncWithoutDetaching([$promotionTag->id]);
     }
 
