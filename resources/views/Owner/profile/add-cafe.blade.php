@@ -122,14 +122,16 @@
 
                         <div class="flex flex-wrap items-center gap-2 mt-1">
                             @foreach($tags as $tag)
+                                @if ($tag->tag_name !== 'promo')
                                 <label class="cursor-pointer">
                                     <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="hidden" x-model="selectedTags" />
-                                    <span
-                                        :class="selectedTags.includes(String({{ $tag->id }})) ? 'bg-active text-white' : 'bg-[#E8E4DE] text-dark'"
-                                        class="text-[11px] font-medium px-4 py-1.5 rounded-full transition-all duration-200 inline-block border border-transparent">
-                                        {{ $tag->tag_name }}
-                                    </span>
+                                        <span
+                                            :class="selectedTags.includes(String({{ $tag->id }})) ? 'bg-active text-white' : 'bg-[#E8E4DE] text-dark'"
+                                            class="text-[11px] font-medium px-4 py-1.5 rounded-full transition-all duration-200 inline-block border border-transparent">
+                                            {{ $tag->tag_name }}
+                                        </span>
                                 </label>
+                                @endif
                             @endforeach
                         </div>
 

@@ -126,7 +126,17 @@ class CafeController extends Controller
     
 
     public function show(Request $request, $id){
-        $cafe = Cafes::with(['type', 'tags', 'photos', 'thumbnail', 'operationalTime', 'menuItems'])
+        $cafe = Cafes::with([
+                'type',
+                'tags',
+                'photos',
+                'thumbnail',
+                'operationalTime',
+                'menuItems',
+                'promotions' => function ($query) {
+                    $query->active()->latest('start_date');
+                },
+            ])
             ->findOrFail($id);
         $user = Auth::user();
         $menus = Menu::whereCafeId($id)->paginate(6);
@@ -338,7 +348,7 @@ class CafeController extends Controller
 
                 if($request->has('menu_items')){
                     foreach($credentials['menu_items'] as $index=>$items){
-                        $imagePath=null;
+                        $imagePath = '';
                         if ($request->hasFile("menu_items.$index.image")) {
                             $imagePath = $request->file("menu_items.$index.image")->store('cafes/menus', 'public');
                         }
@@ -453,9 +463,9 @@ class CafeController extends Controller
                             $menuItem = $cafe->menuItems()->findOrFail($item['id']);
                             $imagePath = $menuItem->img_url;
                         } else {
-                            $menuItem = new Menu();
-                            $menuItem->cafe_id = $cafe->id;
-                            $imagePath = null; // Diubah menjadi null, bukan default gambar agar dinamis 🎯
+                                $menuItem = new Menu();
+                                $menuItem->cafe_id = $cafe->id;
+                                $imagePath = ''; // Use empty string instead of null to satisfy DB constraint
                         }
 
                         // Pengecekan file upload index aman 🎯
