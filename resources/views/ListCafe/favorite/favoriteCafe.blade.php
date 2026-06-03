@@ -5,12 +5,12 @@
 <main class="flex-grow w-full mx-auto px-6 py-12 flex flex-col">
         <div class="flex justify-center space-x-6 md:space-x-8 text-xs font-semibold uppercase tracking-widest mb-10 border-b border-gray-200 pb-4 overflow-x-auto whitespace-nowrap">
             <a href="{{ request()->fullUrlWithQuery(['tag' => null]) }}" class="{{ !request('tag') ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
-                All Cafe
+                {{ __('messages.all_cafes') }}
             </a>
             @if(isset($tags) && $tags->isNotEmpty())
                 @foreach($tags as $tag)
                     <a href="{{ request()->fullUrlWithQuery(['tag' => $tag->tag_name]) }}" class="{{ request('tag') == $tag->tag_name ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
-                        #{{ $tag->tag_name }}
+                        #{{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}
                     </a>
                 @endforeach
             @else
@@ -20,7 +20,7 @@
         
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-lg font-bold text-gray-800 font-sans">
-                    Semua Cafe Favorit Anda
+                    {{ __('messages.favorite_all') }}
             </h2>
             
             {{-- <button id="btn-nearest" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full border border-black transition-all duration-300 {{ request('sort_by_distance') == 'true' ? 'bg-black text-white hover:bg-gray-800' : 'bg-transparent text-black hover:bg-gray-100' }}">
@@ -51,7 +51,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                                         </svg>
-                                        {{ number_format($cafes->distance, 1) }} km dari Anda
+                                        {{ number_format($cafes->distance, 1) }} km {{ __('messages.from_you') }}
                                     </p>
                                 @endif
                             </div>

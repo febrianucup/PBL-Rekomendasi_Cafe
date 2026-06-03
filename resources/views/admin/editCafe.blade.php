@@ -124,7 +124,7 @@
                             <select name="type_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer" required>
                                 <option value="">{{ __('messages.select_a_type') }}</option>
                                 @foreach($types as $type)
-                                    <option value="{{ $type->id }}" {{ old('type_id', $cafe->type_id) == $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
+                                    <option value="{{ $type->id }}" {{ old('type_id', $cafe->type_id) == $type->id ? 'selected' : '' }}>{{ trans()->has('messages.' . strtolower($type->type_name)) ? __('messages.' . strtolower($type->type_name)) : $type->type_name }}</option>
                                 @endforeach
                             </select>
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
@@ -146,7 +146,7 @@
                                     <span
                                         :class="selectedTags.includes(String({{ $tag->id }})) ? 'bg-active text-white' : 'bg-[#E8E4DE] text-dark'"
                                         class="text-[11px] font-medium px-4 py-1.5 rounded-full transition-all duration-200 inline-block border border-transparent">
-                                        {{ $tag->tag_name }}
+                                        {{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}
                                     </span>
                                 </label>
                             @endforeach

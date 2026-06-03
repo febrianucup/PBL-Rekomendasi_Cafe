@@ -57,12 +57,7 @@
     </div>
 
     <div class="relative w-full md:w-1/2 h-screen overflow-y-auto bg-[#F9F8F3] p-8 md:p-16 flex flex-col justify-center">
-        <!-- Language Switcher -->
-        <div class="absolute top-8 right-8 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500">
-            <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">EN</a>
-            <span>|</span>
-            <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'text-black border-b border-black' : 'hover:text-black transition' }}">ID</a>
-        </div>
+
 
         <div class="max-w-sm mx-auto w-full fade-in" style="animation-delay: 0.3s;">
 

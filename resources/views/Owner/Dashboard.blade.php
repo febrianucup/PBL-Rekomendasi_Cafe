@@ -106,7 +106,7 @@
                                                         @endif
                                                         <div class="gap-2 mt-1 text-sm">
                                                             <h3 class="font-semibold text-dark-brown">{{ $cafe->name }}</h3>
-                                                            <p class="text-sm text-muted">{{ $cafe->type->type_name ?? 'Unknown Type' }}</p>
+                                                            <p class="text-sm text-muted">{{ isset($cafe->type->type_name) ? (trans()->has('messages.' . strtolower($cafe->type->type_name)) ? __('messages.' . strtolower($cafe->type->type_name)) : $cafe->type->type_name) : 'Unknown Type' }}</p>
                                                         </div>
                                                     </div>
                                                 </td>

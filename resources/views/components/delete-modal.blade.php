@@ -18,7 +18,7 @@
 
                 <div class="flex gap-3">
                     <button @click="open = false" class="flex-1 px-6 py-3 rounded-2xl border border-stone-200 font-semibold hover:bg-stone-50 transition-colors">
-                        Batal
+                        {{ __('messages.cancel') }}
                     </button>
                     {{ $slot }}
                 </div>

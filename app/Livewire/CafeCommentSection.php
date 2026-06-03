@@ -51,12 +51,12 @@ class CafeCommentSection extends Component
                 ->exists();
 
             if ($existingReview) {
-                session()->flash('error', 'Anda sudah memberikan ulasan untuk kafe ini.');
+                session()->flash('error', __('messages.already_reviewed'));
                 return;
             }
 
             if (Auth::id() === $this->cafe->user_id) {
-                session()->flash('error', 'Pemilik kafe tidak bisa memberikan ulasan pada kafenya sendiri.');
+                session()->flash('error', __('messages.owner_cannot_review'));
                 return;
             }
         }
@@ -74,7 +74,7 @@ class CafeCommentSection extends Component
         $this->photos = [];
         $this->hasReviewed = true;
         $this->hideFlash = false;
-        session()->flash('success', 'Berhasil terkirim!');
+        session()->flash('success', __('messages.successfully_sent'));
     }
 
     public function submitReview(){
@@ -117,7 +117,7 @@ class CafeCommentSection extends Component
         
         if ($parentComment->type === 'review') {
             if (Auth::id() !== $this->cafe->user_id) {
-                session()->flash('error', 'Hanya pemilik kafe yang dapat membalas ulasan.');
+                session()->flash('error', __('messages.only_owner_can_reply'));
                 return;
             }
         }
@@ -134,7 +134,7 @@ class CafeCommentSection extends Component
 
         $this->reset(['reply_body', 'replyingToId']);
         $this->hideFlash = false;
-        session()->flash('success', 'Balasan berhasil dikirim!');
+        session()->flash('success', __('messages.reply_sent'));
     }
 
     protected function storePhotos(){
@@ -158,7 +158,7 @@ class CafeCommentSection extends Component
                 $this->isDeleteModalOpen = false;
                 $this->hideFlash = false;
                 
-                session()->flash('success', 'Komentar berhasil dihapus.');
+                session()->flash('success', __('messages.comment_deleted'));
             }
         }
     }

@@ -11,35 +11,43 @@ class CommentController extends Controller
     {
         $query = \App\Models\Comment::with(['user', 'cafe']);
         
-        $tab = $request->get('tab', 'all');
-        if ($tab !== 'all') {
-            $query->where('status', $tab);
+        $search = $request->get('search');
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('body', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($qu) use ($search) {
+                      $qu->where('name', 'like', "%{$search}%")
+                         ->orWhere('username', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('cafe', function($qc) use ($search) {
+                      $qc->where('name', 'like', "%{$search}%");
+                  });
+            });
         }
 
-        $comments = $query->latest()->get();
+        $type = $request->get('type', 'all');
+        if (in_array($type, ['review', 'discussion'])) {
+            $query->where('type', $type);
+        }
+
+        $comments = $query->latest()->paginate(10)->withQueryString();
         
         $counts = [
-            'pending' => \App\Models\Comment::where('status', 'pending')->count(),
-            'approved' => \App\Models\Comment::where('status', 'approved')->whereDate('updated_at', \Carbon\Carbon::today())->count(),
+            'total' => \App\Models\Comment::count(),
+            'review' => \App\Models\Comment::where('type', 'review')->count(),
+            'discussion' => \App\Models\Comment::where('type', 'discussion')->count(),
         ];
 
-        return view('admin.comments', compact('comments', 'counts', 'tab'));
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        $comment = \App\Models\Comment::findOrFail($id);
-        $comment->status = $request->status;
-        $comment->save();
-
-        return redirect()->back()->with('success', 'Comment status updated successfully.');
+        return view('admin.comments', compact('comments', 'counts', 'type', 'search'));
     }
 
     public function destroy($id)
     {
         $comment = \App\Models\Comment::findOrFail($id);
+        
+        // If the comment has replies (cascade delete is configured in DB, but just in case, delete replies if they exist)
         $comment->delete();
 
-        return redirect()->back()->with('success', 'Comment deleted successfully.');
+        return redirect()->back()->with('success', __('messages.comments_deleted_success'));
     }
 }

@@ -80,12 +80,12 @@
     <main class="flex-grow w-full mx-auto px-6 py-12 flex flex-col">
         <div class="flex justify-center space-x-6 md:space-x-8 text-xs font-semibold uppercase tracking-widest mb-10 border-b border-gray-200 pb-4 overflow-x-auto whitespace-nowrap">
             <a href="{{ request()->fullUrlWithQuery(['tag' => null]) }}" class="{{ !request('tag') ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
-                All Cafe
+                {{ __('messages.all_cafes') }}
             </a>
             @if(isset($tags) && $tags->isNotEmpty())
                 @foreach($tags as $tag)
                     <a href="{{ request()->fullUrlWithQuery(['tag' => $tag->tag_name]) }}" class="{{ request('tag') == $tag->tag_name ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
-                       #{{ $tag->tag_name }}
+                       #{{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}
                     </a>
                 @endforeach
             @else
@@ -94,13 +94,13 @@
         </div>
         <h2 class="text-lg font-bold text-gray-800 font-sans">
                 @if(request('sort_by_distance') == 'true')
-                    Cafe Terdekat Dari Lokasi Anda
+                    {{ __('messages.nearest_cafes') }}
                 @elseif(request('sort_by_rating') == 'true')
-                    Urut Berdasarkan Rating
+                    {{ __('messages.sort_by_rating_title') }}
                 @elseif(request('sort_by_views') == 'true')
-                    Cafe dengan Views Terbanyak
+                    {{ __('messages.most_views_title') }}
                 @else
-                    Semua Rekomendasi Cafe
+                    {{ __('messages.all_recommendations') }}
                 @endif
             </h2>
         <div class="flex justify-end mb-6 mr-6">
@@ -116,13 +116,13 @@
                     </svg>
                     <span>
                         @if(request('sort_by_distance') == 'true')
-                            Terdekat
+                            {{ __('messages.nearest') }}
                         @elseif(request('sort_by_rating') == 'true')
-                            Rating
+                            {{ __('messages.rating') }}
                         @elseif(request('sort_by_views') == 'true')
-                            Views
+                            {{ __('messages.views_most') }}
                         @else
-                            Filter
+                            {{ __('messages.filter') }}
                         @endif
                     </span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" 
@@ -131,7 +131,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                     </svg>
                 </button>
-
+ 
                 <div x-show="open"
                     x-transition:enter="transition ease-out duration-100"
                     x-transition:enter-start="transform opacity-0 scale-95"
@@ -148,15 +148,15 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                             </svg>
-                            Jarak Terdekat
+                            {{ __('messages.nearest') }}
                         </button>
-
+ 
                         <a href="{{ request()->fullUrlWithQuery(['sort_by_rating' => request('sort_by_rating') == 'true' ? null : 'true', 'sort_by_distance' => null, 'latitude' => null, 'longitude' => null, 'sort_by_views' => null]) }}"
                         @click="open = false"
                         class="flex items-center gap-2 px-4 py-2.5 text-xs font-medium transition-colors hover:bg-gray-100">
-                            <span>★</span> Rating Tertinggi
+                            <span>★</span> {{ __('messages.rating_highest') }}
                         </a>
-
+ 
                         <a href="{{ request()->fullUrlWithQuery(['sort_by_views' => request('sort_by_views') == 'true' ? null : 'true', 'sort_by_distance' => null, 'latitude' => null, 'longitude' => null, 'sort_by_rating' => null]) }}"
                         @click="open = false"
                         class="flex items-center gap-2 px-4 py-2.5 text-xs font-medium transition-colors hover:bg-gray-100">
@@ -164,14 +164,14 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
-                            Views Terbanyak
+                            {{ __('messages.views_most') }}
                         </a>
                         @if(request('sort_by_distance') || request('sort_by_rating') || request('sort_by_views'))
                             <div class="border-t border-gray-100 my-1"></div>
                             <a href="{{ request()->fullUrlWithQuery(['sort_by_rating' => null, 'sort_by_distance' => null, 'latitude' => null, 'longitude' => null, 'sort_by_views' => null]) }}"
                             @click="open = false"
                             class="flex items-center justify-center py-2 text-[11px] font-semibold text-red-600 hover:bg-red-50 transition-colors">
-                                Hapus Filter
+                                {{ __('messages.clear_filter') }}
                             </a>
                         @endif
                     </div>
@@ -197,7 +197,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                                         </svg>
-                                        {{ number_format($cafes->distance, 1) }} km dari Anda
+                                        {{ number_format($cafes->distance, 1) }} km {{ __('messages.from_you') }}
                                     </p>
                                 @elseif(isset($cafes->views_count))
                                     <p class="text-[11px] text-amber-800 font-semibold mt-1.5 flex items-center gap-1">
@@ -245,7 +245,7 @@
                                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-current inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg> Meminta Lokasi...
+                                </svg> {{ __('messages.requesting_location') }}
                             `;
                             navigator.geolocation.getCurrentPosition(
                                 function(position) {
@@ -255,12 +255,12 @@
                                     window.location.href = url.pathname + url.search;
                                 },
                                 function(error) {
-                                    alert('Gagal mendapatkan lokasi device Anda. Pastikan GPS aktif dan izin lokasi diberikan.');
+                                    alert("{{ __('messages.gps_error') }}");
                                     window.location.reload();
                                 }
                             );
                         } else {
-                            alert('Geolocation tidak didukung oleh browser Anda.');
+                            alert("{{ __('messages.geolocation_unsupported') }}");
                         }
                     }
                 });
