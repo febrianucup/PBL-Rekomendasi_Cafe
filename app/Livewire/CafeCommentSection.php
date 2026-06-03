@@ -4,13 +4,16 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cafes;
 
 class CafeCommentSection extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithPagination;
+
+    protected $paginationTheme = 'tailwind';
 
     public $cafeId;
     public $commentType = 'review';
@@ -137,6 +140,11 @@ class CafeCommentSection extends Component
         session()->flash('success', 'Balasan berhasil dikirim!');
     }
 
+    public function updatingCommentType()
+    {
+        $this->resetPage('commentPage');
+    }
+
     protected function storePhotos(){
         $uploadedImages = [];
     
@@ -174,15 +182,20 @@ class CafeCommentSection extends Component
     }
 
     public function render(){
-        $allComments = Comment::with(['user', 'replies.user'])
-            ->where('cafe_id', $this->cafeId)
+        // $allComments = Comment::with(['user', 'replies.user'])
+        //     ->where('cafe_id', $this->cafeId)
+        //     ->whereNull('parent_id')
+        //     ->latest()
+        //     ->get();
+        
+        $comments = ($this->commentType === 'review' ? $this->cafe->reviews() : $this->cafe->discussions())
+            ->with(['user', 'replies.user'])
             ->whereNull('parent_id')
             ->latest()
-            ->get();
+            ->paginate(5, ['*'], 'commentPage');
 
         return view('livewire.⚡cafe-comment-section', [
-            'reviews' => $allComments->where('type', 'review'),
-            'discussions' => $allComments->where('type', 'discussion'),
+            'comments' => $comments,
             'cafe' => $this->cafe,
         ]);
     }
