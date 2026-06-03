@@ -94,12 +94,14 @@
                 @if (!$isOwner && !$isAdmin)
                     <div class="mt-6 flex flex-wrap items-center gap-3">
                         @auth
-                            <form action="{{ route('cafes.favorite', $cafe->id) }}" method="POST">
-                                @csrf
-                                <button type="submit" x-on:click.stop class="pointer-events-auto bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
-                                    {{ auth()->user()->favoriteCafes->contains($cafe->id) ? '💔 Hapus dari Favorit' : '❤️ Tambah ke Favorit' }}
-                                </button>
-                            </form>
+                            @if(auth()->user()->role->name !== 'admin' && auth()->user()->role->name !== 'owner')
+                                <form action="{{ route('cafes.favorite', $cafe->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" x-on:click.stop class="pointer-events-auto bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
+                                        {{ auth()->user()->favoriteCafes->contains($cafe->id) ? '💔 Hapus dari Favorit' : '❤️ Tambah ke Favorit' }}
+                                    </button>
+                                </form>
+                            @endif
                         @else
                             <a href="{{ route('login') }}" class="bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
                                 Login untuk Favorite
