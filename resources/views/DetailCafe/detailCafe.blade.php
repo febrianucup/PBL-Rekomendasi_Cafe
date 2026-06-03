@@ -239,29 +239,27 @@
         </section>
 
         <section class="bg-white p-6 md:p-8 rounded-xl shadow-xs border border-gray-100 mb-16">
-            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800 mb-6">Promosi</h2>
+            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800 mb-6">Promo</h2>
             @if($cafe->promotions && $cafe->promotions->isNotEmpty())
                 <div class="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide">
                     @foreach($cafe->promotions as $promotion)
-                        <article class="flex-none w-full md:w-[600px] snap-center rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg bg-white transition-transform hover:shadow-xl">
+                        <article class="flex-none w-full md:w-[500px] snap-center rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg bg-white transition-transform hover:shadow-xl">
                             @if($promotion->image_url)
-                                <button type="button" @click="$dispatch('open-image', '{{ $promotion->image_url }}')" class="group block w-full relative">
-                                    <img src="{{ $promotion->image_url }}" alt="{{ $promotion->title }}" class="w-full h-[800px] object-cover" />
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                                    <div class="absolute inset-x-0 bottom-0 p-6 text-white text-left">
-                                        <span class="text-xs uppercase tracking-widest text-indigo-300 font-bold">Promosi</span>
-                                        <h3 class="mt-2 text-2xl font-bold">{{ $promotion->title }}</h3>
-                                        <h2 class="mt-1 text-sm text-gray-300 line-clamp-3">{{ $promotion->description }}</h2>
-                                        <div class="mt-4 flex flex-wrap gap-2">
-                                            <span class="px-3 py-1 text-xs rounded-full bg-white/20 backdrop-blur-md">
-                                                {{ $promotion->start_date?->format('d M') }} - {{ $promotion->end_date?->format('d M Y') }}
-                                            </span>
-                                            <span class="px-3 py-1 text-xs rounded-full font-semibold {{ now()->between($promotion->start_date, $promotion->end_date) ? 'bg-green-500/80' : 'bg-rose-500/80' }}">
-                                                {{ now()->between($promotion->start_date, $promotion->end_date) ? 'Aktif' : 'Tidak Aktif' }}
-                                            </span>
-                                        </div>
-                                    </div>
+                                <button type="button" class="block w-full h-[700px] overflow-hidden" wire:click="$dispatch('open-image', '{{ asset('storage/' . $promotion->image_url) }}')">
+                                    <img src="{{ $promotion->image_url }}"   alt="{{ $promotion->title }}" class="w-full h-full object-cover cursor-pointer" />
                                 </button>
+
+                                <div class="p-6 bg-white text-left">
+                                    <span class="text-xs uppercase tracking-widest text-indigo-600 font-bold">Promosi</span>
+                                    <h3 class="mt-2 text-2xl font-bold text-gray-800 leading-tight">{{ $promotion->title }}</h3>
+                                    <p class="mt-1 text-sm text-gray-600 line-clamp-2">{{ $promotion->description }}</p>
+                                    
+                                    <div class="mt-4 flex flex-wrap gap-2">
+                                        <span class="px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-600">
+                                            {{ $promotion->start_date?->format('d M') }} - {{ $promotion->end_date?->format('d M Y') }}
+                                        </span>
+                                    </div>
+                                </div>
                             @endif
                         </article>
                     @endforeach
@@ -279,8 +277,8 @@
             <div class="w-12 h-[3px] mx-auto mb-10"></div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="menu">
-                @if ($cafe->menuItems && $cafe->menuItems->count() > 0)
-                    @foreach ($cafe->menuItems as $menu)
+                @if (isset($menus) && $menus->count() > 0)
+                    @foreach ($menus as $menu)
                         @php
                             $imageUrl = $menu->img_url ? asset('storage/'.$menu->img_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80';
                         @endphp
@@ -312,13 +310,7 @@
         </section>
         <section x-data="{ activeTab: 'review' }" class="w-full mt-12 p-6 bg-white rounded-2xl border border-stone-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)] overflow-hidden">
             <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">Review and Comment</h2>
-            @auth
-                <livewire:cafe-comment-section :cafeId="$cafe->id" />
-            @else
-                <div class="text-center py-8">
-                    <p class="text-stone-600">Silakan <a href="{{ route('login') }}" class="text-blue-600 font-semibold underline">login</a> untuk memberikan komentar.</p>
-                </div>
-            @endauth
+             <livewire:cafe-comment-section :cafeId="$cafe->id" />
         </section>
         <x-image-modal />
     </main>
