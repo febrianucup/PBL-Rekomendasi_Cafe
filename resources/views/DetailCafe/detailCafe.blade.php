@@ -310,7 +310,7 @@
         </section>
         <section x-data="{ activeTab: 'review' }" class="w-full mt-12 p-6 bg-white rounded-2xl border border-stone-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)] overflow-hidden">
             <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">{{ __('messages.review_and_comment') }}</h2>
-             <livewire:cafe-comment-section :cafeId="$cafe->id" />
+            <livewire:cafe-comment-section :cafeId="$cafe->id" />
         </section>
         <x-image-modal />
     </main>

@@ -64,7 +64,11 @@
         @endif
     @else
         <div class="text-center py-8">
-            <p class="text-stone-600">Silakan <a href="{{ route('login') }}" class="text-blue-600 font-semibold underline">login</a> untuk memberikan review dan komentar.</p>
+            @if(app()->getLocale() == 'en')
+                <p class="text-stone-600">Please <a href="{{ route('login') }}" class="text-blue-600 font-semibold underline">login</a> to leave a comment.</p>
+            @else
+                <p class="text-stone-600">Silakan <a href="{{ route('login') }}" class="text-blue-600 font-semibold underline">login</a> untuk memberikan komentar.</p>
+            @endif
         </div>
     @endauth
     <div class="space-y-6">
