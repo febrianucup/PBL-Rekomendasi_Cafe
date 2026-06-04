@@ -60,7 +60,7 @@
 
                 <div class="flex-1">
                     <h1 class="text-3xl font-semibold text-dark">{{ $cafe->name }}</h1>
-                    <p class="text-sm text-muted mt-2">{{ $cafe->type->type_name ?? 'Unknown type' }} • {{ $cafe->kecamatan ?? 'Unknown area' }}</p>
+                    <p class="text-sm text-muted mt-2">{{ isset($cafe->type->type_name) ? (trans()->has('messages.' . strtolower($cafe->type->type_name)) ? __('messages.' . strtolower($cafe->type->type_name)) : $cafe->type->type_name) : 'Unknown type' }} • {{ $cafe->kecamatan ?? 'Unknown area' }}</p>
                     <p class="text-sm text-muted mt-4">{{ $cafe->description }}</p>
 
                     <div class="mt-6 grid gap-3 sm:grid-cols-2">
@@ -86,7 +86,7 @@
                         <p class="text-[10px] uppercase tracking-[0.2em] text-muted mb-2">Tags</p>
                         <div class="flex flex-wrap gap-2">
                             @forelse($cafe->tags as $tag)
-                                <span class="bg-[#E8E4DE] text-[#4A4037] text-[11px] font-medium px-3 py-1 rounded-full">{{ $tag->tag_name }}</span>
+                                <span class="bg-[#E8E4DE] text-[#4A4037] text-[11px] font-medium px-3 py-1 rounded-full">{{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}</span>
                             @empty
                                 <span class="text-xs text-muted">No tags added.</span>
                             @endforelse

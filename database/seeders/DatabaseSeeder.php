@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,     
             TypeSeeder::class,
             TagsSeeder::class,
+            AdminAccountSeeder::class,
         ]);
 
         User::factory()->create([

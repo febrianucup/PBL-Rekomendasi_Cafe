@@ -59,7 +59,6 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
         
         Route::get('/comments', [\App\Http\Controllers\Admin\CommentController::class, 'index'])->name('admin.comments');
-        Route::patch('/comments/{id}/status', [\App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])->name('admin.comments.status');
         Route::delete('/comments/{id}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('admin.comments.destroy');
 
         Route::get('/owners', [\App\Http\Controllers\Admin\OwnerController::class, 'index'])->name('admin.owners.index');

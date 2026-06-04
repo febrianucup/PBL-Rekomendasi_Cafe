@@ -121,7 +121,7 @@ class CafeController extends Controller
             'subject'    => 'required|string|max:255',
             'message'    => 'required|string',
         ]);
-        return redirect()->back()->with('success', 'Terima kasih! Pesan Anda telah berhasil dikirim.');
+        return redirect()->back()->with('success', __('messages.contact_success_message'));
     }
     
 

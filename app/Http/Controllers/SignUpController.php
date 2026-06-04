@@ -18,16 +18,16 @@ class SignUpController extends Controller
     public function ownerRegister(Request $request){
         $data = $request->validate([
             'username' => 'required|string',
-            'email'    => 'required|email|unique:users|',
+            'email'    => 'required|email|unique:users',
             'password' => 'required|min:8',
             'cafe_name' => 'required|string',
             'address' => 'required|string',
 
         ]
         , [
-            'email.unique:users'   => 'email ini sudah digunakan',
-            'email.required' => 'Email tidak boleh kosong',
-            'email.email'    => 'Format email tidak valid',
+            'email.unique'   => __('messages.email_unique'),
+            'email.required' => __('messages.email_required'),
+            'email.email'    => __('messages.email_invalid'),
         ]);
 
         DB::transaction(function() use ($data){
@@ -48,7 +48,7 @@ class SignUpController extends Controller
             ]);
         });
 
-        return redirect()->route('login/form')->with('success', 'Registrasi berhasil, tunggu persetujuan admin.');
+        return redirect()->route('login/form')->with('success', __('messages.register_pending'));
     }
 
     public function guestRegister(Request $request){
@@ -58,9 +58,9 @@ class SignUpController extends Controller
             'password' => 'required|min:8',
         ],
         [
-            'email.unique'   => 'email ini sudah digunakan',
-            'email.required' => 'Email tidak boleh kosong',
-            'email.email'    => 'Format email tidak valid',
+            'email.unique'   => __('messages.email_unique'),
+            'email.required' => __('messages.email_required'),
+            'email.email'    => __('messages.email_invalid'),
         ]);
 
         $roleGuest = Role::where('name', 'guest')->first();
@@ -72,6 +72,6 @@ class SignUpController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        return redirect()->route('login/form')->with('success', 'Registrasi berhasil! Silakan masuk dengan akun Anda.');
+        return redirect()->route('login/form')->with('success', __('messages.register_success'));
     }
 }

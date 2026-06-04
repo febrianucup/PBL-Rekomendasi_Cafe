@@ -21,7 +21,7 @@ class LoginController extends Controller
 
         if (!Auth::attempt($credentials, $remember)) {
             return back()->withErrors([
-                'loginError' => 'Email atau password salah.',
+                'loginError' => __('messages.login_error'),
             ])->withInput($request->only('email'));
         }
 
@@ -31,14 +31,14 @@ class LoginController extends Controller
         if ($user->status == 'pending') {
             Auth::logout();
             return back()->withErrors([
-                'email' => 'Akun Anda sedang dalam masa peninjauan oleh Admin. Silakan tunggu.',
+                'email' => __('messages.account_pending'),
             ]);
         }
 
         if ($user->status == 'rejected') {
             Auth::logout();
             return back()->withErrors([
-                'email' => 'Maaf, pendaftaran akun Anda ditolak oleh Admin.',
+                'email' => __('messages.account_rejected'),
             ]);
         }
 

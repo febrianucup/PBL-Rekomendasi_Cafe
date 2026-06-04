@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
+    use HasFactory;
+
     protected $table = 'users';
     protected $primaryKey = 'id';
 

@@ -98,13 +98,13 @@
                                 <form action="{{ route('cafes.favorite', $cafe->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" x-on:click.stop class="pointer-events-auto bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
-                                        {{ auth()->user()->favoriteCafes->contains($cafe->id) ? '💔 Hapus dari Favorit' : '❤️ Tambah ke Favorit' }}
+                                        {{ auth()->user()->favoriteCafes->contains($cafe->id) ? '💔 ' . __('messages.remove_from_favorite') : '❤️ ' . __('messages.add_to_favorite') }}
                                     </button>
                                 </form>
                             @endif
                         @else
                             <a href="{{ route('login') }}" class="bg-white text-black px-5 py-2.5 rounded-full font-semibold text-sm transition hover:bg-[#D4A373] hover:text-white shadow-md">
-                                Login untuk Favorite
+                                {{ __('messages.login_for_favorite') }}
                             </a>
                         @endauth
                     </div>
@@ -128,14 +128,14 @@
                 <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-full shadow-xs transition-all duration-300 hover:bg-gray-100">
                     <span class="w-2 h-2 rounded-full bg-[#D4A373]"></span>
                     <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 mr-1">Type:</span>
-                    <span class="text-sm font-bold text-gray-700">#{{ $cafe->type->type_name ?? 'Standard Cafe' }}</span>
+                    <span class="text-sm font-bold text-gray-700">#{{ isset($cafe->type->type_name) ? (trans()->has('messages.' . strtolower($cafe->type->type_name)) ? __('messages.' . strtolower($cafe->type->type_name)) : $cafe->type->type_name) : 'Standard Cafe' }}</span>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-2">
                     @if(isset($cafe->tags) && $cafe->tags->isNotEmpty())
                         @foreach($cafe->tags as $tag)
                             <span class="text-xs font-medium px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg border border-slate-200/60 shadow-xs uppercase tracking-wide hover:scale-105 transition-transform">
-                                #{{ $tag->tag_name }}
+                                #{{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}
                             </span>
                         @endforeach
                     @else
@@ -148,7 +148,7 @@
         </section>
 
         <section class="bg-white p-6 md:p-8 rounded-xl shadow-xs border border-gray-100 mb-16">
-            <p class="text-center text-sm uppercase tracking-widest text-gray-400">Lokasi & Kontak</p>
+            <p class="text-center text-sm uppercase tracking-widest text-gray-400">{{ __('messages.location_and_contact') }}</p>
             <h3 class="text-center text-xl md:text-2xl mt-2 mb-6 font-semibold text-gray-800">{{ $cafe->address }}</h3>
             
             <div class="w-full h-[400px] md:h-[500px] bg-gray-100 rounded-lg mb-8 shadow-inner border border-gray-200" 
@@ -161,32 +161,32 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 py-6 border-t border-b border-gray-100">
                 <div class="flex flex-col items-center">
-                    <h4 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-3">Contact</h4>
+                    <h4 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-3">{{ __('messages.phone_number') }}</h4>
                     @if($cafe->num_phone)
                         <div x-data="{ copyText: '{{ $cafe->num_phone }}', copied: false }" class="w-full max-w-[220px]">
-                            <button @click="navigator.clipboard.writeText(copyText); copied = true; setTimeout(() => copied = false, 2000)" 
+                             <button @click="navigator.clipboard.writeText(copyText); copied = true; setTimeout(() => copied = false, 2000)" 
                                 class="group flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 px-4 py-3 rounded-xl transition-all border border-gray-100 w-full">
                                 <p class="text-sm font-bold text-gray-800 mb-1">{{ $cafe->num_phone }}</p>
                                 <span class="text-xs text-gray-400 flex items-center gap-1">
                                     <template x-if="!copied">
                                         <span class="flex items-center gap-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                                            Salin Nomor
+                                            {{ __('messages.copy_phone') }}
                                         </span>
                                     </template>
                                     <template x-if="copied">
-                                        <span class="text-green-600 font-medium flex items-center gap-1">✓ Tersalin!</span>
+                                        <span class="text-green-600 font-medium flex items-center gap-1">✓ {{ __('messages.copied') }}</span>
                                     </template>
                                 </span>
                             </button>
                         </div>
                     @else
-                        <span class="text-sm text-gray-400 italic">No phone available</span>
+                        <span class="text-sm text-gray-400 italic">{{ __('messages.no_phone') }}</span>
                     @endif
                 </div>
 
                 <div class="flex flex-col items-center">
-                    <h4 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-3">Email</h4>
+                    <h4 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-3">{{ __('messages.email') }}</h4>
                     @if($cafe->email)
                         <div x-data="{ copyText: '{{ $cafe->email }}', copied: false }" class="w-full max-w-[220px]">
                             <button @click="navigator.clipboard.writeText(copyText); copied = true; setTimeout(() => copied = false, 2000)" 
@@ -196,22 +196,22 @@
                                     <template x-if="!copied">
                                         <span class="flex items-center gap-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                                            Salin Email
+                                            {{ __('messages.copy_email') }}
                                         </span>
                                     </template>
                                     <template x-if="copied">
-                                        <span class="text-green-600 font-medium flex items-center gap-1">✓ Tersalin!</span>
+                                        <span class="text-green-600 font-medium flex items-center gap-1">✓ {{ __('messages.copied') }}</span>
                                     </template>
                                 </span>
                             </button>
                         </div>
                     @else
-                        <span class="text-sm text-gray-400 italic">No email available</span>
+                        <span class="text-sm text-gray-400 italic">{{ __('messages.no_email') }}</span>
                     @endif
                 </div>
 
                 <div class="flex flex-col items-center">
-                    <h4 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-3">Opening Hours</h4>
+                    <h4 class="font-bold text-xs text-gray-400 uppercase tracking-wider mb-3">{{ __('messages.opening_hours') }}</h4>
                     @if($cafe->operationalTime && $cafe->operationalTime->count() > 0)
                         <ul class="space-y-1 w-full max-w-[250px]">
                             @foreach ($cafe->operationalTime as $time)
@@ -226,14 +226,14 @@
                             @endforeach
                         </ul>
                     @else
-                        <span class="text-sm text-gray-400 italic">Open daily</span>
+                        <span class="text-sm text-gray-400 italic">{{ __('messages.open_daily') }}</span>
                     @endif
                 </div>
             </div>
 
             <div class="mt-6">
                  <a href="{{ $cafe->maps_link }}" class="block bg-black hover:bg-gray-800 text-white px-5 py-3.5 uppercase text-xs font-bold rounded-lg w-full text-center tracking-wider transition-colors" target="_blank" rel="noopener">
-                    View in Google Maps
+                    {{ __('messages.view_in_google_maps') }}
                  </a>
             </div>
         </section>
@@ -273,7 +273,7 @@
         </section>
 
         <section x-data class="bg-white p-6 md:p-8 rounded-xl shadow-xs border border-gray-100 mb-16">
-            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">Menu List</h2>
+            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">{{ __('messages.menu_list') }}</h2>
             <div class="w-12 h-[3px] mx-auto mb-10"></div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="menu">
@@ -303,13 +303,13 @@
                     @endif
                 @else
                     <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12 text-gray-400 border border-dashed border-gray-200 rounded-xl bg-gray-50">
-                        Belum ada menu yang tersedia.
+                        {{ __('messages.no_menu_available') }}
                     </div>
                 @endif
             </div>
         </section>
         <section x-data="{ activeTab: 'review' }" class="w-full mt-12 p-6 bg-white rounded-2xl border border-stone-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)] overflow-hidden">
-            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">Review and Comment</h2>
+            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800">{{ __('messages.review_and_comment') }}</h2>
              <livewire:cafe-comment-section :cafeId="$cafe->id" />
         </section>
         <x-image-modal />
