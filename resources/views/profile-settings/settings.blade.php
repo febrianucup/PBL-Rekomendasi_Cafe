@@ -6,15 +6,11 @@
 
 <div class="bg-white rounded-3xl p-8 shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-white/40 max-w-3xl">
     @if(session('success'))
-    <div class="mb-6 bg-soft-green/20 text-soft-green border border-soft-green/30 p-4 rounded-2xl font-medium">
-        {{ session('success') }}
-    </div>
+        <x-alert type="success" class="mb-6">{{ session('success') }}</x-alert>
     @endif
     
     @if(session('error'))
-    <div class="mb-6 bg-soft-red/20 text-soft-red border border-soft-red/30 p-4 rounded-2xl font-medium">
-        {{ session('error') }}
-    </div>
+        <x-alert type="error" class="mb-6">{{ session('error') }}</x-alert>
     @endif
 
 

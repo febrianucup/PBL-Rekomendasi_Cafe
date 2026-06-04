@@ -43,11 +43,18 @@ class CommentController extends Controller
 
     public function destroy($id)
     {
-        $comment = \App\Models\Comment::findOrFail($id);
-        
-        // If the comment has replies (cascade delete is configured in DB, but just in case, delete replies if they exist)
-        $comment->delete();
+        $comment = \App\Models\Comment::with('replies')->findOrFail($id);
 
-        return redirect()->back()->with('success', __('messages.comments_deleted_success'));
+        try {
+            if ($comment->replies()->exists()) {
+                $comment->replies()->delete();
+            }
+
+            $comment->delete();
+
+            return redirect()->back()->with('success', __('messages.comments_deleted_success'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', __('messages.comments_deleted_error'));
+        }
     }
 }

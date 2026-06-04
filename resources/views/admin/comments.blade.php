@@ -28,10 +28,7 @@
 
     <!-- Alert Success -->
     @if(session('success'))
-        <div class="bg-soft-green/10 border border-soft-green/30 text-soft-green px-6 py-4 rounded-2xl text-sm font-semibold flex items-center gap-3 shadow-sm">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
-            <span>{{ session('success') }}</span>
-        </div>
+        <x-alert type="success">{{ session('success') }}</x-alert>
     @endif
 
     <!-- Filters -->
@@ -54,7 +51,7 @@
     <!-- Content -->
     <div class="space-y-6">
         @forelse($comments as $comment)
-        <div x-data="{ confirmDelete: false }" class="bg-white rounded-[32px] p-8 shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-white/45 flex flex-col md:flex-row gap-8 transition-all duration-300 hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1">
+        <div class="bg-white rounded-[32px] p-8 shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-white/45 flex flex-col md:flex-row gap-8 transition-all duration-300 hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1">
             
             <!-- Cafe Column -->
             <div class="w-full md:w-56 shrink-0 flex flex-col gap-4">
@@ -131,33 +128,15 @@
                 <div class="flex flex-wrap items-center justify-between gap-3 mt-6 pt-6 border-t border-light-beige/30">
                     <span class="text-xs text-gray-400 font-mono">ID: #{{ $comment->id }}</span>
                     
-                    <button @click="confirmDelete = true" type="button" class="px-8 py-2.5 bg-white border-2 border-soft-red/20 text-soft-red text-xs font-bold uppercase tracking-wider rounded-full hover:bg-soft-red/5 hover:border-soft-red/40 transition-all duration-300">
-                        {{ __('messages.delete') }}
-                    </button>
+                    <form action="{{ route('admin.comments.destroy', $comment->id) }}" method="POST" onsubmit="return confirm({{ json_encode(__('messages.comments_confirm_delete_text')) }})" class="m-0">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-8 py-2.5 bg-white border-2 border-soft-red/20 text-soft-red text-xs font-bold uppercase tracking-wider rounded-full hover:bg-soft-red/5 hover:border-soft-red/40 transition-all duration-300">
+                            {{ __('messages.delete') }}
+                        </button>
+                    </form>
                 </div>
             </div>
-
-            <!-- Delete Confirmation Modal (using x-teleport) -->
-            <template x-teleport="body">
-                <div x-show="confirmDelete" class="fixed inset-0 z-[99] flex items-center justify-center" x-cloak>
-                    <!-- Backdrop -->
-                    <div x-show="confirmDelete" x-transition.opacity @click="confirmDelete = false" class="absolute inset-0 bg-dark-brown/40 backdrop-blur-sm"></div>
-                    <!-- Modal Box -->
-                    <div x-show="confirmDelete" x-transition.scale.90 class="relative w-full max-w-sm bg-white p-8 rounded-[32px] shadow-2xl border border-cream mx-4 text-center">
-                        <h3 class="text-xl font-bold text-dark-brown mb-2">{{ __('messages.comments_confirm_delete_title') }}</h3>
-                        <p class="text-gray-500 mb-8">{{ __('messages.comments_confirm_delete_text') }}</p>
-                        <div class="flex gap-3">
-                            <button @click="confirmDelete = false" type="button" class="flex-1 px-6 py-3 rounded-2xl border border-cream text-gray-500 font-semibold hover:bg-cream transition-colors">{{ __('messages.cancel') }}</button>
-                            <form action="{{ route('admin.comments.destroy', $comment->id) }}" method="POST" class="flex-1 m-0">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="w-full px-6 py-3 rounded-2xl bg-red-500 text-white font-semibold hover:bg-red-600 transition-all">{{ __('messages.delete') }}</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </template>
-
         </div>
         @empty
         <div class="bg-white rounded-[32px] p-16 text-center text-gray-500 border border-light-beige/30 shadow-[0_4px_20px_rgb(0,0,0,0.02)]">

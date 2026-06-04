@@ -74,9 +74,7 @@
                 @csrf
 
                 @if(session('success'))
-                <div class="bg-[#BFE3B4] border-l-4 border-[#5D4037] p-4 mb-6 rounded-r-xl shadow-sm">
-                    <p class="text-sm font-medium text-[#3E2723]">{{ session('success') }}</p>
-                </div>
+                    <x-alert type="success" class="mb-6">{{ session('success') }}</x-alert>
                 @endif
 
                 @if($errors->has('loginError'))

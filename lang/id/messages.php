@@ -151,6 +151,7 @@ return [
     'comments_confirm_delete_title' => 'Konfirmasi Hapus',
     'comments_confirm_delete_text' => 'Apakah Anda yakin ingin menghapus komentar ini secara permanen?',
     'comments_deleted_success' => 'Komentar berhasil dihapus.',
+    'comments_deleted_error' => 'Komentar tidak dapat dihapus saat ini. Coba lagi.',
 
     // Missing translations
     'contact_us' => 'Hubungi Kami',

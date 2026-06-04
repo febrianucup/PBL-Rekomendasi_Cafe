@@ -57,19 +57,21 @@
             @endif
 
             @if(session('success'))
-                <div class="mb-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-                    {{ session('success') }}
-                </div>
+                <x-alert type="success" class="mb-5">{{ session('success') }}</x-alert>
+            @endif
+
+            @if(session('error'))
+                <x-alert type="error" class="mb-5">{{ session('error') }}</x-alert>
             @endif
 
             @if($errors->any())
-                <div class="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                <x-alert type="error" class="mb-5">
                     <ul class="list-disc pl-5">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
-                </div>
+                </x-alert>
             @endif
 
             <a href="{{ route('owner.dashboard') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">

@@ -29,10 +29,7 @@
         </div>
 
         @if(session('success'))
-            <div class="bg-[#eaf5ef] text-[#2f6846] p-4 rounded-xl mb-6 shadow-sm border border-[#c3e3d2] flex items-center gap-3">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                {{ session('success') }}
-            </div>
+            <x-alert type="success" class="mb-6">{{ session('success') }}</x-alert>
         @endif
 
         <!-- Form Tambah Menu -->
