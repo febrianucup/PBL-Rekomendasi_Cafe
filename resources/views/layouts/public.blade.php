@@ -328,24 +328,25 @@
                 x-transition
                 class="lg:hidden border-t border-gray-200 py-4 space-y-4">
 
-                       <nav class="flex flex-col gap-3 text-sm uppercase tracking-widest text-gray-600">
+                    <nav class="flex flex-col gap-3 text-sm uppercase tracking-widest text-gray-600">
+                         <a href="/">{{ __('messages.beranda') }}</a>
 
-                    <a href="/">{{ __('messages.beranda') }}</a>
-
-                    @isset($navbars)
-                        @foreach($navbars as $menu)
-                            @if($menu->url !== '/')
-                                <a href="{{ $menu->url }}">
-                                    {{ $menu->title }}
-                                </a>
+                        @isset($navbars)
+                            @foreach($navbars as $menu)
+                                @if($menu->url !== '/')
+                                    <a href="{{ $menu->url }}">
+                                        {{ $menu->title }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        @endisset
+                        @auth
+                            @if(auth()->user()->role->name !== 'owner' && auth()->user()->role->name !== 'admin')
+                                <a href="/favorite">{{ __('messages.navbar_favorite') }}<a>
                             @endif
-                        @endforeach
-                    @endisset
-
-                    <a href="/favorite">{{ __('messages.navbar_favorite') }}<a>
-
-                    <a href="/kontak">{{ __('messages.contact_us') }}</a>
-
+                        @endauth
+                        
+                        <a href="/kontak">{{ __('messages.contact_us') }}</a>
                 </nav>
 
                           @if(request()->routeIs(['cafes.index', 'favorite.cafes']))

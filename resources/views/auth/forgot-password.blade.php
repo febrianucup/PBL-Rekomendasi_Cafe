@@ -66,9 +66,7 @@
 
                 <!-- Alert Laravel Status -->
                 @if (session('status'))
-                    <div class="mb-6 p-4 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg">
-                        {{ session('status') }}
-                    </div>
+                    <x-alert type="success" class="mb-6">{{ session('status') }}</x-alert>
                 @endif
 
                 <!-- Form -->

@@ -153,6 +153,7 @@ return [
     'comments_confirm_delete_title' => 'Confirm Delete',
     'comments_confirm_delete_text' => 'Are you sure you want to permanently delete this comment?',
     'comments_deleted_success' => 'Comment deleted successfully.',
+    'comments_deleted_error' => 'Unable to delete the comment right now. Please try again.',
 
     // Missing translations
     'contact_us' => 'Contact Us',

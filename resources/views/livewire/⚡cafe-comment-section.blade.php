@@ -1,12 +1,12 @@
 <div class="space-y-10 w-full h-full">
     @if (session()->has('success'))
-        <div wire:poll.3s="$set('hideFlash', true)" class="{{ $hideFlash ? 'hidden' : '' }} fixed top-5 right-5 z-[9999] px-5 py-3 rounded-xl bg-green-300 text-brown shadow-xl text-sm font-semibold transition-all duration-500">
-            {{ session('success') }}
+        <div wire:poll.3s="$set('hideFlash', true)" class="{{ $hideFlash ? 'hidden' : '' }} fixed top-5 right-5 z-[9999]">
+            <x-alert type="success" class="shadow-xl">{{ session('success') }}</x-alert>
         </div>
     @endif
     @if (session()->has('error'))
-        <div wire:poll.3s="$set('hideFlash', true)" class="{{ $hideFlash ? 'hidden' : '' }} fixed top-5 right-5 z-[9999] px-5 py-3 rounded-xl bg-red-400 text-white shadow-xl text-sm font-semibold transition-all duration-500">
-            {{ session('error') }}
+        <div wire:poll.3s="$set('hideFlash', true)" class="{{ $hideFlash ? 'hidden' : '' }} fixed top-5 right-5 z-[9999]">
+            <x-alert type="error" class="shadow-xl">{{ session('error') }}</x-alert>
         </div>
     @endif
 
@@ -185,9 +185,9 @@
     @if($isDeleteModalOpen)
         <x-delete-modal id="cafe-comment" title="{{ __('messages.delete_comment_title') }}" message="{{ __('messages.delete_comment_confirm') }}">
             <div class="flex gap-4">
-                <button wire:click="closeDeleteModal" class="flex-1 px-6 py-3 rounded-2xl bg-stone-200 text-stone-700 font-semibold hover:shadow-lg transition-all">
+                {{-- <button wire:click="closeDeleteModal" class="flex-1 px-6 py-3 rounded-2xl bg-stone-200 text-stone-700 font-semibold hover:shadow-lg transition-all">
                     {{ __('messages.cancel') }}
-                </button>
+                </button> --}}
                 <button wire:click="deleteComment" class="flex-1 px-6 py-3 rounded-2xl bg-dark-brown text-white font-semibold hover:shadow-lg transition-all">
                     {{ __('messages.yes_delete') }}
                 </button>
