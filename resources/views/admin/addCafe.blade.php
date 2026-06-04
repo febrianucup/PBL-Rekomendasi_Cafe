@@ -48,9 +48,9 @@
         </div>
     </nav>
 
-    <!-- PAGE CONTENT -->
-    <div class="max-w-2xl mx-auto px-6 py-8">
-        <form method="POST" action="{{ route('admin.cafes.store') }}" enctype="multipart/form-data">
+    <!-- PAGE CONTENT (Diubah menjadi w-full) -->
+    <div class="w-full mx-auto px-6 py-8 md:px-12 lg:px-20">
+        <form id="cafe-form" method="POST" action="{{ route('add-cafe.submit') }}" enctype="multipart/form-data">
             @csrf
 
             @if(session('success'))
@@ -70,32 +70,13 @@
             @endif
 
             <!-- BACK LINK -->
-            <a href="{{ route('admin.cafes') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
-                ← Kembali ke Daftar Cafe
+            <a href="{{ url('/cafe') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
+                ← {{ __('messages.back_to_branches') }}
             </a>
 
         <!-- PAGE TITLE -->
         <h1 class="text-3xl font-semibold text-dark mb-1">{{ __('messages.add_cafe_title') }}</h1>
         <p class="text-xs text-muted mb-8 max-w-sm">{{ __('messages.add_cafe_desc') }}</p>
-
-        <!-- SECTION: Owner Selection -->
-        <section class="mb-8">
-            <h2 class="text-base font-semibold text-dark mb-4">Pilih Owner</h2>
-            <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
-                <div>
-                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Pemilik Cafe</label>
-                    <div class="relative">
-                        <select name="owner_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer">
-                            <option value="">Pilih Owner</option>
-                            @foreach($owners as $owner)
-                                <option value="{{ $owner->id }}" {{ old('owner_id') == $owner->id ? 'selected' : '' }}>{{ $owner->username }} - {{ $owner->email }}</option>
-                            @endforeach
-                        </select>
-                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <!-- SECTION: General Information -->
         <section class="mb-8">
@@ -105,7 +86,7 @@
                 <!-- Cafe Name -->
                 <div>
                     <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.cafe_name') }}</label>
-                    <input type="text" name="name" value="{{ old('name') }}"
+                    <input type="text" name="name" value="{{ auth()->user()->ownerProfile->cafe_name ?? old('name') }}"
                         class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark focus:outline-none focus:border-muted" required />
                 </div>
 
@@ -141,6 +122,7 @@
 
                         <div class="flex flex-wrap items-center gap-2 mt-1">
                             @foreach($tags as $tag)
+                                @if ($tag->tag_name !== 'promo')
                                 <label class="cursor-pointer">
                                     <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="hidden" x-model="selectedTags" />
                                     <span
@@ -149,6 +131,7 @@
                                         {{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}
                                     </span>
                                 </label>
+                                @endif
                             @endforeach
                         </div>
 
@@ -260,7 +243,7 @@
                 <!-- Leaflet Map Container -->
                 <div>
                     <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5 font-semibold">Pilih di Peta (Geser penanda / klik peta untuk menentukan koordinat)</label>
-                    <div id="map" class="h-64 rounded-xl border border-border relative z-10"></div>
+                    <div id="map" class="h-64 rounded-xl border border-border z-0"></div>
                 </div>
 
                 <!-- Hidden Coordinates Input -->
@@ -416,7 +399,7 @@
     </section>
 
         <!-- BOTTOM ACTIONS -->
-        <div class="flex items-center gap-3 pb-10">
+        <div class="flex items-center gap-3 pb-10 mt-8">
             <button type="submit" class="flex-1 bg-darkbrown text-white text-sm font-semibold rounded-full py-3.5 hover:bg-[#1e1a16] transition-colors">
                 {{ __('messages.publish_changes') }}
             </button>
@@ -425,7 +408,6 @@
             </button>
         </div>
         </form>
-
     </div>
 
     <script>
@@ -683,10 +665,6 @@
             const marker = L.marker([initialLat, initialLng], {
                 draggable: true
             }).addTo(map);
-
-            setTimeout(function() {
-                map.invalidateSize();
-            }, 500);
 
             // Update coordinates when marker is dragged
             marker.on('dragend', function(e) {

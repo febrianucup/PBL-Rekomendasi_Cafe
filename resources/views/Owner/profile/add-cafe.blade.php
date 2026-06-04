@@ -48,8 +48,8 @@
         </div>
     </nav>
 
-    <!-- PAGE CONTENT -->
-    <div class="max-w-2xl mx-auto px-6 py-8">
+    <!-- PAGE CONTENT (Diubah menjadi w-full) -->
+    <div class="w-full mx-auto px-6 py-8 md:px-12 lg:px-20">
         <form id="cafe-form" method="POST" action="{{ route('add-cafe.submit') }}" enctype="multipart/form-data">
             @csrf
 
@@ -122,6 +122,7 @@
 
                         <div class="flex flex-wrap items-center gap-2 mt-1">
                             @foreach($tags as $tag)
+                                @if ($tag->tag_name !== 'promo')
                                 <label class="cursor-pointer">
                                     <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="hidden" x-model="selectedTags" />
                                     <span
@@ -130,6 +131,7 @@
                                         {{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}
                                     </span>
                                 </label>
+                                @endif
                             @endforeach
                         </div>
 
@@ -397,7 +399,7 @@
     </section>
 
         <!-- BOTTOM ACTIONS -->
-        <div class="flex items-center gap-3 pb-10">
+        <div class="flex items-center gap-3 pb-10 mt-8">
             <button type="submit" class="flex-1 bg-darkbrown text-white text-sm font-semibold rounded-full py-3.5 hover:bg-[#1e1a16] transition-colors">
                 {{ __('messages.publish_changes') }}
             </button>
@@ -406,7 +408,6 @@
             </button>
         </div>
         </form>
-
     </div>
 
     <script>

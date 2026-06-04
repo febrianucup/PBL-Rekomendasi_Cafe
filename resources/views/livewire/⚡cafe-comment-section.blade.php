@@ -19,8 +19,8 @@
         $isDiscussion = ($commentType === 'discussion');
         $isReview = ($commentType === 'review');
 
-        $isOwner = (Auth::id() === $cafe->user_id);
-        $isAdmin = (auth()->user()->role->name === 'admin');
+        $isOwner = (Auth::check() && Auth::id() === $cafe->user_id);
+        $isAdmin = (auth()->check() && auth()->user()->role->name === 'admin');
     @endphp
 
     @auth
@@ -62,8 +62,13 @@
                 {{ __('messages.thank_you_review') }}
             </p>
         @endif
-    @endauth<div class="space-y-6">
-    @forelse(($commentType === 'review' ? $reviews : $discussions) as $comment)
+    @else
+        <div class="text-center py-8">
+            <p class="text-stone-600">Silakan <a href="{{ route('login') }}" class="text-blue-600 font-semibold underline">login</a> untuk memberikan review dan komentar.</p>
+        </div>
+    @endauth
+    <div class="space-y-6">
+    @forelse($comments as $comment)
         <div wire:key="comment-{{ $comment->id }}" class="p-4 bg-stone-50 rounded-xl space-y-3 border border-stone-100">
             <div class="flex justify-between items-center mb-1">
                 <div class="flex items-center">
@@ -163,7 +168,15 @@
         </div>
     @empty
         <p class="text-center text-stone-400 py-4">{{ __('messages.no_data') }}</p>
+        @if($commentType === 'review')
+            <p class="text-center text-stone-400 py-4">Belum ada ulasan. Jadilah yang pertama memberikan ulasan untuk kafe ini!</p>
+        @else
+            <p class="text-center text-stone-400 py-4">Belum ada komentar.</p>
+        @endif
     @endforelse
+    <div class="mt-6">
+        {{ $comments->links('vendor.pagination.comment-tailwind') }}
+    </div>
 
     @if($isDeleteModalOpen)
         <x-delete-modal id="cafe-comment" title="{{ __('messages.delete_comment_title') }}" message="{{ __('messages.delete_comment_confirm') }}">
