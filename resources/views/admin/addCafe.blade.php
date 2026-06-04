@@ -50,7 +50,7 @@
 
     <!-- PAGE CONTENT (Diubah menjadi w-full) -->
     <div class="w-full mx-auto px-6 py-8 md:px-12 lg:px-20">
-        <form id="cafe-form" method="POST" action="{{ route('add-cafe.submit') }}" enctype="multipart/form-data">
+        <form id="cafe-form" method="POST" action="{{ route('admin.cafes.store') }}" enctype="multipart/form-data">
             @csrf
 
             @if(session('success'))
@@ -77,6 +77,24 @@
         <!-- PAGE TITLE -->
         <h1 class="text-3xl font-semibold text-dark mb-1">{{ __('messages.add_cafe_title') }}</h1>
         <p class="text-xs text-muted mb-8 max-w-sm">{{ __('messages.add_cafe_desc') }}</p>
+
+        <section class="mb-8">
+            <h2 class="text-base font-semibold text-dark mb-4">Pilih Owner</h2>
+            <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Pemilik Cafe</label>
+                    <div class="relative">
+                        <select name="owner_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer">
+                            <option value="">Pilih Owner</option>
+                            @foreach($owners as $owner)
+                                <option value="{{ $owner->id }}" {{ old('owner_id') == $owner->id ? 'selected' : '' }}>{{ $owner->username }} - {{ $owner->email }}</option>
+                            @endforeach
+                        </select>
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- SECTION: General Information -->
         <section class="mb-8">

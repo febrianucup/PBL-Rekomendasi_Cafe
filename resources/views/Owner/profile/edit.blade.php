@@ -49,7 +49,7 @@
     </nav>
 
     <!-- PAGE CONTENT -->
-    <div class="max-w-2xl mx-auto px-6 py-8">
+    <div class="w-full px-6 py-8">
         <form method="POST" action="{{ isset($cafe) ? route('cafe.update', $cafe->id) : route('add-cafe.submit') }}" enctype="multipart/form-data">
             @csrf
             @if(isset($cafe))
