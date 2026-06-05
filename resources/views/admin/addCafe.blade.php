@@ -72,7 +72,7 @@
             @endif
 
             <!-- BACK LINK -->
-            <a href="{{ url('/cafe') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
+            <a href="{{ url('/admin/cafes') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
                 ← {{ __('messages.back_to_branches') }}
             </a>
 
