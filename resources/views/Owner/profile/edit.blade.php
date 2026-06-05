@@ -424,8 +424,8 @@
                         </div>
 
                         <div class="flex items-center gap-3">
-                            <button type="button" id="menu-form-submit-button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">Add Menu</button>
-                            <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">Cancel</button>
+                            <button type="button" id="menu-submit-btn" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">Add Menu</button>
+                            <button type="button" onclick="cancelEditMenu()" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">Cancel</button>
                         </div>
                     </div>
 
@@ -539,7 +539,7 @@
 
         function toggleNewMenuForm(show, options = {}) {
             const form = document.getElementById('new-menu-form');
-            const submitButton = document.getElementById('menu-form-submit-button');
+            const submitButton = document.getElementById('menu-submit-btn');
             if (show) {
                 form.classList.remove('hidden');
                 document.getElementById('menu-name').focus();
@@ -754,6 +754,21 @@
             if (menuItem) {
                 menuItem.remove();
                 reindexMenuItems();
+                // Jika sedang edit dan menghapus item yang sedang diedit, cancel edit
+                if (editingMenuIndex === index) {
+                    cancelEditMenu();
+                }
+            }
+        }
+
+        function cancelEditMenu() {
+            isEditingMenu = false;
+            editingMenuIndex = null;
+            toggleNewMenuForm(false);
+            clearNewMenuFields();
+            const submitBtn = document.getElementById('menu-submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = 'Add Menu';
             }
         }
 
