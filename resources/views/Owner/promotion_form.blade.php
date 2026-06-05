@@ -21,7 +21,7 @@
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div>
+            </x-alert>
         @endif
 
         <form action="{{ $promotion->exists ? route('owner.promosi.update', $promotion->id) : route('owner.promosi.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
