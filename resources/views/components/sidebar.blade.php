@@ -60,7 +60,22 @@
     }
 @endphp
 
-<aside class="w-64 bg-white shadow-xl shadow-light-beige/50 z-20 flex flex-col justify-between" x-data="{ currentRoute: '{{ request()->path() }}' }">
+<!-- Sidebar Backdrop for Mobile -->
+<div x-show="sidebarOpen" 
+     x-cloak 
+     @click="sidebarOpen = false" 
+     class="fixed inset-0 z-20 bg-black/50 transition-opacity lg:hidden"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0">
+</div>
+
+<aside class="fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-xl shadow-light-beige/50 flex flex-col justify-between transition-transform duration-300 transform lg:translate-x-0 lg:static lg:inset-auto"
+       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+       x-data="{ currentRoute: '{{ request()->path() }}' }">
     <div>
         <!-- Logo -->
         <div class="h-24 flex items-center px-8 border-b-2 border-cream">

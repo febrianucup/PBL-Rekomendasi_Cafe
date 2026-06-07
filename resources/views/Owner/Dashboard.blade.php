@@ -8,12 +8,12 @@
     <div class="space-y-6">
         <!-- Welcome Section -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-light-beige">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-dark-brown mb-2">Welcome back, {{ auth()->user()->username }}!</h1>
                     <p class="text-muted">Manage your cafe collection and grow your business.</p>
                 </div>
-                <div class="text-right">
+                <div class="text-left sm:text-right">
                     <p class="text-[10px] uppercase tracking-widest text-muted mt-1">{{ __('messages.owner_dashboard') }}</p>
                 </div>
             </div>
