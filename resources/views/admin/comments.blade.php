@@ -76,9 +76,9 @@
                     <div class="flex justify-between items-start mb-6">
                         <!-- User Meta -->
                         <div class="flex items-center gap-4">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($comment->user->name ?? 'User') }}&background=D6CFC7&color=4B2E2B" alt="User" class="w-12 h-12 rounded-full border-2 border-cream">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($comment->user->username ?? 'User') }}&background=D6CFC7&color=4B2E2B" alt="User" class="w-12 h-12 rounded-full border-2 border-cream">
                             <div>
-                                <p class="font-bold text-dark-brown text-sm">{{ $comment->user->name ?? 'User' }}</p>
+                                <p class="font-bold text-dark-brown text-sm">{{ $comment->user->username ?? 'User' }}</p>
                                 <p class="text-xs text-gray-500 font-medium">{{ $comment->created_at->diffForHumans() }}</p>
                             </div>
                         </div>

@@ -12,7 +12,7 @@
             : ['https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80'];
     @endphp
 
-    <div class="w-full h-[550px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="w-full h-[250px] sm:h-[400px] md:h-[550px] mx-auto px-4 sm:px-6 lg:px-8 mt-6">
         <div class="relative w-full h-full overflow-hidden rounded-xl group"
             x-data='{ 
                 activeSlide: 0,
@@ -245,7 +245,7 @@
                     @foreach($cafe->promotions as $promotion)
                         <article class="flex-none w-full md:w-[500px] snap-center rounded-[2rem] overflow-hidden border border-gray-100 shadow-lg bg-white transition-transform hover:shadow-xl">
                             @if($promotion->image_url)
-                                <button type="button" class="block w-full h-[700px] overflow-hidden" wire:click="$dispatch('open-image', '{{ asset('storage/' . $promotion->image_url) }}')">
+                                <button type="button" class="block w-full h-[300px] sm:h-[450px] md:h-[600px] lg:h-[700px] overflow-hidden" wire:click="$dispatch('open-image', '{{ asset('storage/' . $promotion->image_url) }}')">
                                     <img src="{{ $promotion->image_url }}"   alt="{{ $promotion->title }}" class="w-full h-full object-cover cursor-pointer" />
                                 </button>
 

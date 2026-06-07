@@ -342,11 +342,52 @@
                         @endisset
                         @auth
                             @if(auth()->user()->role->name !== 'owner' && auth()->user()->role->name !== 'admin')
-                                <a href="/favorite">{{ __('messages.navbar_favorite') }}<a>
+                                <a href="/favorite">{{ __('messages.navbar_favorite') }}</a>
                             @endif
                         @endauth
                         
                         <a href="/kontak">{{ __('messages.contact_us') }}</a>
+                        
+                        <div class="border-t border-gray-100 my-2"></div>
+                        
+                        @auth
+                            @if(auth()->user()->role->name == 'owner')
+                                <a href="{{ route('owner.dashboard') }}" class="font-bold text-black">
+                                    Owner Dashboard
+                                </a>
+                            @elseif(auth()->user()->role->name == 'admin')
+                                <a href="{{ route('admin.cafes') }}" class="font-bold text-black">
+                                    Admin Dashboard
+                                </a>
+                            @endif
+                            <a href="{{ route('profile.settings.show') }}">
+                                Settings
+                            </a>
+                            <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="text-left text-sm uppercase tracking-widest text-red-600 font-bold w-full py-1">
+                                    Logout
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="font-bold text-black">
+                                {{ __('messages.login') }}
+                            </a>
+                        @endauth
+
+                        <div class="border-t border-gray-100 my-2"></div>
+
+                        <div class="flex items-center gap-4 py-1">
+                            <a href="{{ route('lang.switch', 'en') }}"
+                                class="text-xs font-bold uppercase tracking-widest {{ app()->getLocale() == 'en' ? 'text-black border-b border-black' : 'text-gray-400 hover:text-black transition' }}">
+                                EN
+                            </a>
+                            <span class="text-gray-300">|</span>
+                            <a href="{{ route('lang.switch', 'id') }}"
+                                class="text-xs font-bold uppercase tracking-widest {{ app()->getLocale() == 'id' ? 'text-black border-b border-black' : 'text-gray-400 hover:text-black transition' }}">
+                                ID
+                            </a>
+                        </div>
                 </nav>
 
                           @if(request()->routeIs(['cafes.index', 'favorite.cafes']))

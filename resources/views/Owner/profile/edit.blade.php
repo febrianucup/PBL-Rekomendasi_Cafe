@@ -30,6 +30,19 @@
             }
         }
     </script>
+    <style>
+        /* Page Transitions */
+        body {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        body.page-loaded {
+            opacity: 1;
+        }
+        body.page-fade-out {
+            opacity: 0;
+        }
+    </style>
 </head>
 <body class="bg-cream font-sans text-dark min-h-screen">
 
@@ -102,7 +115,7 @@
                     </div>
 
                     <!-- Establishment Type + Atmospheric Tag -->
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Establishment Type</label>
                             <div class="relative">
@@ -186,15 +199,15 @@
 
                 <div class="bg-white border border-border rounded-2xl overflow-hidden">
                     <template x-for="(schedule, index) in schedules" :key="index">
-                        <div class="flex items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group gap-4">
                             
-                            <div class="w-32">
+                            <div class="w-full sm:w-32">
                                 <input type="text" x-model="schedule.day_range" placeholder="e.g. Monday"
                                     :name="`open_time[${index}][day_range]`"
                                     class="text-sm font-semibold text-dark bg-transparent border-b border-transparent focus:border-active focus:outline-none w-full" required />
                             </div>
 
-                            <div class="flex items-center gap-3 flex-1">
+                            <div class="flex items-center gap-3 w-full sm:flex-1">
                                 <input type="time" x-model="schedule.open_time" 
                                     :name="`open_time[${index}][open_time]`"
                                     class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" required />
@@ -222,7 +235,7 @@
                 <h2 class="text-base font-semibold text-dark mb-4">Contact Details</h2>
                 <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Phone Number</label>
                             <input type="tel" name="phone_number" value="{{ old('phone_number', $cafe->num_phone ?? '') }}"
@@ -260,7 +273,7 @@
                         <div id="map" class="h-64 rounded-xl border border-border z-0"></div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
                             <input type="text" name="latitude" id="latitude" placeholder="e.g., 47.6062" value="{{ old('latitude', $cafe->latitude ?? '') }}"
@@ -304,7 +317,7 @@
             <section class="mb-8">
                 <h2 class="text-base font-semibold text-dark mb-4">Photo Gallery</h2>
                 <div class="bg-white border border-border rounded-2xl p-5">
-                    <div class="grid grid-cols-4 gap-3" id="photo-gallery">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="photo-gallery">
 
                         <!-- Existing Photos -->
                         @if(isset($cafe) && $cafe->photos->isNotEmpty())
@@ -332,7 +345,7 @@
                 <h2 class="text-base font-semibold text-dark mb-4">Thumbnail</h2>
                 <div class="bg-white border border-border rounded-2xl p-5">
 
-                    <div class="grid grid-cols-4 gap-3" id="thumbnail-gallery">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="thumbnail-gallery">
 
                         <!-- Existing Thumbnail -->
                         @if(isset($cafe) && $cafe->thumbnail)
@@ -903,5 +916,47 @@
         });
     </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('page-loaded');
+
+        document.querySelectorAll('a').forEach(link => {
+            if (
+                link.target === '_blank' ||
+                link.getAttribute('href') === null ||
+                link.getAttribute('href').startsWith('#') ||
+                link.getAttribute('href').startsWith('javascript:') ||
+                link.hasAttribute('download')
+            ) {
+                return;
+            }
+
+            const href = link.getAttribute('href');
+            const isInternal = href.startsWith('/') || href.startsWith(window.location.origin);
+
+            if (isInternal) {
+                link.addEventListener('click', e => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
+                        return;
+                    }
+                    e.preventDefault();
+                    document.body.classList.remove('page-loaded');
+                    document.body.classList.add('page-fade-out');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                });
+            }
+        });
+    });
+
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            document.body.classList.remove('page-fade-out');
+            document.body.classList.add('page-loaded');
+        }
+    });
+</script>
 </body>
 </html>

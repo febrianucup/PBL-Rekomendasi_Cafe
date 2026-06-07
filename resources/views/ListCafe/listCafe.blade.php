@@ -21,7 +21,7 @@
                 ];
         @endphp
         
-        <section class="w-full h-[550px] mb-12 mt-8 bg-gray-200 relative group overflow-hidden rounded-xl"
+        <section class="w-full h-[250px] sm:h-[400px] md:h-[550px] mb-12 mt-8 bg-gray-200 relative group overflow-hidden rounded-xl"
             x-data='{ 
                 activeSlide: 0,
                 slides: @json($sliderImages),

@@ -16,8 +16,7 @@ class CommentController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('body', 'like', "%{$search}%")
                   ->orWhereHas('user', function($qu) use ($search) {
-                      $qu->where('name', 'like', "%{$search}%")
-                         ->orWhere('username', 'like', "%{$search}%");
+                      $qu->where('username', 'like', "%{$search}%");
                   })
                   ->orWhereHas('cafe', function($qc) use ($search) {
                       $qc->where('name', 'like', "%{$search}%");

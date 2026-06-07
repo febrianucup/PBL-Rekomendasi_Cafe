@@ -26,3 +26,17 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
     --color-main: 254 249 243;
 }
+
+/* Page Transitions */
+body {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+body.page-loaded {
+    opacity: 1;
+}
+
+body.page-fade-out {
+    opacity: 0;
+}

@@ -3,12 +3,12 @@
 @section('content')
 <div class="space-y-10">
     <!-- Header -->
-    <div class="flex justify-between items-end">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
             <h2 class="font-serif text-4xl font-bold text-dark-brown">Daftar Koleksi</h2>
             <p class="text-gray-500 mt-2 text-lg">Kurasi dan kelola destinasi kafe eksklusif.</p>
         </div>
-        <a href="{{ route('admin.cafes.create') }}" class="bg-dark-brown text-white px-6 py-3 rounded-full font-medium shadow-lg shadow-dark-brown/30 hover:bg-dark-brown/90 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+        <a href="{{ route('admin.cafes.create') }}" class="bg-dark-brown text-white px-6 py-3 rounded-full font-medium shadow-lg shadow-dark-brown/30 hover:bg-dark-brown/90 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 whitespace-nowrap">
             Tambah Cafe Owner
         </a>
     </div>
