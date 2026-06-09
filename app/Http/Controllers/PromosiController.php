@@ -15,7 +15,12 @@ class PromosiController extends Controller
 {
     public function index()
     {
-        $promotions = Promosi::with('cafe')->latest()->get();
+        $promotions = Promosi::with('cafe')
+            ->whereHas('cafe', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->latest()
+            ->get();
 
         return view('Owner.promotion', compact('promotions'));
     }
@@ -67,7 +72,12 @@ class PromosiController extends Controller
 
     public function edit($id)
     {
-        $promotion = Promosi::with('cafe')->findOrFail($id);
+        $promotion = Promosi::with('cafe')
+            ->whereHas('cafe', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->findOrFail($id);
+
         $cafes = Cafes::where('user_id', Auth::id())->get();
 
         return view('Owner.promotion_form', [
@@ -78,7 +88,7 @@ class PromosiController extends Controller
 
     private function attachPromotionTag(Cafes $cafe): void
     {
-        $promotionTag = Tags::firstOrCreate(['tag_name' => 'promosi']);
+        $promotionTag = Tags::firstOrCreate(['tag_name' => 'promo']);
         $cafe->tags()->syncWithoutDetaching([$promotionTag->id]);
     }
 
@@ -94,7 +104,11 @@ class PromosiController extends Controller
 
     public function update(Request $request, $id)
     {
-        $promotion = Promosi::findOrFail($id);
+        $promotion = Promosi::with('cafe')
+            ->whereHas('cafe', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->findOrFail($id);
         $oldCafe = $promotion->cafe;
 
         $validated = $request->validate([
@@ -134,7 +148,11 @@ class PromosiController extends Controller
 
     public function destroy($id)
     {
-        $promotion = Promosi::findOrFail($id);
+        $promotion = Promosi::with('cafe')
+            ->whereHas('cafe', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->findOrFail($id);
         $cafe = $promotion->cafe;
 
         if ($promotion->img_url && Storage::disk('public')->exists($promotion->img_url)) {

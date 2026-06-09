@@ -6,14 +6,10 @@
 @section('content')
 <div class="space-y-10">
     @if(session('success'))
-        <div class="rounded-3xl bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-700">
-            {{ session('success') }}
-        </div>
+        <x-alert type="success" class="mb-6">{{ session('success') }}</x-alert>
     @endif
     @if(session('error'))
-        <div class="rounded-3xl bg-rose-50 border border-rose-200 p-4 text-sm text-rose-700">
-            {{ session('error') }}
-        </div>
+        <x-alert type="error" class="mb-6">{{ session('error') }}</x-alert>
     @endif
 
     <!-- Header -->

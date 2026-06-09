@@ -30,6 +30,19 @@
             }
         }
     </script>
+    <style>
+        /* Page Transitions */
+        body {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        body.page-loaded {
+            opacity: 1;
+        }
+        body.page-fade-out {
+            opacity: 0;
+        }
+    </style>
 </head>
 <body class="bg-cream font-sans text-dark min-h-screen">
 
@@ -49,7 +62,7 @@
     </nav>
 
     <!-- PAGE CONTENT -->
-    <div class="max-w-2xl mx-auto px-6 py-8">
+    <div class="w-full px-6 py-8">
         <form method="POST" action="{{ isset($cafe) ? route('cafe.update', $cafe->id) : route('add-cafe.submit') }}" enctype="multipart/form-data">
             @csrf
             @if(isset($cafe))
@@ -57,19 +70,21 @@
             @endif
 
             @if(session('success'))
-                <div class="mb-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-                    {{ session('success') }}
-                </div>
+                <x-alert type="success" class="mb-5">{{ session('success') }}</x-alert>
+            @endif
+
+            @if(session('error'))
+                <x-alert type="error" class="mb-5">{{ session('error') }}</x-alert>
             @endif
 
             @if($errors->any())
-                <div class="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                <x-alert type="error" class="mb-5">
                     <ul class="list-disc pl-5">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
-                </div>
+                </x-alert>
             @endif
 
             <a href="{{ route('owner.dashboard') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
@@ -100,14 +115,14 @@
                     </div>
 
                     <!-- Establishment Type + Atmospheric Tag -->
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Establishment Type</label>
                             <div class="relative">
                                 <select name="type_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer" required>
                                     <option value="">Select a type</option>
                                     @foreach($types as $type)
-                                        <option value="{{ $type->id }}" {{ old('type_id', $cafe->type_id ?? '') == $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
+                                        <option value="{{ $type->id }}" {{ old('type_id', $cafe->type_id ?? '') == $type->id ? 'selected' : '' }}>{{ trans()->has('messages.' . strtolower($type->type_name)) ? __('messages.' . strtolower($type->type_name)) : $type->type_name }}</option>
                                     @endforeach
                                 </select>
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
@@ -130,7 +145,7 @@
                                         <span
                                             :class="selectedTags.includes(String({{ $tag->id }})) ? 'bg-active text-white' : 'bg-[#E8E4DE] text-dark'"
                                             class="text-[11px] font-medium px-4 py-1.5 rounded-full transition-all duration-200 inline-block border border-transparent">
-                                            {{ $tag->tag_name }}
+                                            {{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}
                                         </span>
                                     </label>
                                     @endif
@@ -184,15 +199,15 @@
 
                 <div class="bg-white border border-border rounded-2xl overflow-hidden">
                     <template x-for="(schedule, index) in schedules" :key="index">
-                        <div class="flex items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group gap-4">
                             
-                            <div class="w-32">
+                            <div class="w-full sm:w-32">
                                 <input type="text" x-model="schedule.day_range" placeholder="e.g. Monday"
                                     :name="`open_time[${index}][day_range]`"
                                     class="text-sm font-semibold text-dark bg-transparent border-b border-transparent focus:border-active focus:outline-none w-full" required />
                             </div>
 
-                            <div class="flex items-center gap-3 flex-1">
+                            <div class="flex items-center gap-3 w-full sm:flex-1">
                                 <input type="time" x-model="schedule.open_time" 
                                     :name="`open_time[${index}][open_time]`"
                                     class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" required />
@@ -220,7 +235,7 @@
                 <h2 class="text-base font-semibold text-dark mb-4">Contact Details</h2>
                 <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Phone Number</label>
                             <input type="tel" name="phone_number" value="{{ old('phone_number', $cafe->num_phone ?? '') }}"
@@ -258,7 +273,7 @@
                         <div id="map" class="h-64 rounded-xl border border-border z-0"></div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">Latitude</label>
                             <input type="text" name="latitude" id="latitude" placeholder="e.g., 47.6062" value="{{ old('latitude', $cafe->latitude ?? '') }}"
@@ -302,7 +317,7 @@
             <section class="mb-8">
                 <h2 class="text-base font-semibold text-dark mb-4">Photo Gallery</h2>
                 <div class="bg-white border border-border rounded-2xl p-5">
-                    <div class="grid grid-cols-4 gap-3" id="photo-gallery">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="photo-gallery">
 
                         <!-- Existing Photos -->
                         @if(isset($cafe) && $cafe->photos->isNotEmpty())
@@ -330,7 +345,7 @@
                 <h2 class="text-base font-semibold text-dark mb-4">Thumbnail</h2>
                 <div class="bg-white border border-border rounded-2xl p-5">
 
-                    <div class="grid grid-cols-4 gap-3" id="thumbnail-gallery">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="thumbnail-gallery">
 
                         <!-- Existing Thumbnail -->
                         @if(isset($cafe) && $cafe->thumbnail)
@@ -378,9 +393,11 @@
                                     </div>
                                     <div class="flex items-center gap-3">
                                         <span class="menu-price text-sm font-semibold text-dark">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
-                                        <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this, {{ $index }})">✕</button>
+                                        <button type="button" class="text-dark hover:text-blue-600 transition-colors text-base font-bold" onclick="editMenuItem(this, {{ $index }})" title="Edit menu">✎</button>
+                                        <button type="button" class="text-red-600 hover:text-red-800 transition-colors text-base font-bold" onclick="removeMenuItem(this, {{ $index }})" title="Delete menu">✕</button>
                                     </div>
 
+                                    <input type="hidden" name="menu_items[{{ $index }}][id]" value="{{ $item->id }}">
                                     <input type="hidden" name="menu_items[{{ $index }}][name]" value="{{ $item->name }}">
                                     <input type="hidden" name="menu_items[{{ $index }}][description]" value="{{ $item->description }}">
                                     <input type="hidden" name="menu_items[{{ $index }}][price]" value="{{ $item->price }}">
@@ -422,8 +439,8 @@
                         </div>
 
                         <div class="flex items-center gap-3">
-                            <button type="button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">Add Menu</button>
-                            <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">Cancel</button>
+                            <button type="button" id="menu-submit-btn" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">Add Menu</button>
+                            <button type="button" onclick="cancelEditMenu()" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">Cancel</button>
                         </div>
                     </div>
 
@@ -493,6 +510,9 @@
                 };
                 reader.readAsDataURL(file);
             });
+            
+            // Reset file input untuk mencegah penumpukan
+            event.target.value = '';
         }
 
         function handleThumbnailInput(event) {
@@ -519,6 +539,9 @@
                 };
                 reader.readAsDataURL(file);
             });
+            
+            // Reset file input untuk mencegah penumpukan
+            event.target.value = '';
         }
 
         function removePhoto(button) {
@@ -526,15 +549,24 @@
         }
 
         let menuImages = [];
+        let isEditingMenu = false;
+        let editingMenuIndex = null;
 
-        function toggleNewMenuForm(show) {
+        function toggleNewMenuForm(show, options = {}) {
             const form = document.getElementById('new-menu-form');
+            const submitButton = document.getElementById('menu-submit-btn');
             if (show) {
                 form.classList.remove('hidden');
                 document.getElementById('menu-name').focus();
+                submitButton.textContent = options.edit ? 'Update Menu' : 'Add Menu';
             } else {
                 form.classList.add('hidden');
                 clearNewMenuFields();
+                isEditingMenu = false;
+                editingMenuIndex = null;
+                if (submitButton) {
+                    submitButton.textContent = 'Add Menu';
+                }
             }
         }
 
@@ -612,7 +644,52 @@
             }
 
             const menuList = document.getElementById('menu-list');
-            const index = menuList.getElementsByClassName('menu-item').length;
+            const index = isEditingMenu && editingMenuIndex !== null ? editingMenuIndex : menuList.getElementsByClassName('menu-item').length;
+
+            if (isEditingMenu && editingMenuIndex !== null) {
+                const menuItem = menuList.getElementsByClassName('menu-item')[editingMenuIndex];
+                if (!menuItem) {
+                    alert('Menu item tidak ditemukan.');
+                    return;
+                }
+
+                const imageContainer = menuItem.querySelector('.w-10.h-10');
+                imageContainer.className = `w-10 h-10 rounded-xl overflow-hidden ${imageData ? '' : 'bg-[#f5f1ec] flex items-center justify-center text-xs text-muted'}`;
+                imageContainer.innerHTML = imageData ? `<img src="${escapeHtml(imageData)}" alt="menu image" class="w-full h-full object-cover" />` : 'IMG';
+
+                menuItem.querySelector('.text-sm.font-semibold.text-dark').textContent = name;
+                menuItem.querySelector('.text-xs.text-muted').textContent = description;
+                menuItem.querySelector('.menu-price').textContent = priceFormatted;
+
+                menuItem.querySelector('input[name$="[name]"]').value = name;
+                menuItem.querySelector('input[name$="[description]"]').value = description;
+                menuItem.querySelector('input[name$="[price]"]').value = rawPrice;
+
+                if (imageInput.files[0]) {
+                    const existingFileInput = menuItem.querySelector('input[type="file"]');
+                    if (existingFileInput) {
+                        existingFileInput.remove();
+                    }
+
+                    const hiddenFileInput = document.createElement('input');
+                    hiddenFileInput.type = 'file';
+                    hiddenFileInput.style.display = 'none';
+                    hiddenFileInput.name = `menu_items[${index}][image]`;
+                    hiddenFileInput.id = `hidden-file-${index}`;
+
+                    const dt = new DataTransfer();
+                    dt.items.add(imageInput.files[0]);
+                    hiddenFileInput.files = dt.files;
+
+                    menuItem.appendChild(hiddenFileInput);
+                }
+
+                toggleNewMenuForm(false);
+                clearNewMenuFields();
+                isEditingMenu = false;
+                editingMenuIndex = null;
+                return;
+            }
 
             const menuItem = document.createElement('div');
             menuItem.className = 'menu-item flex items-center justify-between px-5 py-4 border-b border-border';
@@ -628,7 +705,8 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="menu-price text-sm font-semibold text-dark">${escapeHtml(priceFormatted)}</span>
-                    <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this, ${index})">✕</button>
+                    <button type="button" class="text-dark hover:text-blue-600 transition-colors text-base font-bold" onclick="editMenuItem(this, ${index})" title="Edit menu">✎</button>
+                    <button type="button" class="text-red-600 hover:text-red-800 transition-colors text-base font-bold" onclick="removeMenuItem(this, ${index})" title="Delete menu">✕</button>
                 </div>
 
                 <input type="hidden" name="menu_items[${index}][name]" value="${escapeHtml(name)}">
@@ -655,11 +733,57 @@
             clearNewMenuFields();
         }
 
+        function editMenuItem(button, index) {
+            const menuItems = document.querySelectorAll('#menu-list .menu-item');
+            const menuItem = menuItems[index];
+            if (!menuItem) return;
+
+            const name = menuItem.querySelector('input[name$="[name]"]').value;
+            const description = menuItem.querySelector('input[name$="[description]"]').value;
+            const price = menuItem.querySelector('input[name$="[price]"]').value;
+            const imageElement = menuItem.querySelector('.w-10.h-10 img');
+            const imagePreview = document.getElementById('menu-image-preview');
+            const menuImageName = document.getElementById('menu-image-name');
+
+            document.getElementById('menu-name').value = name;
+            document.getElementById('menu-description').value = description;
+            document.getElementById('menu-price').value = formatRupiah(price);
+
+            if (imageElement) {
+                imagePreview.innerHTML = `<img src="${escapeHtml(imageElement.src)}" alt="menu preview" class="w-full h-full object-cover" />`;
+                imagePreview.dataset.image = imageElement.src;
+                menuImageName.textContent = 'Current image';
+            } else {
+                imagePreview.innerHTML = 'Preview image akan muncul di sini';
+                delete imagePreview.dataset.image;
+                menuImageName.textContent = 'No file chosen';
+            }
+
+            isEditingMenu = true;
+            editingMenuIndex = index;
+            toggleNewMenuForm(true, { edit: true });
+        }
+
         function removeMenuItem(button, index) {
             const menuItem = button.closest('.menu-item');
             if (menuItem) {
                 menuItem.remove();
                 reindexMenuItems();
+                // Jika sedang edit dan menghapus item yang sedang diedit, cancel edit
+                if (editingMenuIndex === index) {
+                    cancelEditMenu();
+                }
+            }
+        }
+
+        function cancelEditMenu() {
+            isEditingMenu = false;
+            editingMenuIndex = null;
+            toggleNewMenuForm(false);
+            clearNewMenuFields();
+            const submitBtn = document.getElementById('menu-submit-btn');
+            if (submitBtn) {
+                submitBtn.textContent = 'Add Menu';
             }
         }
 
@@ -670,14 +794,26 @@
                 item.querySelector(`input[name*="[description]"]`).name = `menu_items[${newIndex}][description]`;
                 item.querySelector(`input[name*="[price]"]`).name = `menu_items[${newIndex}][price]`;
                 
+                const idInput = item.querySelector(`input[name*="[id]"]`);
+                if (idInput) {
+                    idInput.name = `menu_items[${newIndex}][id]`;
+                }
+                
                 const fileInput = item.querySelector(`input[type="file"]`);
                 if (fileInput) {
                     fileInput.name = `menu_items[${newIndex}][image]`;
                     fileInput.id = `hidden-file-${newIndex}`;
                 }
-
-                const removeBtn = item.querySelector('button[onclick^="removeMenuItem"]');
-                removeBtn.setAttribute('onclick', `removeMenuItem(this, ${newIndex})`);
+                
+                const editButton = item.querySelector('button[onclick*="editMenuItem"]');
+                if (editButton) {
+                    editButton.onclick = () => editMenuItem(editButton, newIndex);
+                }
+                
+                const removeButton = item.querySelector('button[onclick*="removeMenuItem"]');
+                if (removeButton) {
+                    removeButton.onclick = () => removeMenuItem(removeButton, newIndex);
+                }
             });
         }
 
@@ -780,5 +916,47 @@
         });
     </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('page-loaded');
+
+        document.querySelectorAll('a').forEach(link => {
+            if (
+                link.target === '_blank' ||
+                link.getAttribute('href') === null ||
+                link.getAttribute('href').startsWith('#') ||
+                link.getAttribute('href').startsWith('javascript:') ||
+                link.hasAttribute('download')
+            ) {
+                return;
+            }
+
+            const href = link.getAttribute('href');
+            const isInternal = href.startsWith('/') || href.startsWith(window.location.origin);
+
+            if (isInternal) {
+                link.addEventListener('click', e => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
+                        return;
+                    }
+                    e.preventDefault();
+                    document.body.classList.remove('page-loaded');
+                    document.body.classList.add('page-fade-out');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                });
+            }
+        });
+    });
+
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            document.body.classList.remove('page-fade-out');
+            document.body.classList.add('page-loaded');
+        }
+    });
+</script>
 </body>
 </html>

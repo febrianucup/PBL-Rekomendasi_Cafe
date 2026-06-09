@@ -8,13 +8,25 @@
   <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-  <style>
-    body {
+  <style>  
+  body {
       font-family: 'Inter', sans-serif;
     }
 
     .serif-title {
       font-family: 'Playfair Display', serif;
+    }
+    
+    /* Page Transitions */
+    body {
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    body.page-loaded {
+        opacity: 1;
+    }
+    body.page-fade-out {
+        opacity: 0;
     }
   </style>
 </head>
@@ -23,7 +35,7 @@
 
   <div class="flex flex-col md:flex-row w-full h-screen bg-white">
 
-    <div class="relative w-full md:w-1/2 h-screen bg-[#515744] overflow-hidden group">
+    <div class="relative w-full md:w-1/2 h-screen bg-[#515744] overflow-hidden hidden md:flex group">
       <img
         src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop"
         class="absolute inset-0 opacity-60 mix-blend-overlay transition-transform duration-[2000ms] group-hover:scale-105"
@@ -31,12 +43,12 @@
         alt="Interior Cafe">
 
       <div class="relative z-10 h-full p-12 flex flex-col justify-center">
-        <h1 class="serif-title italic text-5xl md:text-6xl text-white leading-tight mb-6">
-          The Sensory<br>Editorial
-        </h1>
-        <p class="text-white/90 text-sm md:text-base max-w-xs leading-relaxed font-light">
-          Curating the world's most intimate brewing spaces, one cup at a time.
-        </p>
+        <h1 class="serif-title text-6xl md:text-7xl text-white leading-none mb-6 fade-in tracking-[0.08em]">
+                SAFE<br>
+                <span class="block text-base md:text-lg font-normal tracking-[0.35em] uppercase not-italic mt-1 ml-2">
+                    SARAN KAFE
+                </span>
+            </h1>
 
         <div class="mt-auto pt-10">
           <div class="flex items-center gap-3">
@@ -267,6 +279,47 @@
     }
   </script>
 
-</body>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('page-loaded');
 
+        document.querySelectorAll('a').forEach(link => {
+            if (
+                link.target === '_blank' ||
+                link.getAttribute('href') === null ||
+                link.getAttribute('href').startsWith('#') ||
+                link.getAttribute('href').startsWith('javascript:') ||
+                link.hasAttribute('download')
+            ) {
+                return;
+            }
+
+            const href = link.getAttribute('href');
+            const isInternal = href.startsWith('/') || href.startsWith(window.location.origin);
+
+            if (isInternal) {
+                link.addEventListener('click', e => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
+                        return;
+                    }
+                    e.preventDefault();
+                    document.body.classList.remove('page-loaded');
+                    document.body.classList.add('page-fade-out');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                });
+            }
+        });
+    });
+
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            document.body.classList.remove('page-fade-out');
+            document.body.classList.add('page-loaded');
+        }
+    });
+  </script>
+</body>
 </html>

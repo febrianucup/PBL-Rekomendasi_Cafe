@@ -34,9 +34,11 @@ class FavoriteController extends Controller
         //     ]);
         // }
 
-        auth()->user()->favoriteCafes()->toggle($cafeId);
+        $result = auth()->user()->favoriteCafes()->toggle($cafeId);
+        $isAttached = count($result['attached']) > 0;
+        $message = $isAttached ? __('messages.added_to_favorite_success') : __('messages.removed_from_favorite_success');
 
-        return back()->with('success', 'Cafe berhasil ditambahkan ke favorit');
+        return back()->with('success', $message);
     }
 
     public function show(Request $request){

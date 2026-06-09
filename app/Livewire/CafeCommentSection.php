@@ -4,13 +4,16 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Cafes;
 
 class CafeCommentSection extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithPagination;
+
+    protected $paginationTheme = 'tailwind';
 
     public $cafeId;
     public $commentType = 'review';
@@ -51,12 +54,12 @@ class CafeCommentSection extends Component
                 ->exists();
 
             if ($existingReview) {
-                session()->flash('error', 'Anda sudah memberikan ulasan untuk kafe ini.');
+                session()->flash('error', __('messages.already_reviewed'));
                 return;
             }
 
             if (Auth::id() === $this->cafe->user_id) {
-                session()->flash('error', 'Pemilik kafe tidak bisa memberikan ulasan pada kafenya sendiri.');
+                session()->flash('error', __('messages.owner_cannot_review'));
                 return;
             }
         }
@@ -74,7 +77,7 @@ class CafeCommentSection extends Component
         $this->photos = [];
         $this->hasReviewed = true;
         $this->hideFlash = false;
-        session()->flash('success', 'Berhasil terkirim!');
+        session()->flash('success', __('messages.successfully_sent'));
     }
 
     public function submitReview(){
@@ -117,7 +120,7 @@ class CafeCommentSection extends Component
         
         if ($parentComment->type === 'review') {
             if (Auth::id() !== $this->cafe->user_id) {
-                session()->flash('error', 'Hanya pemilik kafe yang dapat membalas ulasan.');
+                session()->flash('error', __('messages.only_owner_can_reply'));
                 return;
             }
         }
@@ -134,7 +137,12 @@ class CafeCommentSection extends Component
 
         $this->reset(['reply_body', 'replyingToId']);
         $this->hideFlash = false;
-        session()->flash('success', 'Balasan berhasil dikirim!');
+        session()->flash('success', __('messages.reply_sent'));
+    }
+
+    public function updatingCommentType()
+    {
+        $this->resetPage('commentPage');
     }
 
     protected function storePhotos(){
@@ -158,7 +166,7 @@ class CafeCommentSection extends Component
                 $this->isDeleteModalOpen = false;
                 $this->hideFlash = false;
                 
-                session()->flash('success', 'Komentar berhasil dihapus.');
+                session()->flash('success', __('messages.comment_deleted'));
             }
         }
     }
@@ -174,15 +182,20 @@ class CafeCommentSection extends Component
     }
 
     public function render(){
-        $allComments = Comment::with(['user', 'replies.user'])
-            ->where('cafe_id', $this->cafeId)
+        // $allComments = Comment::with(['user', 'replies.user'])
+        //     ->where('cafe_id', $this->cafeId)
+        //     ->whereNull('parent_id')
+        //     ->latest()
+        //     ->get();
+        
+        $comments = ($this->commentType === 'review' ? $this->cafe->reviews() : $this->cafe->discussions())
+            ->with(['user', 'replies.user'])
             ->whereNull('parent_id')
             ->latest()
-            ->get();
+            ->paginate(5, ['*'], 'commentPage');
 
         return view('livewire.⚡cafe-comment-section', [
-            'reviews' => $allComments->where('type', 'review'),
-            'discussions' => $allComments->where('type', 'discussion'),
+            'comments' => $comments,
             'cafe' => $this->cafe,
         ]);
     }

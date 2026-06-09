@@ -27,6 +27,19 @@
             }
         }
     </script>
+    <style>
+        /* Page Transitions */
+        body {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        body.page-loaded {
+            opacity: 1;
+        }
+        body.page-fade-out {
+            opacity: 0;
+        }
+    </style>
 </head>
 <body class="bg-cream font-sans text-dark min-h-screen">
     <nav class="flex items-center justify-between px-7 py-3.5 border-b border-border bg-cream">
@@ -50,17 +63,17 @@
 
         <div class="bg-white border border-border rounded-[26px] p-6 shadow-sm">
             <div class="flex flex-col md:flex-row md:items-start gap-6">
-                <div class="w-full md:w-2/5 rounded-[22px] overflow-hidden bg-[#F7F3EE]">
+                <div class="w-full md:w-2/5 aspect-[4/3] md:aspect-auto md:h-64 rounded-[22px] overflow-hidden bg-[#F7F3EE]">
                     @if($cafe->thumbnail && $cafe->thumbnail->photo_url)
                         <img src="{{ asset('storage/' . $cafe->thumbnail->photo_url) }}" alt="{{ $cafe->name }} thumbnail" class="w-full h-full object-cover" />
                     @else
-                        <div class="h-full min-h-[260px] bg-[#EDE7DE] flex items-center justify-center text-sm text-muted">No thumbnail available</div>
+                        <div class="w-full h-full min-h-[200px] md:min-h-[260px] bg-[#EDE7DE] flex items-center justify-center text-sm text-muted">No thumbnail available</div>
                     @endif
                 </div>
 
                 <div class="flex-1">
                     <h1 class="text-3xl font-semibold text-dark">{{ $cafe->name }}</h1>
-                    <p class="text-sm text-muted mt-2">{{ $cafe->type->type_name ?? 'Unknown type' }} • {{ $cafe->kecamatan ?? 'Unknown area' }}</p>
+                    <p class="text-sm text-muted mt-2">{{ isset($cafe->type->type_name) ? (trans()->has('messages.' . strtolower($cafe->type->type_name)) ? __('messages.' . strtolower($cafe->type->type_name)) : $cafe->type->type_name) : 'Unknown type' }} • {{ $cafe->kecamatan ?? 'Unknown area' }}</p>
                     <p class="text-sm text-muted mt-4">{{ $cafe->description }}</p>
 
                     <div class="mt-6 grid gap-3 sm:grid-cols-2">
@@ -86,7 +99,7 @@
                         <p class="text-[10px] uppercase tracking-[0.2em] text-muted mb-2">Tags</p>
                         <div class="flex flex-wrap gap-2">
                             @forelse($cafe->tags as $tag)
-                                <span class="bg-[#E8E4DE] text-[#4A4037] text-[11px] font-medium px-3 py-1 rounded-full">{{ $tag->tag_name }}</span>
+                                <span class="bg-[#E8E4DE] text-[#4A4037] text-[11px] font-medium px-3 py-1 rounded-full">{{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}</span>
                             @empty
                                 <span class="text-xs text-muted">No tags added.</span>
                             @endforelse
@@ -154,5 +167,47 @@
             </div>
         </div>
     </div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('page-loaded');
+
+        document.querySelectorAll('a').forEach(link => {
+            if (
+                link.target === '_blank' ||
+                link.getAttribute('href') === null ||
+                link.getAttribute('href').startsWith('#') ||
+                link.getAttribute('href').startsWith('javascript:') ||
+                link.hasAttribute('download')
+            ) {
+                return;
+            }
+
+            const href = link.getAttribute('href');
+            const isInternal = href.startsWith('/') || href.startsWith(window.location.origin);
+
+            if (isInternal) {
+                link.addEventListener('click', e => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
+                        return;
+                    }
+                    e.preventDefault();
+                    document.body.classList.remove('page-loaded');
+                    document.body.classList.add('page-fade-out');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                });
+            }
+        });
+    });
+
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            document.body.classList.remove('page-fade-out');
+            document.body.classList.add('page-loaded');
+        }
+    });
+</script>
 </body>
 </html>

@@ -75,13 +75,13 @@
                 <nav class="hidden lg:flex items-center gap-8 text-sm uppercase tracking-widest text-gray-500">
 
                     <a href="/" class="hover:text-black transition {{ request()->is('/') ? 'text-black border-b border-black pb-1' : '' }}">
-                        Beranda
+                        {{ __('messages.beranda') }}
                     </a>
 
                     @auth
                         @if(auth()->user()->role->name !== 'owner' && auth()->user()->role->name !== 'admin')
                             <a href="/favorite" class="hover:text-black transition {{ request()->is('favorite') ? 'text-black border-b border-black pb-1' : '' }}">
-                                Favorite
+                                {{ __('messages.navbar_favorite') }}
                             </a>
                         @endif
                         @endauth
@@ -98,7 +98,7 @@
 
                     <a href="/kontak"
                         class="hover:text-black transition {{ request()->is('kontak') ? 'text-black border-b border-black pb-1' : '' }}">
-                        Kontak
+                        {{ __('messages.contact_us') }}
                     </a>
 
                 </nav>
@@ -124,14 +124,14 @@
 
                     <div class="hidden lg:flex items-center">
 
-                        <form action="{{ request()->route('cafes.index') ? route('cafes.index') : route('favorite.cafes') }}" method="GET" class="flex items-center gap-2 mr-4">
+                        <form action="{{ request()->routeIs('favorite.cafes') ? route('favorite.cafes') : route('cafes.index') }}" method="GET" class="flex items-center gap-2 mr-4">
 
                             <div class="relative">
 
                                 <input type="text"
                                     name="search"
                                     value="{{ request('search') }}"
-                                    placeholder="Search cafe..."
+                                    placeholder="{{ __('messages.search_cafe_placeholder') }}"
                                     class="w-52 border border-gray-300 rounded-md py-2 pl-3 pr-8 bg-white text-sm focus:outline-none focus:ring-1 focus:ring-black">
 
                                 @if(request('search'))
@@ -145,7 +145,7 @@
 
                             <button type="submit"
                                 class="bg-black text-white px-4 py-2 rounded-md uppercase text-xs font-bold hover:bg-gray-800 transition">
-                                Search
+                                {{ __('messages.search_btn') }}
                             </button>
 
                         </form>
@@ -155,9 +155,9 @@
                             <summary @click="open = !open" class="list-none cursor-pointer border border-gray-300 px-3 py-2 rounded-md text-sm hover:bg-gray-50">
 
                                 @if(request('daerah'))
-                                    {{ ucwords(strtolower(\Laravolt\Indonesia\Models\District::find(request('daerah'))->name ?? 'Kecamatan')) }}
+                                    {{ ucwords(strtolower(\Laravolt\Indonesia\Models\District::find(request('daerah'))->name ?? __('messages.navbar_kecamatan'))) }}
                                 @else
-                                    Kecamatan
+                                    {{ __('messages.navbar_kecamatan') }}
                                 @endif
 
                             </summary>
@@ -166,7 +166,7 @@
 
                                 <a href="{{ request()->fullUrlWithQuery(['daerah' => null]) }}"
                                     class="block px-4 py-2 text-sm hover:bg-gray-100">
-                                    Semua Kecamatan
+                                    {{ __('messages.navbar_semua_kecamatan') }}
                                 </a>
 
                                 @foreach($daftarDaerah as $kecamatan)
@@ -184,9 +184,12 @@
                             <summary @click="open = !open" class="list-none cursor-pointer border border-gray-300 px-3 py-2 rounded-md text-sm hover:bg-gray-50">
 
                                 @if(request('type'))
-                                    {{ \App\Models\Type::find(request('type'))->type_name ?? 'Tipe Cafe' }}
+                                    @php
+                                        $selectedTypeName = \App\Models\Type::find(request('type'))->type_name ?? null;
+                                    @endphp
+                                    {{ $selectedTypeName ? (trans()->has('messages.' . strtolower($selectedTypeName)) ? __('messages.' . strtolower($selectedTypeName)) : $selectedTypeName) : __('messages.navbar_tipe_cafe') }}
                                 @else
-                                    Tipe Cafe
+                                    {{ __('messages.navbar_tipe_cafe') }}
                                 @endif
 
                             </summary>
@@ -195,13 +198,13 @@
 
                                 <a href="{{ request()->fullUrlWithQuery(['type' => null]) }}"
                                     class="block px-4 py-2 text-sm hover:bg-gray-100">
-                                    Semua Tipe
+                                    {{ __('messages.navbar_semua_tipe') }}
                                 </a>
 
                                 @foreach($types as $tipe)
                                     <a href="{{ request()->fullUrlWithQuery(['type' => $tipe->id]) }}"
                                         class="block px-4 py-2 text-sm hover:bg-gray-100">
-                                        {{ $tipe->type_name }}
+                                        {{ trans()->has('messages.' . strtolower($tipe->type_name)) ? __('messages.' . strtolower($tipe->type_name)) : $tipe->type_name }}
                                     </a>
                                 @endforeach
 
@@ -325,40 +328,82 @@
                 x-transition
                 class="lg:hidden border-t border-gray-200 py-4 space-y-4">
 
-                       <nav class="flex flex-col gap-3 text-sm uppercase tracking-widest text-gray-600">
+                    <nav class="flex flex-col gap-3 text-sm uppercase tracking-widest text-gray-600">
+                         <a href="/">{{ __('messages.beranda') }}</a>
 
-                    <a href="/">Beranda</a>
-
-                    @isset($navbars)
-                        @foreach($navbars as $menu)
-                            @if($menu->url !== '/')
-                                <a href="{{ $menu->url }}">
-                                    {{ $menu->title }}
+                        @isset($navbars)
+                            @foreach($navbars as $menu)
+                                @if($menu->url !== '/')
+                                    <a href="{{ $menu->url }}">
+                                        {{ $menu->title }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        @endisset
+                        @auth
+                            @if(auth()->user()->role->name !== 'owner' && auth()->user()->role->name !== 'admin')
+                                <a href="/favorite">{{ __('messages.navbar_favorite') }}</a>
+                            @endif
+                        @endauth
+                        
+                        <a href="/kontak">{{ __('messages.contact_us') }}</a>
+                        
+                        <div class="border-t border-gray-100 my-2"></div>
+                        
+                        @auth
+                            @if(auth()->user()->role->name == 'owner')
+                                <a href="{{ route('owner.dashboard') }}" class="font-bold text-black">
+                                    Owner Dashboard
+                                </a>
+                            @elseif(auth()->user()->role->name == 'admin')
+                                <a href="{{ route('admin.cafes') }}" class="font-bold text-black">
+                                    Admin Dashboard
                                 </a>
                             @endif
-                        @endforeach
-                    @endisset
+                            <a href="{{ route('profile.settings.show') }}">
+                                Settings
+                            </a>
+                            <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="text-left text-sm uppercase tracking-widest text-red-600 font-bold w-full py-1">
+                                    Logout
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="font-bold text-black">
+                                {{ __('messages.login') }}
+                            </a>
+                        @endauth
 
-                    <a href="/favorite">Favorite<a>
+                        <div class="border-t border-gray-100 my-2"></div>
 
-                    <a href="/kontak">Kontak</a>
-
+                        <div class="flex items-center gap-4 py-1">
+                            <a href="{{ route('lang.switch', 'en') }}"
+                                class="text-xs font-bold uppercase tracking-widest {{ app()->getLocale() == 'en' ? 'text-black border-b border-black' : 'text-gray-400 hover:text-black transition' }}">
+                                EN
+                            </a>
+                            <span class="text-gray-300">|</span>
+                            <a href="{{ route('lang.switch', 'id') }}"
+                                class="text-xs font-bold uppercase tracking-widest {{ app()->getLocale() == 'id' ? 'text-black border-b border-black' : 'text-gray-400 hover:text-black transition' }}">
+                                ID
+                            </a>
+                        </div>
                 </nav>
 
-                          @if(request()->routeIs('cafes.index'))
+                          @if(request()->routeIs(['cafes.index', 'favorite.cafes']))
 
-                <form action="{{ route('cafes.index') }}" method="GET" class="space-y-3">
+                <form action="{{ request()->routeIs('favorite.cafes') ? route('favorite.cafes') : route('cafes.index') }}" method="GET" class="space-y-3">
 
                     <input type="text"
                         name="search"
                         value="{{ request('search') }}"
-                        placeholder="Search cafe..."
+                        placeholder="{{ __('messages.search_cafe_placeholder') }}"
                         class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
 
                     <select name="daerah"
                         class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
 
-                        <option value="">Semua Kecamatan</option>
+                        <option value="">{{ __('messages.navbar_semua_kecamatan') }}</option>
 
                         @foreach($daftarDaerah as $kecamatan)
                             <option value="{{ $kecamatan->id }}"
@@ -372,12 +417,12 @@
                     <select name="type"
                         class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
 
-                        <option value="">Semua Tipe</option>
+                        <option value="">{{ __('messages.navbar_semua_tipe') }}</option>
 
                         @foreach($types as $tipe)
                             <option value="{{ $tipe->id }}"
                                 {{ request('type') == $tipe->id ? 'selected' : '' }}>
-                                {{ $tipe->type_name }}
+                                {{ trans()->has('messages.' . strtolower($tipe->type_name)) ? __('messages.' . strtolower($tipe->type_name)) : $tipe->type_name }}
                             </option>
                         @endforeach
 
@@ -385,7 +430,7 @@
 
                     <button type="submit"
                         class="w-full bg-black text-white py-2 rounded-md text-sm uppercase font-bold">
-                        Search
+                        {{ __('messages.search_btn') }}
                     </button>
 
                 </form>

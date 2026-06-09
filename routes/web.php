@@ -59,7 +59,6 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
         
         Route::get('/comments', [\App\Http\Controllers\Admin\CommentController::class, 'index'])->name('admin.comments');
-        Route::patch('/comments/{id}/status', [\App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])->name('admin.comments.status');
         Route::delete('/comments/{id}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('admin.comments.destroy');
 
         Route::get('/owners', [\App\Http\Controllers\Admin\OwnerController::class, 'index'])->name('admin.owners.index');
@@ -72,6 +71,14 @@ Route::middleware(['auth'])->group(function(){
 
         Route::get('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'index'])->name('admin.beranda_settings');
         Route::post('/beranda-settings', [\App\Http\Controllers\Admin\LandingPageSettingController::class, 'update'])->name('admin.beranda_settings.update');
+
+        Route::get('/type-tags', [\App\Http\Controllers\Admin\TypeTagController::class, 'index'])->name('admin.type_tags.index');
+        Route::post('/type-tags/type', [\App\Http\Controllers\Admin\TypeTagController::class, 'storeType'])->name('admin.type_tags.storeType');
+        Route::post('/type-tags/tag', [\App\Http\Controllers\Admin\TypeTagController::class, 'storeTag'])->name('admin.type_tags.storeTag');
+        Route::put('/type-tags/type/{id}', [\App\Http\Controllers\Admin\TypeTagController::class, 'updateType'])->name('admin.type_tags.updateType');
+        Route::put('/type-tags/tag/{id}', [\App\Http\Controllers\Admin\TypeTagController::class, 'updateTag'])->name('admin.type_tags.updateTag');
+        Route::delete('/type-tags/type/{id}', [\App\Http\Controllers\Admin\TypeTagController::class, 'destroyType'])->name('admin.type_tags.destroyType');
+        Route::delete('/type-tags/tag/{id}', [\App\Http\Controllers\Admin\TypeTagController::class, 'destroyTag'])->name('admin.type_tags.destroyTag');
 
         Route::get('/accounts/{id}', [AccountController::class, 'show'])->name('accounts.show');
         Route::get('/accounts/{id}/edit', [AccountController::class, 'edit'])->name('accounts.edit');

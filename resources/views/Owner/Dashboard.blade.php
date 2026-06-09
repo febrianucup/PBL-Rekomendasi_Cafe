@@ -8,12 +8,12 @@
     <div class="space-y-6">
         <!-- Welcome Section -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-light-beige">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-bold text-dark-brown mb-2">Welcome back, {{ auth()->user()->username }}!</h1>
                     <p class="text-muted">Manage your cafe collection and grow your business.</p>
                 </div>
-                <div class="text-right">
+                <div class="text-left sm:text-right">
                     <p class="text-[10px] uppercase tracking-widest text-muted mt-1">{{ __('messages.owner_dashboard') }}</p>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                                                         @endif
                                                         <div class="gap-2 mt-1 text-sm">
                                                             <h3 class="font-semibold text-dark-brown">{{ $cafe->name }}</h3>
-                                                            <p class="text-sm text-muted">{{ $cafe->type->type_name ?? 'Unknown Type' }}</p>
+                                                            <p class="text-sm text-muted">{{ isset($cafe->type->type_name) ? (trans()->has('messages.' . strtolower($cafe->type->type_name)) ? __('messages.' . strtolower($cafe->type->type_name)) : $cafe->type->type_name) : 'Unknown Type' }}</p>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -146,21 +146,23 @@
                                                 </td>
                                                 <td class="px-8 py-5 text-right flex justify-end gap-2">
                                                     <div class="flex items-center gap-2">
-                                                        <a href="{{ route('cafe.show', $cafe->id) }}" class="text-muted hover:text-dark-brown transition-colors">
+                                                        <a href="{{ route('cafe.show', $cafe->id) }}" class="inline-flex items-center gap-1 text-muted hover:text-dark-brown transition-colors text-sm font-medium" title="View">
                                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                                             </svg>
+                                                            View
                                                         </a>
-                                                        <a href="{{ route('cafe.edit', $cafe->id) }}" class="text-muted hover:text-dark-brown transition-colors">
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <a href="{{ route('cafe.edit', $cafe->id) }}" class="inline-flex items-center gap-1 text-muted hover:text-dark-brown transition-colors text-sm font-medium" title="Edit">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                                             </svg>
+                                                            Edit
                                                         </a>
                                                         <form action="{{ route('cafe.delete', $cafe->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this cafe?');">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="text-soft-red hover:text-red-700 transition-colors font-medium">Delete</button>
+                                                            <button type="submit" class="text-soft-red hover:text-red-700 transition-colors font-medium text-sm">Delete</button>
                                                         </form>
                                                     </div>
                                                 </td>

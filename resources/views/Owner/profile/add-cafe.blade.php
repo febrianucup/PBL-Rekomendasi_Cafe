@@ -30,6 +30,19 @@
             }
         }
     </script>
+    <style>
+        /* Page Transitions */
+        body {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        body.page-loaded {
+            opacity: 1;
+        }
+        body.page-fade-out {
+            opacity: 0;
+        }
+    </style>
 </head>
 <body class="bg-cream font-sans text-dark min-h-screen">
 
@@ -54,23 +67,25 @@
             @csrf
 
             @if(session('success'))
-                <div class="mb-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-                    {{ session('success') }}
-                </div>
+                <x-alert type="success" class="mb-5">{{ session('success') }}</x-alert>
+            @endif
+
+            @if(session('error'))
+                <x-alert type="error" class="mb-5">{{ session('error') }}</x-alert>
             @endif
 
             @if($errors->any())
-                <div class="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                <x-alert type="error" class="mb-5">
                     <ul class="list-disc pl-5">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
-                </div>
+                </x-alert>
             @endif
 
             <!-- BACK LINK -->
-            <a href="{{ url('/cafe') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
+            <a href="{{ url('/dashboard') }}" class="text-[11px] uppercase tracking-[0.18em] text-muted flex items-center gap-1 mb-5 hover:text-dark transition-colors">
                 ← {{ __('messages.back_to_branches') }}
             </a>
 
@@ -98,14 +113,14 @@
                 </div>
 
                 <!-- Establishment Type + Atmospheric Tag -->
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.establishment_type') }}</label>
                         <div class="relative">
                             <select name="type_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer" required>
                                 <option value="">{{ __('messages.select_a_type') }}</option>
                                 @foreach($types as $type)
-                                    <option value="{{ $type->id }}" {{ old('type_id') == $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
+                                    <option value="{{ $type->id }}" {{ old('type_id') == $type->id ? 'selected' : '' }}>{{ trans()->has('messages.' . strtolower($type->type_name)) ? __('messages.' . strtolower($type->type_name)) : $type->type_name }}</option>
                                 @endforeach
                             </select>
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
@@ -125,11 +140,11 @@
                                 @if ($tag->tag_name !== 'promo')
                                 <label class="cursor-pointer">
                                     <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="hidden" x-model="selectedTags" />
-                                        <span
-                                            :class="selectedTags.includes(String({{ $tag->id }})) ? 'bg-active text-white' : 'bg-[#E8E4DE] text-dark'"
-                                            class="text-[11px] font-medium px-4 py-1.5 rounded-full transition-all duration-200 inline-block border border-transparent">
-                                            {{ $tag->tag_name }}
-                                        </span>
+                                    <span
+                                        :class="selectedTags.includes(String({{ $tag->id }})) ? 'bg-active text-white' : 'bg-[#E8E4DE] text-dark'"
+                                        class="text-[11px] font-medium px-4 py-1.5 rounded-full transition-all duration-200 inline-block border border-transparent">
+                                        {{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}
+                                    </span>
                                 </label>
                                 @endif
                             @endforeach
@@ -172,7 +187,7 @@
 
             <div class="bg-white border border-border rounded-2xl overflow-hidden">
                 <template x-for="(schedule, index) in schedules" :key="index">
-                    <div class="flex items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between px-5 py-4 border-b border-border last:border-b-0 group gap-4">
                         
                         <div class="w-32">
                             <input type="text" x-model="schedule.day_range" placeholder="{{ __('messages.eg_monday') }}"
@@ -180,7 +195,7 @@
                                 class="text-sm font-semibold text-dark bg-transparent border-b border-transparent focus:border-active focus:outline-none w-full" required />
                         </div>
 
-                        <div class="flex items-center gap-3 flex-1">
+                        <div class="flex items-center gap-3 w-full sm:flex-1">
                             <input type="time" x-model="schedule.open_time" 
                                 :name="`open_time[${index}][open_time]`"
                                 class="bg-cream border border-border rounded-xl px-3 py-2 text-sm text-dark focus:outline-none w-32" required />
@@ -208,7 +223,7 @@
             <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.contact_details') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5 space-y-4">
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] uppercase tracking-[0.18em] text-muted mb-1.5">{{ __('messages.phone_number') }}</label>
                         <input type="tel" name="phone_number" value="{{ old('phone_number') }}"
@@ -295,7 +310,7 @@
         <section class="mb-8">
             <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.photo_gallery') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5">
-                <div class="grid grid-cols-4 gap-3" id="photo-gallery">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="photo-gallery">
 
                     <!-- Upload Area -->
                     <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" onclick="document.getElementById('photo-input').click()" id="photo-upload-area">
@@ -311,7 +326,7 @@
             <h2 class="text-base font-semibold text-dark mb-4">{{ __('messages.thumbnail') }}</h2>
             <div class="bg-white border border-border rounded-2xl p-5">
 
-                <div class="grid grid-cols-4 gap-3" id="thumbnail-gallery">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="thumbnail-gallery">
 
                     <!-- Upload Area (HARUS di dalam thumbnail-gallery) -->
                     <div class="relative group rounded-xl overflow-hidden aspect-square border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-stat transition-colors" 
@@ -366,8 +381,8 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button type="button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">{{ __('messages.add_menu') }}</button>
-                    <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">{{ __('messages.cancel') }}</button>
+                    <button type="button" id="menu-submit-btn" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">{{ __('messages.add_menu') }}</button>
+                    <button type="button" onclick="cancelEditMenu()" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">{{ __('messages.cancel') }}</button>
                 </div>
             </div>
 
@@ -471,6 +486,7 @@
 
         // Variabel global untuk menyimpan file gambar menu asli (agar bisa dikirim ke server)
         let menuImages = [];
+        let editingMenuIndex = null; // Untuk tracking apakah sedang edit
 
         function toggleNewMenuForm(show) {
             const form = document.getElementById('new-menu-form');
@@ -558,45 +574,97 @@
             }
 
             const menuList = document.getElementById('menu-list');
-            const index = menuList.getElementsByClassName('menu-item').length;
 
-            const menuItem = document.createElement('div');
-            menuItem.className = 'menu-item flex items-center justify-between px-5 py-4 border-b border-border';
-            menuItem.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl overflow-hidden ${imageData ? '' : 'bg-[#f5f1ec] flex items-center justify-center text-xs text-muted'}">
-                        ${imageData ? `<img src="${escapeHtml(imageData)}" alt="menu image" class="w-full h-full object-cover" />` : 'IMG'}
+            // CEK APAKAH SEDANG EDIT
+            if (editingMenuIndex !== null) {
+                const items = menuList.getElementsByClassName('menu-item');
+                const menuItem = items[editingMenuIndex];
+                
+                if (menuItem) {
+                    // Update visual display
+                    const imgContainer = menuItem.querySelector('.w-10.h-10');
+                    if (imageData) {
+                        imgContainer.innerHTML = `<img src="${escapeHtml(imageData)}" alt="menu image" class="w-full h-full object-cover" />`;
+                        imgContainer.className = 'w-10 h-10 rounded-xl overflow-hidden';
+                    } else {
+                        imgContainer.innerHTML = 'IMG';
+                        imgContainer.className = 'w-10 h-10 rounded-xl overflow-hidden bg-[#f5f1ec] flex items-center justify-center text-xs text-muted';
+                    }
+
+                    menuItem.querySelector('p:first-of-type').textContent = name;
+                    menuItem.querySelector('p:last-of-type').textContent = description;
+                    menuItem.querySelector('.menu-price').textContent = priceFormatted;
+
+                    // Update hidden inputs
+                    menuItem.querySelector('input[name*="[name]"]').value = name;
+                    menuItem.querySelector('input[name*="[description]"]').value = description;
+                    menuItem.querySelector('input[name*="[price]"]').value = rawPrice;
+
+                    // Update file input jika ada file baru
+                    if (imageInput.files[0]) {
+                        let fileInput = menuItem.querySelector('input[type="file"]');
+                        if (!fileInput) {
+                            fileInput = document.createElement('input');
+                            fileInput.type = 'file';
+                            fileInput.style.display = 'none';
+                            fileInput.name = `menu_items[${editingMenuIndex}][image]`;
+                            fileInput.id = `hidden-file-${editingMenuIndex}`;
+                            menuItem.appendChild(fileInput);
+                        }
+
+                        const dt = new DataTransfer();
+                        dt.items.add(imageInput.files[0]);
+                        fileInput.files = dt.files;
+                    }
+                }
+
+                // Selesai edit
+                editingMenuIndex = null;
+                document.getElementById('menu-submit-btn').textContent = '{{ __("messages.add_menu") }}';
+            } else {
+                // MODE CREATE - TAMBAH MENU BARU
+                const index = menuList.getElementsByClassName('menu-item').length;
+
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item flex items-center justify-between px-5 py-4 border-b border-border';
+                menuItem.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl overflow-hidden ${imageData ? '' : 'bg-[#f5f1ec] flex items-center justify-center text-xs text-muted'}">
+                            ${imageData ? `<img src="${escapeHtml(imageData)}" alt="menu image" class="w-full h-full object-cover" />` : 'IMG'}
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-dark">${escapeHtml(name)}</p>
+                            <p class="text-xs text-muted">${escapeHtml(description)}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-semibold text-dark">${escapeHtml(name)}</p>
-                        <p class="text-xs text-muted">${escapeHtml(description)}</p>
+                    <div class="flex items-center gap-3">
+                        <span class="menu-price text-sm font-semibold text-dark">${escapeHtml(priceFormatted)}</span>
+                        <button type="button" class="text-dark hover:text-blue-600 transition-colors text-base font-bold" onclick="editMenuItem(this, ${index})" title="Edit menu">✎</button>
+                        <button type="button" class="text-red-600 hover:text-red-800 transition-colors text-sm font-semibold" onclick="removeMenuItem(this, ${index})" title="Delete menu">✕</button>
                     </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="menu-price text-sm font-semibold text-dark">${escapeHtml(priceFormatted)}</span>
-                    <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this, ${index})">✕</button>
-                </div>
 
-                <input type="hidden" name="menu_items[${index}][name]" value="${escapeHtml(name)}">
-                <input type="hidden" name="menu_items[${index}][description]" value="${escapeHtml(description)}">
-                <input type="hidden" name="menu_items[${index}][price]" value="${escapeHtml(rawPrice)}">
-            `;
+                    <input type="hidden" name="menu_items[${index}][name]" value="${escapeHtml(name)}">
+                    <input type="hidden" name="menu_items[${index}][description]" value="${escapeHtml(description)}">
+                    <input type="hidden" name="menu_items[${index}][price]" value="${escapeHtml(rawPrice)}">
+                `;
 
-            if (imageInput.files[0]) {
-                const hiddenFileInput = document.createElement('input');
-                hiddenFileInput.type = 'file';
-                hiddenFileInput.style.display = 'none';
-                hiddenFileInput.name = `menu_items[${index}][image]`;
-                hiddenFileInput.id = `hidden-file-${index}`;
+                if (imageInput.files[0]) {
+                    const hiddenFileInput = document.createElement('input');
+                    hiddenFileInput.type = 'file';
+                    hiddenFileInput.style.display = 'none';
+                    hiddenFileInput.name = `menu_items[${index}][image]`;
+                    hiddenFileInput.id = `hidden-file-${index}`;
 
-                const dt = new DataTransfer();
-                dt.items.add(imageInput.files[0]);
-                hiddenFileInput.files = dt.files;
+                    const dt = new DataTransfer();
+                    dt.items.add(imageInput.files[0]);
+                    hiddenFileInput.files = dt.files;
 
-                menuItem.appendChild(hiddenFileInput);
+                    menuItem.appendChild(hiddenFileInput);
+                }
+
+                menuList.appendChild(menuItem);
             }
 
-            menuList.appendChild(menuItem);
             toggleNewMenuForm(false);
             clearNewMenuFields();
         }
@@ -606,7 +674,52 @@
             if (menuItem) {
                 menuItem.remove();
                 reindexMenuItems(); // Urutkan kembali indeks agar tidak terputus
+                // Jika sedang edit dan menghapus item yang sedang diedit, cancel edit
+                if (editingMenuIndex === index) {
+                    cancelEditMenu();
+                }
             }
+        }
+
+        function editMenuItem(button, index) {
+            const menuItem = button.closest('.menu-item');
+            if (!menuItem) return;
+
+            // Ambil data dari hidden inputs
+            const name = menuItem.querySelector('input[name*="[name]"]').value;
+            const description = menuItem.querySelector('input[name*="[description]"]').value;
+            const price = menuItem.querySelector('input[name*="[price]"]').value;
+            const imgElement = menuItem.querySelector('img');
+
+            // Isi form dengan data
+            document.getElementById('menu-name').value = name;
+            document.getElementById('menu-description').value = description;
+            document.getElementById('menu-price').value = formatRupiah(price);
+
+            // Tampilkan preview gambar jika ada
+            const preview = document.getElementById('menu-image-preview');
+            if (imgElement) {
+                preview.innerHTML = `<img src="${imgElement.src}" alt="menu preview" class="w-full h-full object-cover" />`;
+                preview.dataset.image = imgElement.src;
+            } else {
+                preview.innerHTML = '{{ __("messages.preview_image_here") }}';
+                delete preview.dataset.image;
+            }
+
+            // Set mode edit
+            editingMenuIndex = index;
+            document.getElementById('menu-submit-btn').textContent = 'Update Menu';
+
+            // Scroll ke form dan tampilkan
+            toggleNewMenuForm(true);
+            document.getElementById('new-menu-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function cancelEditMenu() {
+            editingMenuIndex = null;
+            document.getElementById('menu-submit-btn').textContent = '{{ __("messages.add_menu") }}';
+            toggleNewMenuForm(false);
+            clearNewMenuFields();
         }
 
         // Fungsi untuk merapikan kembali nomor indeks array input setelah ada yang dihapus
@@ -623,9 +736,16 @@
                     fileInput.id = `hidden-file-${newIndex}`;
                 }
 
-                // Perbarui parameter di tombol hapus
+                // Perbarui parameter di tombol edit dan hapus
+                const editBtn = item.querySelector('button[onclick^="editMenuItem"]');
+                if (editBtn) {
+                    editBtn.setAttribute('onclick', `editMenuItem(this, ${newIndex})`);
+                }
+
                 const removeBtn = item.querySelector('button[onclick^="removeMenuItem"]');
-                removeBtn.setAttribute('onclick', `removeMenuItem(this, ${newIndex})`);
+                if (removeBtn) {
+                    removeBtn.setAttribute('onclick', `removeMenuItem(this, ${newIndex})`);
+                }
             });
         }
 
@@ -763,5 +883,47 @@
         });
     </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('page-loaded');
+
+        document.querySelectorAll('a').forEach(link => {
+            if (
+                link.target === '_blank' ||
+                link.getAttribute('href') === null ||
+                link.getAttribute('href').startsWith('#') ||
+                link.getAttribute('href').startsWith('javascript:') ||
+                link.hasAttribute('download')
+            ) {
+                return;
+            }
+
+            const href = link.getAttribute('href');
+            const isInternal = href.startsWith('/') || href.startsWith(window.location.origin);
+
+            if (isInternal) {
+                link.addEventListener('click', e => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
+                        return;
+                    }
+                    e.preventDefault();
+                    document.body.classList.remove('page-loaded');
+                    document.body.classList.add('page-fade-out');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                });
+            }
+        });
+    });
+
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            document.body.classList.remove('page-fade-out');
+            document.body.classList.add('page-loaded');
+        }
+    });
+</script>
 </body>
 </html>

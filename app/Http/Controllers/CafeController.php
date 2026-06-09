@@ -121,7 +121,7 @@ class CafeController extends Controller
             'subject'    => 'required|string|max:255',
             'message'    => 'required|string',
         ]);
-        return redirect()->back()->with('success', 'Terima kasih! Pesan Anda telah berhasil dikirim.');
+        return redirect()->back()->with('success', __('messages.contact_success_message'));
     }
     
 
@@ -139,7 +139,7 @@ class CafeController extends Controller
             ])
             ->findOrFail($id);
         $user = Auth::user();
-        $menus = Menu::whereCafeId($id)->paginate(6);
+        $menus = Menu::whereCafeId($id)->paginate(6, ['*'], 'menuPage');
 
         $userRating = null;
         $isFavorited = false;
@@ -167,7 +167,7 @@ class CafeController extends Controller
                 }
         })->where('created_at', '>=', now()->subHours(1) )->exists();
 
-        if(!$alreadyViewed && auth()->user()->role->name !== 'admin' && auth()->user()->role->name !== 'owner'){
+        if(!$alreadyViewed && auth()->check() && auth()->user()->role->name !== 'admin' && auth()->user()->role->name !== 'owner'){
             CafeView::create([
                 'cafe_id' => $cafe->id,
                 'ip_address' => $currentIp,

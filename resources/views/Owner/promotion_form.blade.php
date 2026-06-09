@@ -7,25 +7,21 @@
 <div class="max-w-4xl mx-auto space-y-8">
     <div class="bg-white rounded-[2rem] p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-white/40">
         @if(session('success'))
-            <div class="mb-6 rounded-3xl bg-emerald-50 border border-emerald-200 p-4 text-sm text-emerald-700">
-                {{ session('success') }}
-            </div>
+            <x-alert type="success" class="mb-6">{{ session('success') }}</x-alert>
         @endif
 
         @if(session('error'))
-            <div class="mb-6 rounded-3xl bg-rose-50 border border-rose-200 p-4 text-sm text-rose-700">
-                {{ session('error') }}
-            </div>
+            <x-alert type="error" class="mb-6">{{ session('error') }}</x-alert>
         @endif
 
         @if($errors->any())
-            <div class="mb-6 rounded-3xl bg-rose-50 border border-rose-200 p-4 text-sm text-rose-700">
+            <x-alert type="error" class="mb-6">
                 <ul class="list-disc list-inside space-y-1">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-            </div>
+            </x-alert>
         @endif
 
         <form action="{{ $promotion->exists ? route('owner.promosi.update', $promotion->id) : route('owner.promosi.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">

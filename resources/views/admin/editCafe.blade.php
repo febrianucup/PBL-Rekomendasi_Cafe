@@ -49,25 +49,27 @@
     </nav>
 
     <!-- PAGE CONTENT -->
-    <div class="max-w-2xl mx-auto px-6 py-8">
+    <div class="w-full px-6 py-8">
         <form method="POST" action="{{ route('admin.cafes.update', $cafe->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             @if(session('success'))
-                <div class="mb-5 rounded-2xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-                    {{ session('success') }}
-                </div>
+                <x-alert type="success" class="mb-5">{{ session('success') }}</x-alert>
+            @endif
+
+            @if(session('error'))
+                <x-alert type="error" class="mb-5">{{ session('error') }}</x-alert>
             @endif
 
             @if($errors->any())
-                <div class="mb-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                <x-alert type="error" class="mb-5">
                     <ul class="list-disc pl-5">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
-                </div>
+                </x-alert>
             @endif
 
             <!-- BACK LINK -->
@@ -124,7 +126,7 @@
                             <select name="type_id" class="w-full bg-cream border border-border rounded-xl px-4 py-2.5 text-sm text-dark appearance-none focus:outline-none focus:border-muted cursor-pointer" required>
                                 <option value="">{{ __('messages.select_a_type') }}</option>
                                 @foreach($types as $type)
-                                    <option value="{{ $type->id }}" {{ old('type_id', $cafe->type_id) == $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
+                                    <option value="{{ $type->id }}" {{ old('type_id', $cafe->type_id) == $type->id ? 'selected' : '' }}>{{ trans()->has('messages.' . strtolower($type->type_name)) ? __('messages.' . strtolower($type->type_name)) : $type->type_name }}</option>
                                 @endforeach
                             </select>
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted text-xs pointer-events-none">▾</span>
@@ -146,7 +148,7 @@
                                     <span
                                         :class="selectedTags.includes(String({{ $tag->id }})) ? 'bg-active text-white' : 'bg-[#E8E4DE] text-dark'"
                                         class="text-[11px] font-medium px-4 py-1.5 rounded-full transition-all duration-200 inline-block border border-transparent">
-                                        {{ $tag->tag_name }}
+                                        {{ trans()->has('messages.' . strtolower($tag->tag_name)) ? __('messages.' . strtolower($tag->tag_name)) : $tag->tag_name }}
                                     </span>
                                 </label>
                             @endforeach
@@ -388,7 +390,8 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="menu-price text-sm font-semibold text-dark">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
-                            <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this, {{ $index }})">✕</button>
+                            <button type="button" class="text-dark hover:text-blue-600 transition-colors text-base font-bold" onclick="editMenuItem(this, {{ $index }})" title="Edit menu">✎</button>
+                            <button type="button" class="text-red-600 hover:text-red-800 transition-colors text-sm font-semibold" onclick="removeMenuItem(this, {{ $index }})" title="Delete menu">✕</button>
                         </div>
                         <input type="hidden" name="menu_items[{{ $index }}][id]" value="{{ $item->id }}">
                         <input type="hidden" name="menu_items[{{ $index }}][name]" value="{{ $item->name }}">
@@ -431,8 +434,8 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button type="button" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">{{ __('messages.add_menu') }}</button>
-                    <button type="button" onclick="toggleNewMenuForm(false)" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">{{ __('messages.cancel') }}</button>
+                    <button type="button" id="menu-submit-btn" onclick="saveMenuItem()" class="bg-darkbrown text-white text-sm font-semibold rounded-full px-5 py-3 hover:bg-[#1e1a16] transition-colors">{{ __('messages.add_menu') }}</button>
+                    <button type="button" onclick="cancelEditMenu()" class="bg-white border border-border text-dark text-sm font-semibold rounded-full px-5 py-3 hover:bg-stat transition-colors">{{ __('messages.cancel') }}</button>
                 </div>
             </div>
 
@@ -537,6 +540,7 @@
 
         // Variabel global untuk menyimpan file gambar menu asli (agar bisa dikirim ke server)
         let menuImages = [];
+        let editingMenuIndex = null; // Untuk tracking apakah sedang edit
 
         function toggleNewMenuForm(show) {
             const form = document.getElementById('new-menu-form');
@@ -624,45 +628,104 @@
             }
 
             const menuList = document.getElementById('menu-list');
-            const index = menuList.getElementsByClassName('menu-item').length;
 
-            const menuItem = document.createElement('div');
-            menuItem.className = 'menu-item flex items-center justify-between px-5 py-4 border-b border-border';
-            menuItem.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl overflow-hidden ${imageData ? '' : 'bg-[#f5f1ec] flex items-center justify-center text-xs text-muted'}">
-                        ${imageData ? `<img src="${escapeHtml(imageData)}" alt="menu image" class="w-full h-full object-cover" />` : 'IMG'}
+            // CEK APAKAH SEDANG EDIT
+            if (editingMenuIndex !== null) {
+                const items = menuList.getElementsByClassName('menu-item');
+                const menuItem = items[editingMenuIndex];
+                
+                if (menuItem) {
+                    // Update visual display
+                    const imgContainer = menuItem.querySelector('.w-10.h-10');
+                    if (imageData) {
+                        imgContainer.innerHTML = `<img src="${escapeHtml(imageData)}" alt="menu image" class="w-full h-full object-cover" />`;
+                        imgContainer.className = 'w-10 h-10 rounded-xl overflow-hidden';
+                    } else {
+                        // Jika tidak ada image data, cek apakah masih ada image element
+                        if (!menuItem.querySelector('img')) {
+                            imgContainer.innerHTML = 'IMG';
+                            imgContainer.className = 'w-10 h-10 rounded-xl overflow-hidden bg-[#f5f1ec] flex items-center justify-center text-xs text-muted';
+                        }
+                    }
+
+                    menuItem.querySelector('p:first-of-type').textContent = name;
+                    menuItem.querySelector('p:last-of-type').textContent = description;
+                    menuItem.querySelector('.menu-price').textContent = priceFormatted;
+
+                    // Update hidden inputs
+                    const nameInput = menuItem.querySelector('input[name*="[name]"]');
+                    const descInput = menuItem.querySelector('input[name*="[description]"]');
+                    const priceInput = menuItem.querySelector('input[name*="[price]"]');
+                    
+                    if (nameInput) nameInput.value = name;
+                    if (descInput) descInput.value = description;
+                    if (priceInput) priceInput.value = rawPrice;
+
+                    // Update file input jika ada file baru
+                    if (imageInput.files[0]) {
+                        let fileInput = menuItem.querySelector('input[type="file"]');
+                        if (!fileInput) {
+                            fileInput = document.createElement('input');
+                            fileInput.type = 'file';
+                            fileInput.style.display = 'none';
+                            fileInput.name = `menu_items[${editingMenuIndex}][image]`;
+                            fileInput.id = `hidden-file-${editingMenuIndex}`;
+                            menuItem.appendChild(fileInput);
+                        }
+
+                        const dt = new DataTransfer();
+                        dt.items.add(imageInput.files[0]);
+                        fileInput.files = dt.files;
+                    }
+                }
+
+                // Selesai edit
+                editingMenuIndex = null;
+                document.getElementById('menu-submit-btn').textContent = '{{ __('messages.add_menu') }}';;
+            } else {
+                // MODE CREATE - TAMBAH MENU BARU
+                const index = menuList.getElementsByClassName('menu-item').length;
+
+                const menuItem = document.createElement('div');
+                menuItem.className = 'menu-item flex items-center justify-between px-5 py-4 border-b border-border';
+                menuItem.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl overflow-hidden ${imageData ? '' : 'bg-[#f5f1ec] flex items-center justify-center text-xs text-muted'}">
+                            ${imageData ? `<img src="${escapeHtml(imageData)}" alt="menu image" class="w-full h-full object-cover" />` : 'IMG'}
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-dark">${escapeHtml(name)}</p>
+                            <p class="text-xs text-muted">${escapeHtml(description)}</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm font-semibold text-dark">${escapeHtml(name)}</p>
-                        <p class="text-xs text-muted">${escapeHtml(description)}</p>
+                    <div class="flex items-center gap-3">
+                        <span class="menu-price text-sm font-semibold text-dark">${escapeHtml(priceFormatted)}</span>
+                        <button type="button" class="text-blue-600 hover:text-blue-800 transition-colors text-sm font-semibold" onclick="editMenuItem(this, ${index})">Edit</button>
+                        <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this, ${index})">✕</button>
                     </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="menu-price text-sm font-semibold text-dark">${escapeHtml(priceFormatted)}</span>
-                    <button type="button" class="text-muted hover:text-red-500 transition-colors text-sm" onclick="removeMenuItem(this, ${index})">✕</button>
-                </div>
 
-                <input type="hidden" name="menu_items[${index}][name]" value="${escapeHtml(name)}">
-                <input type="hidden" name="menu_items[${index}][description]" value="${escapeHtml(description)}">
-                <input type="hidden" name="menu_items[${index}][price]" value="${escapeHtml(rawPrice)}">
-            `;
+                    <input type="hidden" name="menu_items[${index}][name]" value="${escapeHtml(name)}">
+                    <input type="hidden" name="menu_items[${index}][description]" value="${escapeHtml(description)}">
+                    <input type="hidden" name="menu_items[${index}][price]" value="${escapeHtml(rawPrice)}">
+                `;
 
-            if (imageInput.files[0]) {
-                const hiddenFileInput = document.createElement('input');
-                hiddenFileInput.type = 'file';
-                hiddenFileInput.style.display = 'none';
-                hiddenFileInput.name = `menu_items[${index}][image]`;
-                hiddenFileInput.id = `hidden-file-${index}`;
+                if (imageInput.files[0]) {
+                    const hiddenFileInput = document.createElement('input');
+                    hiddenFileInput.type = 'file';
+                    hiddenFileInput.style.display = 'none';
+                    hiddenFileInput.name = `menu_items[${index}][image]`;
+                    hiddenFileInput.id = `hidden-file-${index}`;
 
-                const dt = new DataTransfer();
-                dt.items.add(imageInput.files[0]);
-                hiddenFileInput.files = dt.files;
+                    const dt = new DataTransfer();
+                    dt.items.add(imageInput.files[0]);
+                    hiddenFileInput.files = dt.files;
 
-                menuItem.appendChild(hiddenFileInput);
+                    menuItem.appendChild(hiddenFileInput);
+                }
+
+                menuList.appendChild(menuItem);
             }
 
-            menuList.appendChild(menuItem);
             toggleNewMenuForm(false);
             clearNewMenuFields();
         }
@@ -672,16 +735,51 @@
             if (menuItem) {
                 menuItem.remove();
                 reindexMenuItems(); // Urutkan kembali indeks agar tidak terputus
+                // Jika sedang edit dan menghapus item yang sedang diedit, cancel edit
+                if (editingMenuIndex === index) {
+                    cancelEditMenu();
+                }
             }
         }
+
+        function editMenuItem(button, index) {
+            const menuItem = button.closest('.menu-item');
+            if (!menuItem) return;
+
+            // Ambil data dari hidden inputs atau text
+            const nameInput = menuItem.querySelector('input[name*="[name]"]');
+            const descInput = menuItem.querySelector('input[name*="[description]"]');
+            const priceInput = menuItem.querySelector('input[name*="[price]"]');
+            const imgElement = menuItem.querySelector('img');
+
+            const name = nameInput ? nameInput.value : menuItem.querySelector('p:first-of-type').textContent;
+            const description = descInput ? descInput.value : menuItem.querySelector('p:last-of-type').textContent;
+            const price = priceInput ? priceInput.value : menuItem.querySelector('.menu-price').textContent.replace(/[^0-9]/g, '');
+
+            // Isi form dengan data
+            document.getElementById('menu-name').value = name;
+            document.getElementById('menu-description').value = description;
+            document.getElementById('menu-price').value = formatRupiah(price);
+
+            // Tampilkan preview gambar jika ada
+            const preview = document.getElementById('menu-image-preview');
+            if (imgElement) {
+                preview.innerHTML = `<img src="${imgElement.src}" alt="menu preview" class="w-full h-full object-cover" />`;
+                preview.dataset.image = imgElement.src;
+            } else {
+                preview.innerHTML = '{{ __('messages.preview_image_here') }}';\n                delete preview.dataset.image;\n            }\n\n            // Set mode edit\n            editingMenuIndex = index;\n            document.getElementById('menu-submit-btn').textContent = 'Update Menu';\n\n            // Scroll ke form dan tampilkan\n            toggleNewMenuForm(true);\n            document.getElementById('new-menu-form').scrollIntoView({ behavior: 'smooth', block: 'center' });\n        }\n\n        function cancelEditMenu() {\n            editingMenuIndex = null;\n            document.getElementById('menu-submit-btn').textContent = '{{ __('messages.add_menu') }}';\n            toggleNewMenuForm(false);\n            clearNewMenuFields();
 
         // Fungsi untuk merapikan kembali nomor indeks array input setelah ada yang dihapus
         function reindexMenuItems() {
             const items = document.querySelectorAll('#menu-list .menu-item');
             items.forEach((item, newIndex) => {
-                item.querySelector(`input[name*="[name]"]`).name = `menu_items[${newIndex}][name]`;
-                item.querySelector(`input[name*="[description]"]`).name = `menu_items[${newIndex}][description]`;
-                item.querySelector(`input[name*="[price]"]`).name = `menu_items[${newIndex}][price]`;
+                const nameInput = item.querySelector(`input[name*="[name]"]`);
+                const descInput = item.querySelector(`input[name*="[description]"]`);
+                const priceInput = item.querySelector(`input[name*="[price]"]`);
+
+                if (nameInput) nameInput.name = `menu_items[${newIndex}][name]`;
+                if (descInput) descInput.name = `menu_items[${newIndex}][description]`;
+                if (priceInput) priceInput.name = `menu_items[${newIndex}][price]`;
                 
                 const fileInput = item.querySelector(`input[type="file"]`);
                 if (fileInput) {
@@ -689,9 +787,14 @@
                     fileInput.id = `hidden-file-${newIndex}`;
                 }
 
-                // Perbarui parameter di tombol hapus
+                // Perbarui parameter di tombol edit dan hapus
+                const editBtn = item.querySelector('button[onclick^="editMenuItem"]');
+                if (editBtn) {
+                    editBtn.setAttribute('onclick', `editMenuItem(this, ${newIndex})`);\n                }
+
                 const removeBtn = item.querySelector('button[onclick^="removeMenuItem"]');
-                removeBtn.setAttribute('onclick', `removeMenuItem(this, ${newIndex})`);
+                if (removeBtn) {
+                    removeBtn.setAttribute('onclick', `removeMenuItem(this, ${newIndex})`);\n                }
             });
         }
 
