@@ -103,7 +103,7 @@
             @if($comment->images)
                 <div class="flex gap-2 flex-wrap">
                     @foreach(json_decode($comment->images, true) as $img)
-                        <img src="{{ asset('storage/' . $img) }}" class="w-25 h-25 object-cover rounded-lg cursor-pointer" wire:click="$dispatch('open-image', { url: '{{ asset('storage/' . $img) }}' })">
+                        <img src="{{ asset('storage/' . $img) }}" class="w-25 h-25 object-cover rounded-lg cursor-pointer" wire:click="$dispatch('open-image', '{{ asset('storage/' . $img) }}')">
                     @endforeach
                 </div>
             @endif

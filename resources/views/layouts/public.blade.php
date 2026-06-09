@@ -27,9 +27,9 @@
         h1, h2, h3 {
             font-family: 'Playfair Display', serif;
         }
-        header { 
+        /* header { 
             background-color: #F5F1EC; 
-        }
+        } */
         [x-cloak] { 
             display: none !important; 
         }
@@ -63,7 +63,7 @@
 </head>
 <body class="text-gray-900 min-h-screen flex flex-col">
     
-    <header class="w-full border-b border-gray-300 sticky top-0 z-[999] transition-all duration-500 ease-in-out" x-data="{isScrolled:false,mobileMenu:false}" @scroll.window="isScrolled = window.scrollY > 10" :class="isScrolled ? 'bg-white/70 backdrop-blur-md shadow-xl' : 'bg-transparent'">
+    <header class="w-full border-b border-gray-300 sticky top-0 z-[999] transition-all duration-500 ease-in-out" x-data="{isScrolled:false,mobileMenu:false}" @scroll.window="isScrolled = window.scrollY > 10" :class="isScrolled ? 'bg-[#F5F1EC]/80 backdrop-blur-xl shadow-xl' : 'bg-[#F5F1EC]'">
 
         <div class="mr-4 ml-4 mx-auto px-4 lg:px-8">
             <div class="flex items-center justify-between py-4 gap-4 h-20">
@@ -120,11 +120,11 @@
 
                     </div>
 
-                    @if(request()->routeIs('cafes.index'))
+                    @if(request()->routeIs(['cafes.index', 'favorite.cafes']))
 
-                    <div class="hidden lg:flex items-center gap-3">
+                    <div class="hidden lg:flex items-center">
 
-                        <form action="{{ route('cafes.index') }}" method="GET" class="flex items-center gap-2">
+                        <form action="{{ request()->route('cafes.index') ? route('cafes.index') : route('favorite.cafes') }}" method="GET" class="flex items-center gap-2 mr-4">
 
                             <div class="relative">
 
@@ -150,9 +150,9 @@
 
                         </form>
 
-                        <details class="relative">
+                       <div x-data="{ open: false }" @click.away="open = false" class="relative">
 
-                            <summary class="list-none cursor-pointer border border-gray-300 px-3 py-2 rounded-md text-sm hover:bg-gray-50">
+                            <summary @click="open = !open" class="list-none cursor-pointer border border-gray-300 px-3 py-2 rounded-md text-sm hover:bg-gray-50">
 
                                 @if(request('daerah'))
                                     {{ ucwords(strtolower(\Laravolt\Indonesia\Models\District::find(request('daerah'))->name ?? 'Kecamatan')) }}
@@ -162,7 +162,7 @@
 
                             </summary>
 
-                            <div class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
+                            <div x-show="open" x-cloak class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
 
                                 <a href="{{ request()->fullUrlWithQuery(['daerah' => null]) }}"
                                     class="block px-4 py-2 text-sm hover:bg-gray-100">
@@ -178,11 +178,10 @@
 
                             </div>
 
-                        </details>
-
-                        <details class="relative">
-
-                            <summary class="list-none cursor-pointer border border-gray-300 px-3 py-2 rounded-md text-sm hover:bg-gray-50">
+                        </div>
+ 
+                        <div x-data="{ open: false }" @click.away="open = false" class="relative">
+                            <summary @click="open = !open" class="list-none cursor-pointer border border-gray-300 px-3 py-2 rounded-md text-sm hover:bg-gray-50">
 
                                 @if(request('type'))
                                     {{ \App\Models\Type::find(request('type'))->type_name ?? 'Tipe Cafe' }}
@@ -192,7 +191,7 @@
 
                             </summary>
 
-                            <div class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
+                            <div x-show="open" x-cloak class="absolute left-0 mt-2 w-46 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
 
                                 <a href="{{ request()->fullUrlWithQuery(['type' => null]) }}"
                                     class="block px-4 py-2 text-sm hover:bg-gray-100">
@@ -208,7 +207,7 @@
 
                             </div>
 
-                        </details>
+                        </div>
 
                     </div>
 
@@ -276,7 +275,8 @@
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
 
-                                    <button type="submit"
+                                    <button type="button"
+                                        x-data @click="$dispatch('open-logout-modal')"
                                         class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                                         Logout
                                     </button>
@@ -298,7 +298,7 @@
 
                     @endauth
 
-                                  <button @click="mobileMenu=!mobileMenu"
+                    <button @click="mobileMenu=!mobileMenu"
                         class="lg:hidden p-2 border border-gray-300 rounded-md">
 
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -338,6 +338,8 @@
                             @endif
                         @endforeach
                     @endisset
+
+                    <a href="/favorite">Favorite<a>
 
                     <a href="/kontak">Kontak</a>
 
@@ -399,8 +401,8 @@
     <main class="flex-grow">
         @yield('content')
     </main>
-    <x-footer />
     <x-logout-modal />
+    <x-footer />
 
     @stack('scripts')
     @livewireScripts

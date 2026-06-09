@@ -10,7 +10,7 @@
             @if(isset($tags) && $tags->isNotEmpty())
                 @foreach($tags as $tag)
                     <a href="{{ request()->fullUrlWithQuery(['tag' => $tag->tag_name]) }}" class="{{ request('tag') == $tag->tag_name ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-gray-700' }} pb-4 cursor-pointer transition-colors">
-                        {{ $tag->tag_name }}
+                        #{{ $tag->tag_name }}
                     </a>
                 @endforeach
             @else
@@ -57,7 +57,7 @@
                             </div>
                             <div class="text-xs font-bold bg-white px-2 py-1 rounded-md shadow-xs border border-gray-100 flex items-center gap-0.5">
                                 <span class="text-amber-500">★</span>
-                                <span class="text-gray-800">{{ number_format($avarangeRating ?? 4.8, 1) }}</span>
+                                <span class="text-gray-800">{{ $cafes->ratings->avg('rating_score') ?number_format($cafes->ratings->avg('rating_score'), 1) : '-' }}</span>
                             </div>
                         </div>
                     </a>

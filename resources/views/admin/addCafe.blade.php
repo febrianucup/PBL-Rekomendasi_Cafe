@@ -122,6 +122,7 @@
 
                         <div class="flex flex-wrap items-center gap-2 mt-1">
                             @foreach($tags as $tag)
+                                @if ($tag->tag_name !== 'promo')
                                 <label class="cursor-pointer">
                                     <input type="checkbox" name="tags[]" value="{{ $tag->id }}" class="hidden" x-model="selectedTags" />
                                     <span
@@ -130,6 +131,7 @@
                                         {{ $tag->tag_name }}
                                     </span>
                                 </label>
+                                @endif
                             @endforeach
                         </div>
 

@@ -16,5 +16,6 @@ class TagsSeeder extends Seeder
         Tags::create(['tag_name' => 'quite']);
         Tags::create(['tag_name' => 'wifi']);
         Tags::create(['tag_name' => 'social']);
+        Tags::create(['tag_name' => 'promo']);
     }
 }

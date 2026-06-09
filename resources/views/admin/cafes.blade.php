@@ -23,13 +23,12 @@
         <div class="bg-white rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40 relative overflow-hidden">
             <div class="absolute -right-6 -top-6 w-32 h-32 bg-cream rounded-full opacity-50"></div>
             <p class="text-gray-500 font-medium mb-2 relative z-10">Rata-rata Rating</p>
-            <h3 class="font-serif text-5xl font-bold text-dark-brown relative z-10">4.8 <span class="text-2xl text-soft-green">★</span></h3>
+            <h3 class="font-serif text-5xl font-bold text-dark-brown relative z-10">{{ $averageRating ? number_format($averageRating, 1) : '-' }}<span class="text-2xl text-soft-green">★</span></h3>
         </div>
         <div class="bg-dark-brown rounded-3xl p-8 shadow-[0_8px_30px_rgb(75,46,43,0.15)] relative overflow-hidden text-white">
             <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/5 rounded-full"></div>
-            <p class="text-light-beige font-medium mb-2 relative z-10">Status Kurasi</p>
-            <h3 class="font-serif text-4xl font-bold relative z-10 mt-1">Sangat Baik</h3>
-            <p class="text-sm text-light-beige/70 mt-2 relative z-10">+12 minggu ini</p>
+            <p class="text-light-beige font-medium mb-2 relative z-10">Views</p>
+            <h3 class="font-serif text-4xl font-bold relative z-10 mt-1">{{ $cafes->sum('views_count') }}</h3>
         </div>
     </div>
 
@@ -67,8 +66,8 @@
                         <td class="px-8 py-5 text-gray-600 font-medium">{{ $cafe->address }}</td>
                         <td class="px-8 py-5">
                             <div class="flex items-center gap-1.5 bg-cream px-3 py-1.5 rounded-lg inline-flex">
-                                <span class="text-dark-brown font-semibold">4.8</span>
                                 <span class="text-soft-green text-xs">★</span>
+                                <span class="text-dark-brown font-semibold">{{ $cafe->ratings->avg('rating_score') ?number_format($cafe->ratings->avg('rating_score'), 1) : '-' }}</span>
                             </div>
                         </td>
                         <td class="px-8 py-5">

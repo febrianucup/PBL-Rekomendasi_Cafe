@@ -57,6 +57,10 @@ class Cafes extends Model
         return $this->hasMany(Menu::class, 'cafe_id');
     }
 
+    public function promotions(): HasMany{
+        return $this->hasMany(\App\Models\Promosi::class, 'cafe_id');
+    }
+
     public function ratings(): HasMany{
         return $this->hasMany(Comment::class, 'cafe_id')->whereNotNull('rating_score');
     }
@@ -72,5 +76,9 @@ class Cafes extends Model
 
     public function comments(){
         return $this->hasMany(Comment::class, 'cafe_id');
+    }
+
+    public function views(){
+        return $this->hasMany(CafeView::class, 'cafe_id');
     }
 }
