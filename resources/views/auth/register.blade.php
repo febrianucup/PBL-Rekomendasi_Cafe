@@ -8,7 +8,8 @@
   <link rel="icon" type="image/x-icon" href="/img/asset/favicon-32x32.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-    body {
+  <style>  
+  body {
       font-family: 'Inter', sans-serif;
     }
 
@@ -42,12 +43,12 @@
         alt="Interior Cafe">
 
       <div class="relative z-10 h-full p-12 flex flex-col justify-center">
-        <h1 class="serif-title italic text-5xl md:text-6xl text-white leading-tight mb-6">
-          The Sensory<br>Editorial
-        </h1>
-        <p class="text-white/90 text-sm md:text-base max-w-xs leading-relaxed font-light">
-          Curating the world's most intimate brewing spaces, one cup at a time.
-        </p>
+        <h1 class="serif-title text-6xl md:text-7xl text-white leading-none mb-6 fade-in tracking-[0.08em]">
+                SAFE<br>
+                <span class="block text-base md:text-lg font-normal tracking-[0.35em] uppercase not-italic mt-1 ml-2">
+                    SARAN KAFE
+                </span>
+            </h1>
 
         <div class="mt-auto pt-10">
           <div class="flex items-center gap-3">
