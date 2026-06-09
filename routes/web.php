@@ -155,4 +155,12 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
     ->middleware('guest')
     ->name('password.email');
 
+Route::get('/reset-password/{token}', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'showResetForm'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+Route::post('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])
+    ->middleware('guest')
+    ->name('password.update');
+
 Route::post('/comments/upload-image', [CommentImageController::class, 'upload'])->name('comments.upload-image')->middleware('auth');
