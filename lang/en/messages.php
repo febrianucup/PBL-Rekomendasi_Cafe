@@ -252,5 +252,37 @@ return [
     'email_unique' => 'This email is already in use.',
     'email_required' => 'Email cannot be empty.',
     'email_invalid' => 'Invalid email format.',
+    
+    // Auth (Forgot / Reset Password)
+    'forgot_password_title' => 'Forgot Password',
+    'reset_password_title' => 'Reset Password',
+    'curating_spaces' => 'Curating the world\'s most intimate brewing spaces, one cup at a time.',
+    'portfolio_of_taste' => 'Est. 2024 — Portfolio of Taste',
+    'forgot_password' => 'Forgot Password',
+    'forgot_password_desc' => 'No problem. Enter your email address and we\'ll send you a link to reset your password.',
+    'email_address' => 'Email Address',
+    'send_reset_link' => 'Send Reset Link',
+    'back_to_sign_in' => 'Back to sign in',
+    'reset_password' => 'Reset Password',
+    'reset_password_desc' => 'Enter your new password below to reset your account password.',
+    'new_password' => 'New Password',
+    'confirm_password' => 'Confirm Password',
+    'reset_password_btn' => 'Reset Password',
+
+    // Account Settings Profile
+    'account_settings_title' => 'Account Settings',
+    'full_name' => 'Full Name',
+    'change_password' => 'Change Password',
+    'security' => 'Security',
+    'current_password' => 'Current Password',
+    'old_password' => 'Old Password',
+    'placeholder_current_password' => 'Enter current password',
+    'placeholder_new_password' => 'Enter new password',
+    'placeholder_confirm_new_password' => 'Confirm new password',
+    'new_password_label' => 'New Password',
+    'confirm_new_password' => 'Confirm New Password',
+    'save_changes' => 'Save Changes',
+    'cancel_btn' => 'Cancel',
+    'settings_updated' => 'Settings updated successfully!',
 ];
 
