@@ -60,11 +60,10 @@
 
                 <div class="mt-7 flex flex-wrap gap-3">
                     <a href="{{ route('owner.promosi.edit', $promotion->id) }}" class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-light-beige text-dark-brown text-sm font-semibold hover:bg-[#f2eee7] transition">Edit</a>
-                    <form action="{{ route('owner.promosi.destroy', $promotion->id) }}" method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-rose-100 text-rose-700 text-sm font-semibold hover:bg-rose-200 transition" onclick="return confirm('Hapus promosi ini?');">Hapus</button>
-                    </form>
+                    <div x-data="{ confirmDelete: false }" class="inline">
+                        <button @click="confirmDelete = true" type="button" class="inline-flex items-center justify-center px-5 py-3 rounded-full bg-rose-100 text-rose-700 text-sm font-semibold hover:bg-rose-200 transition">Hapus</button>
+                        <x-delete-modal action="{{ route('owner.promosi.destroy', $promotion->id) }}" title="{{ __('messages.delete_promotion_title') }}" message="{{ __('messages.delete_promotion_message') }}" />
+                    </div>
                 </div>
             </div>
         @empty

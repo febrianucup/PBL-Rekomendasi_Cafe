@@ -128,13 +128,12 @@
                 <div class="flex flex-wrap items-center justify-between gap-3 mt-6 pt-6 border-t border-light-beige/30">
                     <span class="text-xs text-gray-400 font-mono">ID: #{{ $comment->id }}</span>
                     
-                    <form action="{{ route('admin.comments.destroy', $comment->id) }}" method="POST" onsubmit="return confirm({{ json_encode(__('messages.comments_confirm_delete_text')) }})" class="m-0">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="px-8 py-2.5 bg-white border-2 border-soft-red/20 text-soft-red text-xs font-bold uppercase tracking-wider rounded-full hover:bg-soft-red/5 hover:border-soft-red/40 transition-all duration-300">
+                    <div x-data="{ confirmDelete: false }" class="m-0">
+                        <button @click="confirmDelete = true" type="button" class="px-8 py-2.5 bg-white border-2 border-soft-red/20 text-soft-red text-xs font-bold uppercase tracking-wider rounded-full hover:bg-soft-red/5 hover:border-soft-red/40 transition-all duration-300">
                             {{ __('messages.delete') }}
                         </button>
-                    </form>
+                        <x-delete-modal action="{{ route('admin.comments.destroy', $comment->id) }}" title="{{ __('messages.delete') }}" message="{{ __('messages.comments_confirm_delete_text') }}" />
+                    </div>
                 </div>
             </div>
         </div>

@@ -185,10 +185,7 @@
     @if($isDeleteModalOpen)
         <x-delete-modal id="cafe-comment" title="{{ __('messages.delete_comment_title') }}" message="{{ __('messages.delete_comment_confirm') }}">
             <div class="flex gap-4">
-                {{-- <button wire:click="closeDeleteModal" class="flex-1 px-6 py-3 rounded-2xl bg-stone-200 text-stone-700 font-semibold hover:shadow-lg transition-all">
-                    {{ __('messages.cancel') }}
-                </button> --}}
-                <button wire:click="deleteComment" class="flex-1 px-6 py-3 rounded-2xl bg-dark-brown text-white font-semibold hover:shadow-lg transition-all">
+                <button wire:click="deleteComment" class="flex-1 px-6 py-3 rounded-2xl bg-red-500 text-white font-semibold hover:shadow-lg transition-all">
                     {{ __('messages.yes_delete') }}
                 </button>
             </div>

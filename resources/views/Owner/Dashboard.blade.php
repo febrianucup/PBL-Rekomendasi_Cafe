@@ -159,11 +159,10 @@
                                                             </svg>
                                                             Edit
                                                         </a>
-                                                        <form action="{{ route('cafe.delete', $cafe->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this cafe?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="text-soft-red hover:text-red-700 transition-colors font-medium text-sm">Delete</button>
-                                                        </form>
+                                                        <div x-data="{ confirmDelete: false }">
+                                                            <button @click="confirmDelete = true" type="button" class="text-soft-red hover:text-red-700 transition-colors font-medium text-sm">Delete</button>
+                                                            <x-delete-modal action="{{ route('cafe.delete', $cafe->id) }}" title="{{ __('messages.delete_cafe_title') }}" message="{{ __('messages.delete_cafe_message', ['name' => $cafe->name]) }}" />
+                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
