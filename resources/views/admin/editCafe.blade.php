@@ -787,7 +787,25 @@
                 preview.innerHTML = `<img src="${imgElement.src}" alt="menu preview" class="w-full h-full object-cover" />`;
                 preview.dataset.image = imgElement.src;
             } else {
-                preview.innerHTML = '{{ __('messages.preview_image_here') }}';\n                delete preview.dataset.image;\n            }\n\n            // Set mode edit\n            editingMenuIndex = index;\n            document.getElementById('menu-submit-btn').textContent = 'Update Menu';\n\n            // Scroll ke form dan tampilkan\n            toggleNewMenuForm(true);\n            document.getElementById('new-menu-form').scrollIntoView({ behavior: 'smooth', block: 'center' });\n        }\n\n        function cancelEditMenu() {\n            editingMenuIndex = null;\n            document.getElementById('menu-submit-btn').textContent = '{{ __('messages.add_menu') }}';\n            toggleNewMenuForm(false);\n            clearNewMenuFields();
+                preview.innerHTML = '{{ __('messages.preview_image_here') }}';
+                delete preview.dataset.image;
+            }
+
+            // Set mode edit
+            editingMenuIndex = index;
+            document.getElementById('menu-submit-btn').textContent = 'Update Menu';
+
+            // Scroll ke form dan tampilkan
+            toggleNewMenuForm(true);
+            document.getElementById('new-menu-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function cancelEditMenu() {
+            editingMenuIndex = null;
+            document.getElementById('menu-submit-btn').textContent = '{{ __('messages.add_menu') }}';
+            toggleNewMenuForm(false);
+            clearNewMenuFields();
+        }
 
         // Fungsi untuk merapikan kembali nomor indeks array input setelah ada yang dihapus
         function reindexMenuItems() {
@@ -810,23 +828,14 @@
                 // Perbarui parameter di tombol edit dan hapus
                 const editBtn = item.querySelector('button[onclick^="editMenuItem"]');
                 if (editBtn) {
-                    editBtn.setAttribute('onclick', `editMenuItem(this, ${newIndex})`);\n                }
+                    editBtn.setAttribute('onclick', `editMenuItem(this, ${newIndex})`);
+                }
 
                 const removeBtn = item.querySelector('button[onclick^="removeMenuItem"]');
                 if (removeBtn) {
-                    removeBtn.setAttribute('onclick', `removeMenuItem(this, ${newIndex})`);\n                }
+                    removeBtn.setAttribute('onclick', `removeMenuItem(this, ${newIndex})`);
+                }
             });
-        }
-
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
 
         // Leaflet Map Initialization and Geocoding Logic
