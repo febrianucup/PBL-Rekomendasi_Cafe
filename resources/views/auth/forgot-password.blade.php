@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password - The Sensory Editorial</title>
+    <title>{{ __('messages.forgot_password_title') }} - The Sensory Editorial</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
@@ -47,17 +47,17 @@
             >
             
             <div class="relative z-10 p-8 md:p-20 fade-in">
-                <h1 class="font-serif italic text-4xl md:text-6xl text-white leading-tight mb-4">
-                    The Sensory<br>Editorial
+               <h1 class="serif-title text-6xl md:text-7xl text-white leading-none mb-6 fade-in tracking-[0.08em]">
+                    SAFE<br>
+                    <span class="block text-base md:text-lg font-normal tracking-[0.35em] uppercase not-italic mt-1 ml-2">
+                        SARAN KAFE
+                    </span>
                 </h1>
-                <p class="text-white/80 text-sm md:text-base max-w-xs leading-relaxed font-light hidden md:block">
-                    Curating the world's most intimate brewing spaces, one cup at a time.
-                </p>
                 
                 <div class="mt-12 items-center gap-3 hidden md:flex">
                     <div class="h-[1px] w-8 bg-white/40"></div>
                     <span class="text-[10px] tracking-[0.2em] text-white/60 uppercase font-medium">
-                        Est. 2024 — Portfolio of Taste
+                        {{ __('messages.portfolio_of_taste') }}
                     </span>
                 </div>
             </div>
@@ -69,9 +69,9 @@
             <div class="w-full max-w-sm fade-in" style="animation-delay: 0.2s;">
                 <!-- Header -->
                 <div class="mb-10 text-center md:text-left">
-                    <h2 class="text-3xl md:text-4xl font-serif text-[#402B27] font-semibold mb-4">Forgot Password</h2>
+                    <h2 class="text-3xl md:text-4xl font-serif text-[#402B27] font-semibold mb-4">{{ __('messages.forgot_password') }}</h2>
                     <p class="text-gray-500 text-sm leading-relaxed">
-                        No problem. Enter your email address and we'll send you a link to reset your password.
+                        {{ __('messages.forgot_password_desc') }}
                     </p>
                 </div>
 
@@ -85,7 +85,7 @@
                     @csrf
                     <div>
                         <label for="email" class="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2 ml-1">
-                            Email Address
+                            {{ __('messages.email_address') }}
                         </label>
                         <input 
                             id="email" 
@@ -103,7 +103,7 @@
                     </div>
 
                     <button type="submit" class="w-full py-4 bg-[#5C453C] hover:bg-[#4A342D] text-white text-[11px] font-bold uppercase tracking-[0.2em] rounded-full shadow-xl shadow-brown-900/10 transition-all duration-300 transform hover:-translate-y-0.5">
-                        Send Reset Link
+                        {{ __('messages.send_reset_link') }}
                     </button>
                 </form>
 
@@ -113,7 +113,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        Back to sign in
+                        {{ __('messages.back_to_sign_in') }}
                     </a>
                 </div>
             </div>
