@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Type;
 use App\Models\Tags;
+use App\Models\CafePhoto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Laravolt\Indonesia\Models\City;
@@ -207,6 +208,9 @@ class CafeController extends Controller
             'menu_items.*.description'=>'nullable|string',
             'menu_items.*.price'=>'required_with:menu_items|numeric',
             'menu_items.*.image'=>'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'deleted_photos'=>['nullable','array'],
+            'deleted_photos.*'=>['integer','exists:cafe_photos,id'],
+            'remove_thumbnail'=>['nullable','boolean'],
             'is_published'=>['nullable','boolean'],
         ]);
 
@@ -241,6 +245,28 @@ class CafeController extends Controller
                             'open_time'=>$hours['open_time'],
                             'close_time'=>$hours['close_time'],
                         ]);
+                    }
+                }
+
+                if (!empty($credentials['deleted_photos'])) {
+                    $photosToDelete = CafePhoto::where('cafe_id', $cafe->id)
+                        ->whereIn('id', $credentials['deleted_photos'])
+                        ->get();
+
+                    foreach ($photosToDelete as $photo) {
+                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($photo->photo_url)) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->delete($photo->photo_url);
+                        }
+                        $photo->delete();
+                    }
+                }
+
+                if ($request->boolean('remove_thumbnail')) {
+                    if ($cafe->thumbnail) {
+                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($cafe->thumbnail->photo_url)) {
+                            \Illuminate\Support\Facades\Storage::disk('public')->delete($cafe->thumbnail->photo_url);
+                        }
+                        $cafe->thumbnail()->delete();
                     }
                 }
 
