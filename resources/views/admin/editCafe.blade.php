@@ -96,7 +96,8 @@
 
     <!-- PAGE CONTENT -->
     <div class="w-full px-6 py-8">
-        <form method="POST" action="{{ route('admin.cafes.update', $cafe->id) }}" enctype="multipart/form-data">
+        <form id="cafe-edit-form" method="POST" action="{{ route('admin.cafes.update', $cafe->id) }}" enctype="multipart/form-data">
+            <div id="image-delete-inputs"></div>
             @csrf
             @method('PUT')
 
@@ -379,7 +380,7 @@
                     </div>
 
                     @foreach($cafe->photos as $photo)
-                    <div class="relative group rounded-xl overflow-hidden aspect-square">
+                    <div data-photo-id="{{ $photo->id }}" class="relative group rounded-xl overflow-hidden aspect-square">
                         <img src="{{ asset('storage/' . $photo->photo_url) }}" alt="cafe photo" class="w-full h-full object-cover" />
                         <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
                     </div>
@@ -404,7 +405,7 @@
                     </div>
 
                     @if($cafe->thumbnail)
-                    <div class="relative group rounded-xl overflow-hidden aspect-square">
+                    <div data-thumbnail-id="{{ $cafe->thumbnail->id }}" class="relative group rounded-xl overflow-hidden aspect-square">
                         <img src="{{ asset('storage/' . $cafe->thumbnail->photo_url) }}" alt="thumbnail" class="w-full h-full object-cover" />
                         <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
                     </div>
@@ -581,7 +582,26 @@
         }
 
         function removePhoto(button) {
-            button.closest('.relative').remove();
+            const photoDiv = button.closest('.relative');
+            const deletesContainer = document.getElementById('image-delete-inputs');
+
+            if (photoDiv.dataset.photoId) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'deleted_photos[]';
+                input.value = photoDiv.dataset.photoId;
+                deletesContainer.appendChild(input);
+            }
+
+            if (photoDiv.dataset.thumbnailId) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'remove_thumbnail';
+                input.value = '1';
+                deletesContainer.appendChild(input);
+            }
+
+            photoDiv.remove();
         }
 
         // Variabel global untuk menyimpan file gambar menu asli (agar bisa dikirim ke server)

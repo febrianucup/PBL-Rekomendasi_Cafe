@@ -4,12 +4,25 @@ import './bootstrap';
 // Livewire.start();
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Fade-in page
-    document.body.classList.add('page-loaded');
+    // Check if browser supports View Transition API (cross-document navigation: auto)
+    const supportsViewTransitions = 'PageRevealEvent' in window || (typeof document.startViewTransition === 'function');
+
+    if (supportsViewTransitions) {
+        // Native View Transitions will handle page animations natively.
+        // We do not intercept link clicks or delay standard navigation.
+        return;
+    }
+
+    // JS-based Fallback for Firefox, Safari, and older browsers
+    document.body.classList.add('js-fallback');
+
+    // Trigger page slide/fade-in
+    requestAnimationFrame(() => {
+        document.body.classList.add('page-loaded');
+    });
 
     // Intercept clicks on links for fade-out transition
     document.querySelectorAll('a').forEach(link => {
-        // Skip if link opens in new tab, has javascript:, starts with #, or has download attribute
         if (
             link.target === '_blank' ||
             link.getAttribute('href') === null ||
@@ -21,12 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const href = link.getAttribute('href');
-        // Check if it's an internal link
         const isInternal = href.startsWith('/') || href.startsWith(window.location.origin);
 
         if (isInternal) {
             link.addEventListener('click', e => {
-                // If it is a modifier click (Ctrl+click, Cmd+click, Shift+click), let the browser handle it (opens new tab/window)
+                // Ignore modifier clicks (Ctrl+click, Cmd+click, Shift+click)
                 if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
                     return;
                 }
@@ -37,15 +49,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 setTimeout(() => {
                     window.location.href = href;
-                }, 300); // matches CSS transition duration (0.3s)
+                }, 250); // Matches transition duration (250ms delay)
             });
         }
     });
 });
 
 window.addEventListener('pageshow', (event) => {
+    // Ensure back-forward cache pages fade in properly
     if (event.persisted) {
-        document.body.classList.remove('page-fade-out');
-        document.body.classList.add('page-loaded');
+        const supportsViewTransitions = 'PageRevealEvent' in window || (typeof document.startViewTransition === 'function');
+        if (!supportsViewTransitions) {
+            document.body.classList.remove('page-fade-out');
+            document.body.classList.add('page-loaded');
+        }
     }
 });

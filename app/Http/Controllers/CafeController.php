@@ -9,6 +9,7 @@ use App\Models\Tags;
 use App\Models\User;
 use App\Models\Type;
 use App\Models\Thumbnail;
+use App\Models\CafePhoto;
 use App\Models\LandingPageSetting;
 use Faker\Provider\id_ID\PhoneNumber;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
@@ -397,6 +398,9 @@ class CafeController extends Controller
             'menu_items.*.description'=>['nullable','string'],
             'menu_items.*.price'=>['required_with:menu_items','numeric'],
             'menu_items.*.image'=>['nullable','image','mimes:jpeg,png,jpg','max:5120'],
+            'deleted_photos'=>['nullable','array'],
+            'deleted_photos.*'=>['integer','exists:cafe_photos,id'],
+            'remove_thumbnail'=>['nullable','boolean'],
             'is_published'=>['nullable','boolean'],
         ]);
 
@@ -432,6 +436,28 @@ class CafeController extends Controller
                             'open_time' => $hours['open_time'],
                             'close_time' => $hours['close_time'],
                         ]);
+                    }
+                }
+
+                if (!empty($credentials['deleted_photos'])) {
+                    $photosToDelete = CafePhoto::where('cafe_id', $cafe->id)
+                        ->whereIn('id', $credentials['deleted_photos'])
+                        ->get();
+
+                    foreach ($photosToDelete as $photo) {
+                        if (Storage::disk('public')->exists($photo->photo_url)) {
+                            Storage::disk('public')->delete($photo->photo_url);
+                        }
+                        $photo->delete();
+                    }
+                }
+
+                if ($request->boolean('remove_thumbnail')) {
+                    if ($cafe->thumbnail) {
+                        if (Storage::disk('public')->exists($cafe->thumbnail->photo_url)) {
+                            Storage::disk('public')->delete($cafe->thumbnail->photo_url);
+                        }
+                        $cafe->thumbnail()->delete();
                     }
                 }
 

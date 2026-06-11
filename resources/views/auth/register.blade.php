@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" style="background-color: #ffffff;">
 
 <head>
   <meta charset="UTF-8">
@@ -17,16 +17,49 @@
       font-family: 'Playfair Display', serif;
     }
     
-    /* Page Transitions */
-    body {
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
+    /* View Transition API */
+    @view-transition {
+        navigation: auto;
     }
-    body.page-loaded {
+
+    ::view-transition-old(root) {
+        animation: fade-out 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    ::view-transition-new(root) {
+        animation: fade-in-slide 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes fade-out {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+
+    @keyframes fade-in-slide {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Fallback Page Transitions */
+    body.js-fallback {
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body.js-fallback.page-loaded {
         opacity: 1;
+        transform: translateY(0);
     }
-    body.page-fade-out {
+
+    body.js-fallback.page-fade-out {
         opacity: 0;
+        transform: translateY(-10px);
     }
   </style>
 </head>
@@ -281,7 +314,13 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-        document.body.classList.add('page-loaded');
+        const supportsViewTransitions = 'PageRevealEvent' in window || (typeof document.startViewTransition === 'function');
+        if (supportsViewTransitions) return;
+
+        document.body.classList.add('js-fallback');
+        requestAnimationFrame(() => {
+            document.body.classList.add('page-loaded');
+        });
 
         document.querySelectorAll('a').forEach(link => {
             if (
@@ -308,7 +347,7 @@
 
                     setTimeout(() => {
                         window.location.href = href;
-                    }, 300);
+                    }, 250);
                 });
             }
         });
@@ -316,8 +355,11 @@
 
     window.addEventListener('pageshow', (event) => {
         if (event.persisted) {
-            document.body.classList.remove('page-fade-out');
-            document.body.classList.add('page-loaded');
+            const supportsViewTransitions = 'PageRevealEvent' in window || (typeof document.startViewTransition === 'function');
+            if (!supportsViewTransitions) {
+                document.body.classList.remove('page-fade-out');
+                document.body.classList.add('page-loaded');
+            }
         }
     });
   </script>

@@ -96,8 +96,9 @@
 
     <!-- PAGE CONTENT -->
     <div class="w-full px-6 py-8">
-        <form method="POST" action="{{ isset($cafe) ? route('cafe.update', $cafe->id) : route('add-cafe.submit') }}" enctype="multipart/form-data">
+        <form id="cafe-edit-form" method="POST" action="{{ isset($cafe) ? route('cafe.update', $cafe->id) : route('add-cafe.submit') }}" enctype="multipart/form-data">
             @csrf
+            <div id="image-delete-inputs"></div>
             @if(isset($cafe))
                 @method('PUT')
             @endif
@@ -355,7 +356,7 @@
                         <!-- Existing Photos -->
                         @if(isset($cafe) && $cafe->photos->isNotEmpty())
                             @foreach($cafe->photos as $photo)
-                                <div class="relative group rounded-xl overflow-hidden aspect-square">
+                                <div data-photo-id="{{ $photo->id }}" class="relative group rounded-xl overflow-hidden aspect-square">
                                     <img src="{{ asset('storage/' . $photo->photo_url) }}" alt="cafe photo" class="w-full h-full object-cover" />
                                     <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
                                 </div>
@@ -382,7 +383,7 @@
 
                         <!-- Existing Thumbnail -->
                         @if(isset($cafe) && $cafe->thumbnail)
-                            <div class="relative group rounded-xl overflow-hidden aspect-square">
+                            <div data-thumbnail-id="{{ $cafe->thumbnail->id }}" class="relative group rounded-xl overflow-hidden aspect-square">
                                 <img src="{{ asset('storage/' . $cafe->thumbnail->photo_url) }}" alt="thumbnail" class="w-full h-full object-cover" />
                                 <button type="button" onclick="removePhoto(this)" class="absolute top-1.5 right-1.5 w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] text-muted shadow opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
                             </div>
@@ -543,9 +544,6 @@
                 };
                 reader.readAsDataURL(file);
             });
-            
-            // Reset file input untuk mencegah penumpukan
-            event.target.value = '';
         }
 
         function handleThumbnailInput(event) {
@@ -572,13 +570,30 @@
                 };
                 reader.readAsDataURL(file);
             });
-            
-            // Reset file input untuk mencegah penumpukan
-            event.target.value = '';
         }
 
         function removePhoto(button) {
-            button.closest('.relative').remove();
+            const photoDiv = button.closest('.relative');
+            const form = document.getElementById('cafe-edit-form');
+            const deletesContainer = document.getElementById('image-delete-inputs');
+
+            if (photoDiv.dataset.photoId) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'deleted_photos[]';
+                input.value = photoDiv.dataset.photoId;
+                deletesContainer.appendChild(input);
+            }
+
+            if (photoDiv.dataset.thumbnailId) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'remove_thumbnail';
+                input.value = '1';
+                deletesContainer.appendChild(input);
+            }
+
+            photoDiv.remove();
         }
 
         let menuImages = [];

@@ -118,25 +118,7 @@
             </button>
 
             <!-- Delete Confirmation Modal -->
-            <template x-teleport="body">
-                <div x-show="confirmDelete" class="fixed inset-0 z-[99] flex items-center justify-center" x-cloak>
-                    <!-- Backdrop -->
-                    <div x-show="confirmDelete" x-transition.opacity @click="confirmDelete = false" class="absolute inset-0 bg-dark-brown/40 backdrop-blur-sm"></div>
-                    <!-- Modal Box -->
-                    <div x-show="confirmDelete" x-transition.scale.90 class="relative w-full max-w-sm bg-white p-8 rounded-[32px] shadow-2xl border border-cream mx-4 text-center">
-                        <h3 class="text-xl font-bold text-dark-brown mb-2">Konfirmasi Hapus</h3>
-                        <p class="text-gray-500 mb-8">Apakah Anda yakin ingin menghapus akun <strong>{{ $user->username }}</strong> secara permanen?</p>
-                        <div class="flex gap-3">
-                            <button @click="confirmDelete = false" type="button" class="flex-1 px-6 py-3 rounded-2xl border border-cream text-gray-500 font-semibold hover:bg-cream transition-colors">Batal</button>
-                            <form action="{{ route('accounts.destroy', $user->id) }}" method="POST" class="flex-1 m-0">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="w-full px-6 py-3 rounded-2xl bg-red-500 text-white font-semibold hover:bg-red-600 transition-all">Ya, Hapus</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </template>
+            <x-delete-modal action="{{ route('accounts.destroy', $user->id) }}" title="{{ __('messages.delete_account_title') }}" message="{{ __('messages.delete_account_message', ['name' => $user->username]) }}" />
         </div>
         @else
         <div class="mt-14 pt-8 border-t border-light-beige/40">
