@@ -22,21 +22,52 @@
   --font-sans: "Inter", sans-serif;
   /* Menggunakan versi Instrument Sans yang Anda tentukan terakhir */
   --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-main: 254 249 243;
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --color-main: 254 249 243;
 }
 
-/* Page Transitions */
-body {
+/* Page Transitions (View Transition API) */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: fade-out 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+::view-transition-new(root) {
+  animation: fade-in-slide 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in-slide {
+  from {
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-}
-
-body.page-loaded {
+    transform: translateY(10px);
+  }
+  to {
     opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-body.page-fade-out {
-    opacity: 0;
+/* Fallback Page Transitions for non-supporting browsers */
+body.js-fallback {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.js-fallback.page-loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.js-fallback.page-fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
 }

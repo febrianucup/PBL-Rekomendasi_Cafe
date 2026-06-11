@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Comment extends Model
 {
-    protected $fillable = ['user_id', 'cafe_id', 'parent_id', 'body', 'rating_score', 'images', 'type'];
+    protected $fillable = ['user_id', 'cafe_id', 'parent_id', 'body', 'rating_score', 'images', 'type', 'is_reported'];
 
     protected $cast = [
         'rating_score'=>'float'

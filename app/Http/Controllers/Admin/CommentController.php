@@ -27,6 +27,8 @@ class CommentController extends Controller
         $type = $request->get('type', 'all');
         if (in_array($type, ['review', 'discussion'])) {
             $query->where('type', $type);
+        } elseif ($type === 'reported') {
+            $query->where('is_reported', true);
         }
 
         $comments = $query->latest()->paginate(10)->withQueryString();
@@ -35,6 +37,7 @@ class CommentController extends Controller
             'total' => \App\Models\Comment::count(),
             'review' => \App\Models\Comment::where('type', 'review')->count(),
             'discussion' => \App\Models\Comment::where('type', 'discussion')->count(),
+            'reported' => \App\Models\Comment::where('is_reported', true)->count(),
         ];
 
         return view('admin.comments', compact('comments', 'counts', 'type', 'search'));

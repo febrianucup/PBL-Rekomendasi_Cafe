@@ -23,12 +23,37 @@
                 <p class="text-gray-500 font-medium text-xs uppercase tracking-wider mb-1">{{ __('messages.comments_discussions') }}</p>
                 <p class="font-serif text-3xl font-bold text-blue-600">{{ $counts['discussion'] }}</p>
             </div>
+            <div class="h-10 w-px bg-light-beige"></div>
+            <div class="text-center">
+                <p class="text-gray-500 font-medium text-xs uppercase tracking-wider mb-1">{{ __('messages.reported') }}</p>
+                <p class="font-serif text-3xl font-bold text-red-600">{{ $counts['reported'] ?? 0 }}</p>
+            </div>
         </div>
     </div>
 
     <!-- Alert Success -->
     @if(session('success'))
         <x-alert type="success">{{ session('success') }}</x-alert>
+    @endif
+
+    <!-- Notification for Reported Comments -->
+    @if(isset($counts['reported']) && $counts['reported'] > 0)
+        <div class="bg-red-50 border border-red-200 rounded-3xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm mb-6">
+            <div class="flex items-center gap-4">
+                <div class="bg-red-100 p-3 rounded-2xl text-red-600 shrink-0">
+                    <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-red-800">{{ __('messages.reported_comments_alert_title') }}</h3>
+                    <p class="text-sm text-red-600 mt-0.5">{{ __('messages.reported_comments_alert_desc', ['count' => $counts['reported']]) }}</p>
+                </div>
+            </div>
+            <a href="{{ route('admin.comments', ['type' => 'reported']) }}" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-center whitespace-nowrap">
+                {{ __('messages.view_reported') }}
+            </a>
+        </div>
     @endif
 
     <!-- Filters -->
@@ -43,6 +68,9 @@
             </a>
             <a href="{{ route('admin.comments', ['type' => 'discussion']) }}" class="px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider font-bold transition-all whitespace-nowrap {{ $type === 'discussion' ? 'bg-dark-brown text-white shadow-sm' : 'text-gray-500 hover:text-dark-brown' }}">
                 {{ __('messages.comments_discussions') }}
+            </a>
+            <a href="{{ route('admin.comments', ['type' => 'reported']) }}" class="px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider font-bold transition-all whitespace-nowrap {{ $type === 'reported' ? 'bg-dark-brown text-white shadow-sm' : 'text-gray-500 hover:text-dark-brown' }}">
+                {{ __('messages.reported') }}
             </a>
         </div>
     </div>
@@ -85,6 +113,12 @@
 
                         <!-- Badges -->
                         <div class="flex items-center gap-2">
+                            @if($comment->is_reported)
+                                <span class="px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase border bg-red-50 text-red-600 border-red-100 animate-pulse">
+                                    {{ __('messages.reported_by_owner') }}
+                                </span>
+                            @endif
+                            
                             <!-- Type Badge -->
                             <span class="px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase border {{ $comment->type === 'review' ? 'bg-soft-green/10 text-soft-green border-soft-green/20' : 'bg-blue-50 text-blue-600 border-blue-100' }}">
                                 {{ $comment->type === 'review' ? __('messages.comments_reviews') : __('messages.comments_discussions') }}

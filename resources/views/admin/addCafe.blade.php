@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background-color: #F7F5F0;">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,6 +30,52 @@
             }
         }
     </script>
+    <style>
+        /* View Transition API */
+        @view-transition {
+            navigation: auto; 
+        }
+
+        ::view-transition-old(root) {
+            animation: fade-out 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        ::view-transition-new(root) {
+            animation: fade-in-slide 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes fade-out {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes fade-in-slide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Fallback Page Transitions */
+        body.js-fallback {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.js-fallback.page-loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        body.js-fallback.page-fade-out {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+    </style>
 </head>
 <body class="bg-cream font-sans text-dark min-h-screen">
 
@@ -888,5 +934,56 @@
         });
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const supportsViewTransitions = 'PageRevealEvent' in window || (typeof document.startViewTransition === 'function');
+            if (supportsViewTransitions) return;
+
+            document.body.classList.add('js-fallback');
+            requestAnimationFrame(() => {
+                document.body.classList.add('page-loaded');
+            });
+
+            document.querySelectorAll('a').forEach(link => {
+                if (
+                    link.target === '_blank' ||
+                    link.getAttribute('href') === null ||
+                    link.getAttribute('href').startsWith('#') ||
+                    link.getAttribute('href').startsWith('javascript:') ||
+                    link.hasAttribute('download')
+                ) {
+                    return;
+                }
+
+                const href = link.getAttribute('href');
+                const isInternal = href.startsWith('/') || href.startsWith(window.location.origin);
+
+                if (isInternal) {
+                    link.addEventListener('click', e => {
+                        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) {
+                            return;
+                        }
+                        e.preventDefault();
+                        document.body.classList.remove('page-loaded');
+                        document.body.classList.add('page-fade-out');
+
+                        setTimeout(() => {
+                            window.location.href = href;
+                        }, 250);
+                    });
+                }
+            });
+        });
+
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                const supportsViewTransitions = 'PageRevealEvent' in window || (typeof document.startViewTransition === 'function');
+                if (!supportsViewTransitions) {
+                    document.body.classList.remove('page-fade-out');
+                    document.body.classList.add('page-loaded');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
