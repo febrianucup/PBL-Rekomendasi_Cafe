@@ -33,7 +33,7 @@
     <style>
         /* View Transition API */
         @view-transition {
-            navigation: auto;
+            navigation: auto; 
         }
 
         ::view-transition-old(root) {
