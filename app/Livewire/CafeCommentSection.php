@@ -181,6 +181,17 @@ class CafeCommentSection extends Component
         $this->isDeleteModalOpen = true;
     }
 
+    public function reportComment($commentId)
+    {
+        if (Auth::check() && Auth::user()->role->name === 'owner') {
+            $comment = Comment::findOrFail($commentId);
+            $comment->update(['is_reported' => true]);
+            
+            $this->hideFlash = false;
+            session()->flash('success', __('messages.comment_reported_success'));
+        }
+    }
+
     public function render(){
         // $allComments = Comment::with(['user', 'replies.user'])
         //     ->where('cafe_id', $this->cafeId)

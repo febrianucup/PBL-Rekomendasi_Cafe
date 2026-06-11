@@ -329,5 +329,14 @@ return [
     'remove_image_instruction' => 'Select the checkbox and click save to remove an image.',
     'add_new_images' => 'Add New Images',
     'add_multiple_images_instruction' => 'You can select multiple images to add to the slider.',
+    
+    // Comment reporting & moderation
+    'report' => 'Report',
+    'reported' => 'Reported',
+    'comment_reported_success' => 'Comment successfully reported.',
+    'reported_by_owner' => 'Reported by Owner',
+    'reported_comments_alert_title' => 'Reported Comments',
+    'reported_comments_alert_desc' => 'There are :count comment(s) reported by owners that need action.',
+    'view_reported' => 'View Reports',
 ];
 

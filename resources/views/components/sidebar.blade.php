@@ -85,10 +85,26 @@
         <!-- Navigation Dinamis -->
         <nav class="p-6 space-y-2">
             @foreach($menuItems as $item)
+                @php
+                    $badge = null;
+                    if ($item['url'] === '/admin/comments') {
+                        $reportedCount = \App\Models\Comment::where('is_reported', true)->count();
+                        if ($reportedCount > 0) {
+                            $badge = $reportedCount;
+                        }
+                    }
+                @endphp
                 <a href="{{ $item['url'] }}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->is(trim($item['url'], '/').'*') ? 'bg-dark-brown text-white shadow-lg shadow-dark-brown/20' : 'text-gray-500 hover:bg-cream hover:text-dark-brown hover:shadow-sm' }}">
-                    {!! $item['icon'] !!}
-                    <span class="font-medium">{{ $item['label'] }}</span>
+                   class="flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->is(trim($item['url'], '/').'*') ? 'bg-dark-brown text-white shadow-lg shadow-dark-brown/20' : 'text-gray-500 hover:bg-cream hover:text-dark-brown hover:shadow-sm' }}">
+                    <div class="flex items-center gap-3">
+                        {!! $item['icon'] !!}
+                        <span class="font-medium">{{ $item['label'] }}</span>
+                    </div>
+                    @if($badge)
+                        <span class="bg-red-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full animate-bounce shrink-0">
+                            {{ $badge }}
+                        </span>
+                    @endif
                 </a>
             @endforeach
         </nav>

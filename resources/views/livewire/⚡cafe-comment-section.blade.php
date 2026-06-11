@@ -90,11 +90,22 @@
                     <span class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="flex gap-3 items-center">
                     @if(Auth::id() === $comment->user_id)
                         <button type="button" class="text-red-500 text-xs font-semibold" wire:click="confirmDelete({{ $comment->id }})">
                             {{ __('messages.delete') }}
                         </button>
+                    @endif
+                    @if(Auth::check() && Auth::user()->role->name === 'owner' && Auth::id() !== $comment->user_id)
+                        @if(!$comment->is_reported)
+                            <button type="button" class="text-amber-600 text-xs font-semibold hover:underline" wire:click="reportComment({{ $comment->id }})">
+                                {{ __('messages.report') }}
+                            </button>
+                        @else
+                            <span class="text-stone-400 text-xs font-semibold">
+                                {{ __('messages.reported') }}
+                            </span>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -154,11 +165,22 @@
                                     <div class="mx-2 h-1 w-1 rounded-full bg-stone-400"></div>
                                     <span class="text-[10px] text-stone-400">{{ $reply->created_at->diffForHumans() }}</span>
                                 </div>
-                                <div class="flex gap-3">
+                                <div class="flex gap-3 items-center">
                                     @if(Auth::id() === $reply->user_id)
                                         <button type="button" class="text-red-500 text-xs font-semibold" wire:click="confirmDelete({{ $reply->id }})">
                                             {{ __('messages.delete') }}
                                         </button>
+                                    @endif
+                                    @if(Auth::check() && Auth::user()->role->name === 'owner' && Auth::id() !== $reply->user_id)
+                                        @if(!$reply->is_reported)
+                                            <button type="button" class="text-amber-600 text-xs font-semibold hover:underline" wire:click="reportComment({{ $reply->id }})">
+                                                {{ __('messages.report') }}
+                                            </button>
+                                        @else
+                                            <span class="text-stone-400 text-xs font-semibold">
+                                                {{ __('messages.reported') }}
+                                            </span>
+                                        @endif
                                     @endif
                                 </div>
                             </div>

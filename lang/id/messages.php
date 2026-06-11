@@ -329,5 +329,14 @@ return [
     'remove_image_instruction' => 'Centang kotak lalu klik simpan untuk menghapus gambar.',
     'add_new_images' => 'Tambah Gambar Baru',
     'add_multiple_images_instruction' => 'Anda dapat memilih beberapa gambar sekaligus untuk ditambahkan ke slider.',
+    
+    // Comment reporting & moderation
+    'report' => 'Laporkan',
+    'reported' => 'Dilaporkan',
+    'comment_reported_success' => 'Komentar berhasil dilaporkan.',
+    'reported_by_owner' => 'Dilaporkan oleh Owner',
+    'reported_comments_alert_title' => 'Komentar Dilaporkan',
+    'reported_comments_alert_desc' => 'Terdapat :count komentar yang dilaporkan oleh owner dan memerlukan tindakan.',
+    'view_reported' => 'Lihat Laporan',
 ];
 
