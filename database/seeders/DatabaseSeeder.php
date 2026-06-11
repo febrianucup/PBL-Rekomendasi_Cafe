@@ -15,16 +15,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call([
-            RoleSeeder::class,     
+            RoleSeeder::class,
             TypeSeeder::class,
             TagsSeeder::class,
             AdminAccountSeeder::class,
+            CafeDataSeeder::class,
         ]);
 
-        User::factory()->create([
-            'username' => 'Test User',
-            'email' => 'test@example.com',
-            'role_id' => 1,
-        ]);
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            ['username' => 'Test User', 'role_id' => 1]
+        );
     }
 }

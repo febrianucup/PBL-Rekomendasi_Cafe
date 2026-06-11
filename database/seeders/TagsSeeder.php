@@ -13,9 +13,9 @@ class TagsSeeder extends Seeder
      */
     public function run(): void
     {
-        Tags::create(['tag_name' => 'quite']);
-        Tags::create(['tag_name' => 'wifi']);
-        Tags::create(['tag_name' => 'social']);
-        Tags::create(['tag_name' => 'promo']);
+        Tags::firstOrCreate(['tag_name' => 'quite']);
+        Tags::firstOrCreate(['tag_name' => 'wifi']);
+        Tags::firstOrCreate(['tag_name' => 'social']);
+        Tags::firstOrCreate(['tag_name' => 'promo']);
     }
 }

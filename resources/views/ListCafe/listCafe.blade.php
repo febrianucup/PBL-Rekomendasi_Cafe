@@ -2,8 +2,12 @@
 
 @section('title', 'Cafe List')
 @section('content')
-    <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-16">
-        <div class="flex flex-col lg:flex-row gap-8 items-stretch">
+    <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-20 relative">
+        <!-- Modern Decorative Background Blobs -->
+        <div class="absolute top-10 left-10 w-96 h-96 bg-amber-200/50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-0 hidden lg:block pointer-events-none"></div>
+        <div class="absolute bottom-10 right-[30%] w-80 h-80 bg-orange-200/50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-0 hidden lg:block pointer-events-none"></div>
+        
+        <div class="flex flex-col lg:flex-row gap-12 items-center relative z-10">
             
             <!-- Text Content (Left Side) -->
             <div class="w-full lg:w-1/2 flex flex-col justify-center px-4 lg:pr-12 text-center lg:text-left py-8 lg:py-0">
@@ -60,7 +64,11 @@
             </div>
 
             <!-- Slider (Right Side) -->
-            <div class="w-full lg:w-1/2">
+            <div class="w-full lg:w-1/2 relative perspective-1000 group/slider-container">
+                <!-- Aesthetic Frame Behind Slider -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-amber-400 to-orange-500 rounded-[2.5rem] transform rotate-3 scale-100 opacity-20 transition-all duration-700 group-hover/slider-container:rotate-6 group-hover/slider-container:scale-105 z-0"></div>
+                <div class="absolute inset-0 bg-gradient-to-bl from-[#3E2723] to-[#5D4037] rounded-[2.5rem] transform -rotate-2 scale-100 opacity-10 transition-all duration-700 group-hover/slider-container:-rotate-4 group-hover/slider-container:scale-105 z-0"></div>
+
                 @php
                     $sliderData = [];
                     if(isset($promoCafes) && $promoCafes->count() > 0) {
@@ -88,7 +96,7 @@
                     }
                 @endphp
                 
-                <section class="w-full h-[400px] md:h-[500px] lg:h-[600px] bg-gray-200 relative group overflow-hidden rounded-3xl shadow-2xl"
+                <section class="w-full h-[400px] md:h-[500px] lg:h-[550px] bg-gray-200 relative group overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-white/40 backdrop-blur-sm z-10"
                     x-data='{ 
                         activeSlide: 0,
                         slides: @json($sliderData),
@@ -274,8 +282,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 content-start flex-grow">
             @forelse($cafe as $cafes)
                 <div class="group">
-                    <a href="{{ route('cafes.show', $cafes->id) }}" class="block">
-                        <div class="aspect-[4/3] bg-gray-200 mb-4 overflow-hidden rounded-2xl shadow-md relative group-hover:shadow-xl transition-all duration-300">
+                    <a href="{{ route('cafes.show', $cafes->id) }}" class="block bg-white rounded-[2rem] p-3 border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                        <div class="aspect-[4/3] bg-gray-200 mb-4 overflow-hidden rounded-[1.5rem] shadow-inner relative group-hover:shadow-md transition-all duration-300">
                             <img src="{{ $cafes->thumbnail ? asset('storage/'.$cafes->thumbnail->photo_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=80' }}"
                                 alt="{{ $cafes->name }}"
                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />

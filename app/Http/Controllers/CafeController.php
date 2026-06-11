@@ -43,6 +43,8 @@ class CafeController extends Controller
         $sortByRating = $request->input('sort_by_rating') === 'true';
         $sortByViews = $request->input('sort_by_views') === 'true';
 
+        $user=Auth::user();
+
         $cafeQuery = Cafes::with(['type', 'tags', 'thumbnail', 'photos', 'ratings'])->where('published', true);
 
         if ($search){
@@ -92,6 +94,17 @@ class CafeController extends Controller
             $cafeQuery->withAvg('ratings', 'rating_score')->orderBy('ratings_avg_rating_score', 'desc');
         }elseif($sortByViews){
             $cafeQuery->withCount('views')->orderBy('views_count','desc');   
+        }else{
+            if($user){
+                $favoritesTagId=$user->favorites()->with('cafe.tags')->get()->pluck('cafe.tags.*.id')->flatten()->unique();
+                if($favoritesTagId->isNotEmpty()){
+                    $cafeQuery->withCount(['tags' => function($query) use ($favoritesTagId) {
+                        $query->whereIn('tags.id', $favoritesTagId);
+                    }])->orderByDesc('tags_count');
+                }else{
+                    $cafeQuery->latest();
+                }
+            }
         }
 
         $cafe = $cafeQuery->get();

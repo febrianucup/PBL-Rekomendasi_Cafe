@@ -13,6 +13,9 @@ class AdminAccountSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create(['role_id'=>1, 'email'=>'adminku@gmail.com', 'password'=>'123456789', 'status'=>'active', 'username'=>'adminganteng']);
+        User::firstOrCreate(
+            ['email' => 'adminku@gmail.com'],
+            ['role_id' => 1, 'password' => bcrypt('123456789'), 'status' => 'active', 'username' => 'adminganteng']
+        );
     }
 }

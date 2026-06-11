@@ -25,7 +25,6 @@ class CafeDataSeeder extends Seeder
         if (!$owner) {
             $role = Role::firstOrCreate(['name' => 'owner']);
             $owner = User::create([
-                'name' => 'Budi Owner',
                 'username' => 'budiowner',
                 'email' => 'budi@owner.com',
                 'password' => Hash::make('password123'),

@@ -35,29 +35,36 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 content-start flex-grow">
             @forelse($cafe as $cafes)
                 <div class="group">
-                    <a href="{{ route('cafes.show', $cafes->id) }}" class="block">
-                        <div class="aspect-[4/3] bg-gray-200 mb-3 overflow-hidden rounded-xl shadow-xs relative">
+                    <a href="{{ route('cafes.show', $cafes->id) }}" class="block bg-white rounded-[2rem] p-3 border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                        <div class="aspect-[4/3] bg-gray-200 mb-4 overflow-hidden rounded-[1.5rem] shadow-inner relative group-hover:shadow-md transition-all duration-300">
                             <img src="{{ $cafes->thumbnail ? asset('storage/'.$cafes->thumbnail->photo_url) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=80' }}"
                                 alt="{{ $cafes->name }}"
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        </div>
-                        <div class="flex justify-between items-start px-1">
-                            <div>
-                                <h3 class="font-bold text-base text-gray-800 group-hover:text-black transition-colors">{{ $cafes->name }}</h3>
-                                <p class="text-xs text-gray-400 mt-0.5">{{ $cafes->address }}</p>
-                                @if(isset($cafes->distance))
-                                    <p class="text-[11px] text-amber-800 font-semibold mt-1.5 flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3 text-amber-700">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                                        </svg>
-                                        {{ number_format($cafes->distance, 1) }} km {{ __('messages.from_you') }}
-                                    </p>
-                                @endif
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                            
+                            <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 border border-white/20">
+                                <span class="text-amber-500 text-[10px] font-black">★</span>
+                                <span class="text-gray-900 text-xs font-bold">{{ $cafes->ratings->avg('rating_score') ? number_format($cafes->ratings->avg('rating_score'), 1) : '-' }}</span>
                             </div>
-                            <div class="text-xs font-bold bg-white px-2 py-1 rounded-md shadow-xs border border-gray-100 flex items-center gap-0.5">
-                                <span class="text-amber-500">★</span>
-                                <span class="text-gray-800">{{ $cafes->ratings->avg('rating_score') ?number_format($cafes->ratings->avg('rating_score'), 1) : '-' }}</span>
+                            
+                            @if(isset($cafes->tags) && $cafes->tags->contains(function($tag) { return strtolower($tag->tag_name) === 'promo'; }))
+                                <div class="absolute top-3 left-3 bg-red-600/95 backdrop-blur-md px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1 border border-red-500/50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                    </svg>
+                                    <span class="text-white text-[10px] font-bold uppercase tracking-wider">Promo</span>
+                                </div>
+                            @endif
+                        </div>
+                        
+                        <div class="flex flex-col px-1">
+                            <h3 class="font-extrabold text-lg text-gray-900 group-hover:text-amber-700 transition-colors leading-tight">{{ $cafes->name }}</h3>
+                            <div class="flex items-center gap-1 mt-1.5 text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                                </svg>
+                                <p class="text-xs font-medium truncate">{{ $cafes->address }}</p>
                             </div>
                         </div>
                     </a>
