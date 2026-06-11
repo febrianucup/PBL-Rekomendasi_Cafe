@@ -71,6 +71,23 @@
           </p>
         </header>
 
+        @if($errors->any())
+        <div class="bg-red-100 border-l-4 border-red-500 p-4 mb-6 rounded-r-xl shadow-sm">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-red-800">
+                        {{ $errors->first() }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <div class="relative grid grid-cols-2 mb-8 rounded-3xl bg-[#F3EEE5] p-1">
           <!-- Background Indicator -->
           <div id="tab-indicator" class="absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] bg-white rounded-3xl shadow-sm transition-transform duration-300 ease-out"></div>
@@ -92,9 +109,9 @@
             <input
               type="text"
               name="username"
-              value="{{ old('name') }}"
+              value="{{ old('username') }}"
               placeholder="espresso_lover"
-              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @error('name') ring-2 ring-red-500 @enderror"
+              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('username')) ring-2 ring-red-500 @endif"
               required
               autofocus>
 
@@ -107,9 +124,8 @@
               name="email"
               value="{{ old('email') }}"
               placeholder="emailkamu@email.com"
-              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @error('email') ring-2 ring-red-500 @enderror"
+              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('email')) ring-2 ring-red-500 @endif"
               required>
-            @error('email') <small style="color: red;">{{ $message }}</small> @enderror
           </div>
 
           <div class="space-y-1.5">
@@ -118,7 +134,7 @@
               type="password"
               name="password"
               placeholder="••••••••"
-              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @error('password') ring-2 ring-red-500 @enderror"
+              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('password')) ring-2 ring-red-500 @endif"
               required>
           </div>
 
@@ -145,8 +161,9 @@
             <input
               type="text"
               name="username"
+              value="{{ old('username') }}"
               placeholder="espresso_lover"
-              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all"
+              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('username')) ring-2 ring-red-500 @endif"
               required>
           </div>
 
@@ -155,8 +172,9 @@
             <input
               type="text"
               name="cafe_name"
+              value="{{ old('cafe_name') }}"
               placeholder="My Awesome Cafe"
-              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all"
+              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('cafe_name')) ring-2 ring-red-500 @endif"
               required>
           </div>
 
@@ -165,8 +183,9 @@
             <input
               type="text"
               name="address"
+              value="{{ old('address') }}"
               placeholder="Street, City, Country"
-              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all"
+              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('address')) ring-2 ring-red-500 @endif"
               required>
           </div>
 
@@ -175,8 +194,9 @@
             <input
               type="email"
               name="email"
+              value="{{ old('email') }}"
               placeholder="your@email.com"
-              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all"
+              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('email')) ring-2 ring-red-500 @endif"
               required>
           </div>
 
@@ -186,7 +206,7 @@
               type="password"
               name="password"
               placeholder="••••••••"
-              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all"
+              class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('password')) ring-2 ring-red-500 @endif"
               required>
           </div>
 

@@ -15,6 +15,11 @@ class LoginController extends Controller
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:8',
+        ], [
+            'email.required'   => __('messages.email_required'),
+            'email.email'      => __('messages.email_invalid'),
+            'password.required'=> __('messages.password_required'),
+            'password.min'     => __('messages.password_min'),
         ]);
 
         $remember = $request->has('remember');

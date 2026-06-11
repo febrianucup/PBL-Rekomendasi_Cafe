@@ -252,6 +252,8 @@ return [
     'email_unique' => 'email ini sudah digunakan',
     'email_required' => 'Email tidak boleh kosong',
     'email_invalid' => 'Format email tidak valid',
+    'password_min' => 'Sandi minimal harus 8 karakter.',
+    'password_required' => 'Sandi tidak boleh kosong',
 
     // Auth (Forgot / Reset Password)
     'forgot_password_title' => 'Lupa Sandi',

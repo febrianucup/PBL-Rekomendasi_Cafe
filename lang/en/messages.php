@@ -252,6 +252,8 @@ return [
     'email_unique' => 'This email is already in use.',
     'email_required' => 'Email cannot be empty.',
     'email_invalid' => 'Invalid email format.',
+    'password_min' => 'Password must be at least 8 characters.',
+    'password_required' => 'Password cannot be empty.',
     
     // Auth (Forgot / Reset Password)
     'forgot_password_title' => 'Forgot Password',

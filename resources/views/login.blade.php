@@ -88,7 +88,7 @@
                     <x-alert type="success" class="mb-6">{{ session('success') }}</x-alert>
                 @endif
 
-                @if($errors->has('loginError'))
+                @if($errors->any())
                 <div class="bg-red-100 border-l-4 border-red-500 p-4 mb-6 rounded-r-xl shadow-sm">
                     <div class="flex">
                         <div class="flex-shrink-0">
@@ -98,7 +98,7 @@
                         </div>
                         <div class="ml-3">
                             <p class="text-sm font-medium text-red-800">
-                                {{ $errors->first('loginError') }}
+                                {{ $errors->first() }}
                             </p>
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                 <div class="space-y-1.5">
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">{{ __('messages.email_address') }}</label>
                     <input type="email" name="email" value="{{ old('email') }}" required
-                        class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('email') || $errors->has('loginError')) ring-2 ring-red-500 @endif"
+                        class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->any()) ring-2 ring-red-500 @endif"
                         placeholder="your@email.com">
                 </div>
 
@@ -118,7 +118,7 @@
                         <a href="{{ route('password.request') }}" class="text-[10px] text-[#5D4037] hover:underline font-bold uppercase tracking-wider">{{ __('messages.forgot') }}</a>
                     </div>
                     <input type="password" name="password" required
-                        class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->has('loginError')) ring-2 ring-red-500 @endif"
+                        class="w-full px-5 py-3.5 rounded-2xl bg-[#EBE9E1] border-none focus:ring-2 focus:ring-[#5D4037] outline-none text-sm transition-all @if($errors->any()) ring-2 ring-red-500 @endif"
                         placeholder="••••••••">
                 </div>
 

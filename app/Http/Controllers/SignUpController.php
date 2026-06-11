@@ -28,6 +28,8 @@ class SignUpController extends Controller
             'email.unique'   => __('messages.email_unique'),
             'email.required' => __('messages.email_required'),
             'email.email'    => __('messages.email_invalid'),
+            'password.min'   => __('messages.password_min'),
+            'password.required'=> __('messages.password_required'),
         ]);
 
         DB::transaction(function() use ($data){
@@ -61,6 +63,8 @@ class SignUpController extends Controller
             'email.unique'   => __('messages.email_unique'),
             'email.required' => __('messages.email_required'),
             'email.email'    => __('messages.email_invalid'),
+            'password.min'   => __('messages.password_min'),
+            'password.required'=> __('messages.password_required'),
         ]);
 
         $roleGuest = Role::where('name', 'guest')->first();
