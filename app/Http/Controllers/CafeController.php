@@ -105,7 +105,17 @@ class CafeController extends Controller
         $tags = Tags::all();
         $types = Type::all();
 
-        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types'));
+        $promoCafes = Cafes::with(['thumbnail', 'ratings'])
+            ->where('published', true)
+            ->whereHas('tags', function($query) {
+                $query->whereRaw('LOWER(tag_name) = ?', ['promo']);
+            })
+            ->withAvg('ratings', 'rating_score')
+            ->orderBy('ratings_avg_rating_score', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('ListCafe.listCafe', compact('cafe', 'user', 'setting', 'navbars', 'tags', 'daftarDaerah', 'types', 'promoCafes'));
       }
 
     public function contactIndex()
