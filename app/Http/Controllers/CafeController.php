@@ -108,7 +108,6 @@ class CafeController extends Controller
         }
 
         $cafe = $cafeQuery->get();
-        $user=Auth::user();
 
         $malangCity=City::whereIn('name', ['Kota Malang', 'Kabupaten Malang'])->pluck('code');
         $daftarDaerah=District::whereIn('city_code', $malangCity)->orderBy('name', 'asc')->get();
