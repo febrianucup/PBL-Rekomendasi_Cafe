@@ -193,7 +193,6 @@
             @endif
         </div>
     @empty
-        <p class="text-center text-stone-400 py-4">{{ __('messages.no_data') }}</p>
         @if($commentType === 'review')
             <p class="text-center text-stone-400 py-4">Belum ada ulasan. Jadilah yang pertama memberikan ulasan untuk kafe ini!</p>
         @else
