@@ -28,7 +28,9 @@ class CafeCommentSection extends Component
     public $hasReviewed = false;
     public $hideFlash = false;
     public $isDeleteModalOpen = false;
-
+    public $isReportModalOpen = false;
+    public $reportingCommentId = null;
+    public $reportReason = '';
     public function mount($cafeId){
         $this->cafeId = $cafeId;
         $this->cafe = Cafes::findOrFail($cafeId);
@@ -181,12 +183,34 @@ class CafeCommentSection extends Component
         $this->isDeleteModalOpen = true;
     }
 
-    public function reportComment($commentId)
+    public function openReportModal($commentId)
     {
-        if (Auth::check() && Auth::user()->role->name === 'owner') {
-            $comment = Comment::findOrFail($commentId);
-            $comment->update(['is_reported' => true]);
+        $this->reportingCommentId = $commentId;
+        $this->reportReason = '';
+        $this->isReportModalOpen = true;
+    }
+
+    public function closeReportModal()
+    {
+        $this->isReportModalOpen = false;
+        $this->reportingCommentId = null;
+        $this->reportReason = '';
+    }
+
+    public function submitReport()
+    {
+        $this->validate([
+            'reportReason' => 'required|min:3',
+        ]);
+
+        if ($this->reportingCommentId && Auth::check() && Auth::user()->role->name === 'owner') {
+            $comment = Comment::findOrFail($this->reportingCommentId);
+            $comment->update([
+                'is_reported' => true,
+                'report_reason' => $this->reportReason,
+            ]);
             
+            $this->closeReportModal();
             $this->hideFlash = false;
             session()->flash('success', __('messages.comment_reported_success'));
         }

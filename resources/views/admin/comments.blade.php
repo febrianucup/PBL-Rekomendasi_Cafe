@@ -141,6 +141,13 @@
                         </p>
                     </div>
 
+                    @if($comment->is_reported && $comment->report_reason)
+                        <div class="mt-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl">
+                            <p class="text-xs font-bold text-red-700 uppercase tracking-wider mb-1">{{ __('messages.report_reason') }}</p>
+                            <p class="text-sm text-red-600 font-serif italic">{{ $comment->report_reason }}</p>
+                        </div>
+                    @endif
+
                     <!-- Attached Images (if any) -->
                     @if($comment->images)
                         @php
@@ -162,7 +169,33 @@
                 <div class="flex flex-wrap items-center justify-between gap-3 mt-6 pt-6 border-t border-light-beige/30">
                     <span class="text-xs text-gray-400 font-mono">ID: #{{ $comment->id }}</span>
                     
-                    <div x-data="{ confirmDelete: false }" class="m-0">
+                    <div x-data="{ confirmDelete: false, confirmReject: false }" class="m-0 flex gap-2">
+                        @if($comment->is_reported)
+                            <button @click="confirmReject = true" type="button" class="px-8 py-2.5 bg-white border-2 border-stone-200 text-stone-600 text-xs font-bold uppercase tracking-wider rounded-full hover:bg-stone-50 hover:border-stone-400 transition-all duration-300">
+                                {{ __('messages.reject_report') }}
+                            </button>
+                            <!-- Reject Modal -->
+                            <div x-show="confirmReject" class="fixed inset-0 z-50 flex items-center justify-center bg-transparent" x-cloak style="display: none;">
+                                <div @click.away="confirmReject = false" class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl relative">
+                                    <h3 class="font-serif text-2xl font-bold text-dark-brown mb-2">{{ __('messages.reject_report_title') }}</h3>
+                                    <p class="text-gray-500 mb-6">{{ __('messages.reject_report_confirm') }}</p>
+                                    
+                                    <div class="flex gap-4">
+                                        <button @click="confirmReject = false" class="flex-1 px-6 py-3 rounded-2xl border-2 border-light-beige text-dark-brown font-bold hover:bg-light-beige/20 transition-all">
+                                            {{ __('messages.cancel') }}
+                                        </button>
+                                        <form action="{{ route('admin.comments.rejectReport', $comment->id) }}" method="POST" class="flex-1">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="w-full px-6 py-3 rounded-2xl bg-stone-600 hover:bg-stone-700 text-white font-bold shadow-lg shadow-stone-200 transition-all">
+                                                {{ __('messages.yes_reject') }}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <button @click="confirmDelete = true" type="button" class="px-8 py-2.5 bg-white border-2 border-soft-red/20 text-soft-red text-xs font-bold uppercase tracking-wider rounded-full hover:bg-soft-red/5 hover:border-soft-red/40 transition-all duration-300">
                             {{ __('messages.delete') }}
                         </button>

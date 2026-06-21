@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function(){
         
         Route::get('/comments', [\App\Http\Controllers\Admin\CommentController::class, 'index'])->name('admin.comments');
         Route::delete('/comments/{id}', [\App\Http\Controllers\Admin\CommentController::class, 'destroy'])->name('admin.comments.destroy');
+        Route::patch('/comments/{id}/reject-report', [\App\Http\Controllers\Admin\CommentController::class, 'rejectReport'])->name('admin.comments.rejectReport');
 
         Route::get('/owners', [\App\Http\Controllers\Admin\OwnerController::class, 'index'])->name('admin.owners.index');
         Route::get('/owners/create', [\App\Http\Controllers\Admin\OwnerController::class, 'create'])->name('admin.owners.create');

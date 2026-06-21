@@ -98,7 +98,7 @@
                     @endif
                     @if(Auth::check() && Auth::user()->role->name === 'owner' && Auth::id() !== $comment->user_id)
                         @if(!$comment->is_reported)
-                            <button type="button" class="text-amber-600 text-xs font-semibold hover:underline" wire:click="reportComment({{ $comment->id }})">
+                            <button type="button" class="text-amber-600 text-xs font-semibold hover:underline" wire:click="openReportModal({{ $comment->id }})">
                                 {{ __('messages.report') }}
                             </button>
                         @else
@@ -173,7 +173,7 @@
                                     @endif
                                     @if(Auth::check() && Auth::user()->role->name === 'owner' && Auth::id() !== $reply->user_id)
                                         @if(!$reply->is_reported)
-                                            <button type="button" class="text-amber-600 text-xs font-semibold hover:underline" wire:click="reportComment({{ $reply->id }})">
+                                            <button type="button" class="text-amber-600 text-xs font-semibold hover:underline" wire:click="openReportModal({{ $reply->id }})">
                                                 {{ __('messages.report') }}
                                             </button>
                                         @else
@@ -211,6 +211,27 @@
                 </button>
             </div>
         </x-delete-modal>
+    @endif
+
+    @if($isReportModalOpen)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-transparent">
+            <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md mx-4">
+                <h3 class="text-lg font-bold mb-4">{{ __('messages.report_comment_title') }}</h3>
+                <form wire:submit.prevent="submitReport">
+                    <textarea wire:model="reportReason" class="w-full p-3 border border-stone-200 rounded-lg text-sm min-h-[100px]" placeholder="{{ __('messages.report_comment_placeholder') }}"></textarea>
+                    @error('reportReason') <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
+                    
+                    <div class="flex justify-end gap-3 mt-4">
+                        <button type="button" wire:click="closeReportModal" class="px-4 py-2 text-sm font-semibold text-stone-600 hover:bg-stone-100 rounded-lg">
+                            {{ __('messages.cancel') }}
+                        </button>
+                        <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg">
+                            {{ __('messages.send_report') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     @endif
     <x-image-modal />
 </div>

@@ -367,5 +367,14 @@ return [
     'reported_comments_alert_title' => 'Komentar Dilaporkan',
     'reported_comments_alert_desc' => 'Terdapat :count komentar yang dilaporkan oleh owner dan memerlukan tindakan.',
     'view_reported' => 'Lihat Laporan',
+    'report_comment_title' => 'Laporkan Komentar',
+    'report_comment_placeholder' => 'Masukkan alasan laporan...',
+    'send_report' => 'Kirim Laporan',
+    'report_reason' => 'Alasan Laporan',
+    'report_rejected_success' => 'Laporan berhasil ditolak/diabaikan.',
+    'report_rejected_error' => 'Gagal menolak laporan.',
+    'reject_report' => 'Abaikan Laporan',
+    'reject_report_confirm' => 'Apakah Anda yakin ingin menolak laporan untuk komentar ini dan mempertahankannya?',
+    'reject_report_title' => 'Abaikan Laporan',
+    'yes_reject' => 'Ya, Abaikan',
 ];
-

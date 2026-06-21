@@ -367,5 +367,14 @@ return [
     'reported_comments_alert_title' => 'Reported Comments',
     'reported_comments_alert_desc' => 'There are :count comment(s) reported by owners that need action.',
     'view_reported' => 'View Reports',
+    'report_comment_title' => 'Report Comment',
+    'report_comment_placeholder' => 'Enter report reason...',
+    'send_report' => 'Send Report',
+    'report_reason' => 'Report Reason',
+    'report_rejected_success' => 'Report successfully rejected.',
+    'report_rejected_error' => 'Failed to reject report.',
+    'reject_report' => 'Reject Report',
+    'reject_report_confirm' => 'Are you sure you want to reject this report and keep the comment?',
+    'reject_report_title' => 'Reject Report',
+    'yes_reject' => 'Yes, Reject',
 ];
-
