@@ -92,6 +92,12 @@ return [
     'start_building_cafe' => 'Start building your cafe collection by adding your first cafe.',
     'add_first_cafe' => 'Add Your First Cafe',
     'unknown_type' => 'Unknown Type',
+    'total_published_cafes' => 'Total Published Cafes',
+    'total_unpublished_cafes' => 'Total Unpublished Cafes',
+    'unpublished' => 'Unpublished',
+    'views' => 'Views',
+    'view' => 'View',
+    'edit' => 'Edit',
 
     // Add Cafe
     'add_cafe_title' => 'Add Cafe',
@@ -185,6 +191,17 @@ return [
     'requesting_location' => 'Requesting Location...',
     'gps_error' => 'Failed to retrieve your device location. Make sure GPS is active and location permission is granted.',
     'geolocation_unsupported' => 'Geolocation is not supported by your browser.',
+
+    // Beranda / ListCafe specific
+    'best_recommendation' => 'Best Recommendations',
+    'cafe_suggestions' => 'Cafe Suggestions',
+    'see_promo' => 'See Promos',
+    'registered_cafes' => 'Registered Cafes',
+    'trusted' => 'Trusted',
+    'explore_great_cafes' => 'Explore Great Cafes',
+    'find_best_coffee' => 'Find the best coffee near you',
+    'new_status' => 'New',
+
 
     'favorite_all' => 'All Your Favorite Cafes',
     'remove_from_favorite' => 'Remove from Favorite',
@@ -298,6 +315,16 @@ return [
     'delete_type_message' => 'Are you sure you want to delete this type?',
     'delete_tag_title' => 'Delete Tag',
     'delete_tag_message' => 'Are you sure you want to delete this tag?',
+
+    // Cafe Detail Page
+    'cafe_profile' => 'Cafe Profile',
+    'vibe_and_features' => 'Vibe & Features',
+    'the_atmosphere' => 'The Atmosphere',
+    'no_description_available' => 'No description available for this cafe.',
+    'cafe_type' => 'Type',
+    'no_specific_tags' => 'No specific tags',
+    'scroll_for_more_promo' => 'Scroll to see more promotions',
+    'no_active_promotion' => 'No active promotions for this cafe.',
     'delete_promotion_title' => 'Delete Promotion',
     'delete_promotion_message' => 'Delete this promotion?',
 

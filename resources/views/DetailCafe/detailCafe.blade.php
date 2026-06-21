@@ -74,7 +74,7 @@
             <div class="absolute bottom-10 left-6 md:left-16 right-6 text-white z-30 pointer-events-none">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="bg-[#D4A373] text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded">
-                        Cafe Profile
+                        {{ __('messages.cafe_profile') }}
                     </span>
                     <span class="flex items-center gap-1 text-sm font-semibold bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 24 24">
@@ -116,10 +116,10 @@
     <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-16">
         
         <section class="text-center mb-16 max-w-3xl mx-auto px-4">
-            <span class="text-xs font-bold tracking-widest text-[#D4A373] uppercase block mb-2">Vibe & Features</span>
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight mb-5">The Atmosphere</h2>
+            <span class="text-xs font-bold tracking-widest text-[#D4A373] uppercase block mb-2">{{ __('messages.vibe_and_features') }}</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 tracking-tight mb-5">{{ __('messages.the_atmosphere') }}</h2>
             <p class="text-base md:text-lg leading-relaxed text-gray-600 font-normal mb-8">
-                {{ $cafe->description ?? 'No description available for this cafe.' }}
+                {{ $cafe->description ?? __('messages.no_description_available') }}
             </p>
 
             <div class="w-16 h-[2px] bg-gray-200 mx-auto mb-8"></div>
@@ -127,7 +127,7 @@
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
                 <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-100 rounded-full shadow-xs transition-all duration-300 hover:bg-gray-100">
                     <span class="w-2 h-2 rounded-full bg-[#D4A373]"></span>
-                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 mr-1">Type:</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 mr-1">{{ __('messages.cafe_type') }}:</span>
                     <span class="text-sm font-bold text-gray-700">#{{ isset($cafe->type->type_name) ? (trans()->has('messages.' . strtolower($cafe->type->type_name)) ? __('messages.' . strtolower($cafe->type->type_name)) : $cafe->type->type_name) : 'Standard Cafe' }}</span>
                 </div>
 
@@ -140,7 +140,7 @@
                         @endforeach
                     @else
                         <span class="text-xs italic text-gray-400 px-3 py-1.5 bg-gray-50 rounded-lg">
-                            No specific tags
+                            {{ __('messages.no_specific_tags') }}
                         </span>
                     @endif
                 </div>
@@ -239,7 +239,7 @@
         </section>
 
         <section class="bg-white p-6 md:p-8 rounded-xl shadow-xs border border-gray-100 mb-16">
-            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800 mb-6">Promo</h2>
+            <h2 class="text-3xl font-bold text-center mb-2 text-gray-800 mb-6">{{ __('messages.promo') }}</h2>
             @if($cafe->promotions && $cafe->promotions->isNotEmpty())
                 <div class="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide">
                     @foreach($cafe->promotions as $promotion)
@@ -250,7 +250,7 @@
                                 </button>
 
                                 <div class="p-6 bg-white text-left">
-                                    <span class="text-xs uppercase tracking-widest text-indigo-600 font-bold">Promosi</span>
+                                    <span class="text-xs uppercase tracking-widest text-indigo-600 font-bold">{{ __('messages.promo') }}</span>
                                     <h3 class="mt-2 text-2xl font-bold text-gray-800 leading-tight">{{ $promotion->title }}</h3>
                                     <p class="mt-1 text-sm text-gray-600 line-clamp-2">{{ $promotion->description }}</p>
                                     
@@ -264,10 +264,10 @@
                         </article>
                     @endforeach
                 </div>
-                <p class="text-center text-xs text-gray-400 mt-2">Geser ke samping untuk melihat promosi lainnya</p>
+                <p class="text-center text-xs text-gray-400 mt-2">{{ __('messages.scroll_for_more_promo') }}</p>
             @else
                 <div class="text-center py-16 text-gray-500 border border-dashed border-gray-200 rounded-xl bg-gray-50">
-                    Belum ada promosi aktif untuk cafe ini.
+                    {{ __('messages.no_active_promotion') }}
                 </div>
             @endif
         </section>

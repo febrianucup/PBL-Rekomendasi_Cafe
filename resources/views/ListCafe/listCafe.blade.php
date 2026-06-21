@@ -17,13 +17,13 @@
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
                     </span>
-                    <span class="text-xs font-bold tracking-widest uppercase text-amber-600">Rekomendasi Terbaik</span>
+                    <span class="text-xs font-bold tracking-widest uppercase text-amber-600">{{ __('messages.best_recommendation') }}</span>
                 </div>
 
                 <h1 class="serif-title text-6xl md:text-7xl font-extrabold mb-4 tracking-[0.05em] text-[#3E2723] leading-tight" style="font-family: 'Playfair Display', serif;">
                     SAFE<span class="text-amber-500">.</span><br>
                     <span class="block text-xl md:text-2xl font-medium tracking-[0.3em] uppercase not-italic mt-2 text-[#5D4037]">
-                        Saran Kafe
+                        {{ __('messages.cafe_suggestions') }}
                     </span>
                 </h1>
                 
@@ -41,24 +41,24 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
                         </svg>
-                        Lihat Promo
+                        {{ __('messages.see_promo') }}
                     </a>
                 </div>
                 
                 <div class="flex items-center justify-center lg:justify-start gap-8 pt-6 border-t border-gray-200/60">
                     <div class="text-center lg:text-left">
                         <p class="text-2xl font-extrabold text-[#3E2723]">{{ \App\Models\Cafes::where('published', true)->count() }}+</p>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">Cafe Terdaftar</p>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">{{ __('messages.registered_cafes') }}</p>
                     </div>
                     <div class="w-[1px] h-10 bg-gray-200"></div>
                     <div class="text-center lg:text-left">
                         <p class="text-2xl font-extrabold text-[#3E2723]">{{ number_format(\App\Models\Cafes::where('published', true)->avg('rating') ?? 4.5, 1) }}<span class="text-amber-500 text-lg ml-1">★</span></p>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">Rating Rata-rata</p>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">{{ __('messages.average_rating') }}</p>
                     </div>
                     <div class="w-[1px] h-10 bg-gray-200 hidden sm:block"></div>
                     <div class="text-center lg:text-left hidden sm:block">
                         <p class="text-2xl font-extrabold text-[#3E2723]">100%</p>
-                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">Terpercaya</p>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wider font-semibold mt-1">{{ __('messages.trusted') }}</p>
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                     if(isset($promoCafes) && $promoCafes->count() > 0) {
                         foreach($promoCafes as $cafe_item) {
                             $image = $cafe_item->thumbnail ? asset('storage/'.$cafe_item->thumbnail->photo_url) : 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80';
-                            $rating = $cafe_item->ratings_avg_rating_score ? number_format($cafe_item->ratings_avg_rating_score, 1) : 'Baru';
+                            $rating = $cafe_item->ratings_avg_rating_score ? number_format($cafe_item->ratings_avg_rating_score, 1) : __('messages.new_status');
                             $sliderData[] = [
                                 'image' => $image,
                                 'link' => route('cafes.show', $cafe_item->id),
@@ -88,9 +88,9 @@
                             [
                                 'image' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
                                 'link' => '#',
-                                'name' => 'Explore Great Cafes',
+                                'name' => __('messages.explore_great_cafes'),
                                 'rating' => '-',
-                                'address' => 'Find the best coffee near you'
+                                'address' => __('messages.find_best_coffee')
                             ]
                         ];
                     }
@@ -146,7 +146,7 @@
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                                 </svg>
-                                                <span class="uppercase tracking-wider">Promo</span>
+                                                <span class="uppercase tracking-wider">{{ __('messages.promo') }}</span>
                                             </div>
                                         </div>
                                         <h2 class="serif-title text-3xl md:text-4xl font-extrabold mb-2 tracking-tight text-white drop-shadow-md" style="font-family: 'Playfair Display', serif;" x-text="slide.name"></h2>
@@ -299,7 +299,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                                     </svg>
-                                    <span class="text-white text-[10px] font-bold uppercase tracking-wider">Promo</span>
+                                    <span class="text-white text-[10px] font-bold uppercase tracking-wider">{{ __('messages.promo') }}</span>
                                 </div>
                             @endif
                         </div>
