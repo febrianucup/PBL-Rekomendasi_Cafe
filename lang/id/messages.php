@@ -350,10 +350,9 @@ return [
 
     // Beranda Settings
     'beranda_settings_title' => 'Pengaturan Beranda',
-    'beranda_settings_desc' => 'Kelola judul, deskripsi, dan gambar slider halaman utama.',
+    'beranda_settings_desc' => 'Kelola judul, dan deskripsi halaman utama.',
     'homepage_title' => 'Judul Halaman Utama',
     'homepage_desc' => 'Deskripsi Halaman Utama',
-    'slider_images' => 'Gambar Slider',
     'remove' => 'Hapus',
     'remove_image_instruction' => 'Centang kotak lalu klik simpan untuk menghapus gambar.',
     'add_new_images' => 'Tambah Gambar Baru',

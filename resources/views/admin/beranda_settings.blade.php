@@ -39,7 +39,7 @@
                     @error('description') <span class="text-soft-red text-xs block mt-1">{{ $message }}</span> @enderror
                 </div>
             </div>
-
+<!-- 
             <div class="space-y-6 pt-6 border-t border-light-beige/30">
                 <h3 class="font-serif text-2xl font-bold text-dark-brown">{{ __('messages.slider_images') }}</h3>
                 
@@ -68,7 +68,7 @@
                     <p class="text-xs text-gray-500">{{ __('messages.add_multiple_images_instruction') }}</p>
                     @error('slider_images.*') <span class="text-soft-red text-xs block mt-1">{{ $message }}</span> @enderror
                 </div>
-            </div>
+            </div> -->
 
             <div class="flex items-center gap-4 pt-8 border-t border-light-beige/30">
                 <button type="submit" class="px-8 py-3.5 bg-dark-brown text-white text-sm font-bold uppercase tracking-wider rounded-full shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">{{ __('messages.save_changes') }}</button>

@@ -270,7 +270,7 @@
 
                                 <a href="{{ route('profile.settings.show') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    Settings
+                                    Pengaturan
                                 </a>
 
                                 <div class="border-t border-gray-100 my-1"></div>
@@ -281,7 +281,7 @@
                                     <button type="button"
                                         x-data @click="$dispatch('open-logout-modal')"
                                         class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                                        Logout
+                                        Keluar
                                     </button>
 
                                 </form>
@@ -361,12 +361,12 @@
                                 </a>
                             @endif
                             <a href="{{ route('profile.settings.show') }}">
-                                Settings
+                                Pengaturan
                             </a>
                             <form action="{{ route('logout') }}" method="POST" class="m-0">
                                 @csrf
                                 <button type="submit" class="text-left text-sm uppercase tracking-widest text-red-600 font-bold w-full py-1">
-                                    Logout
+                                    Keluar
                                 </button>
                             </form>
                         @else
