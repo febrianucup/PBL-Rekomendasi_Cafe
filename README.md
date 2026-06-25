@@ -101,7 +101,11 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan project ini secara lokal:
 ## 👥 Kontributor
 
 Project ini dikembangkan sebagai bagian dari Tugas Pembelajaran Berbasis Proyek (Project-Based Learning). 
-- **[Nama Anda/Tim]** - Pengembang Utama
+- **Muhammad Dwi Febrian** - Pengembang Utama
+- **Adytria Bayu Ramadani** - Pengembang Utama
+- **Fifa Nuurun Halizah** - Pengembang Utama
+- **M.Yahya Irvansyah** - Pengembang Utama
+- **M. Hasbi Ashiddiqi** - Pengembang Utama
 
 ---
-<p align="center">Dibuat dengan ❤️ untuk para pecinta kopi.</p>
+<p align="center">Dibuat dengan ❤️ untuk para pecinta kafe.</p>
