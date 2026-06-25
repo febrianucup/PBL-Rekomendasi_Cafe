@@ -1,20 +1,7 @@
 <div align="center">
 
 <!-- Space untuk Video Promosi -->
-[![Tonton Video Promosi](https://img.youtube.com/vi/LINK_ID_VIDEO_YOUTUBE/maxresdefault.jpg)](https://www.youtube.com/watch?v=LINK_ID_VIDEO_YOUTUBE)
-*(Ganti `LINK_ID_VIDEO_YOUTUBE` dengan ID video YouTube Anda)*
-
-<br>
-
-<!-- Gambar Fitur Utama -->
-<p align="center">
-  <img src="path/to/gambar-fitur-1.jpg" width="30%" alt="Fitur Utama 1">
-  <img src="path/to/gambar-fitur-2.jpg" width="30%" alt="Fitur Utama 2">
-  <img src="path/to/gambar-fitur-3.jpg" width="30%" alt="Fitur Utama 3">
-</p>
-*(Ganti `path/to/gambar-fitur-*.jpg` dengan path ke gambar fitur utama aplikasi Anda)*
-
-<br>
+[![Tonton Video Promosi](https://img.youtube.com/vi/CwDxRBHpLtA/maxresdefault.jpg)](https://www.youtube.com/watch?v=CwDxRBHpLtA)
 
 # Sistem Rekomendasi Kafe
 
@@ -39,11 +26,16 @@ Sebuah aplikasi web inovatif yang dirancang untuk membantu pengguna menemukan ka
 
 ## ✨ Fitur Utama
 
-- **Pencarian & Filter Pintar**: Cari kafe berdasarkan nama, fasilitas, atau lokasi.
+- **Pencarian & Filter Pintar**: Cari kafe berdasarkan nama, tipe, atau lokasi.
+  <br><img src="docs/search-filter-feature.png" width="600" alt="Fitur Pencarian dan Filter Pintar"><br>
 - **Sistem Ulasan & Rating**: Pengguna dapat memberikan ulasan (dengan dukungan gambar) dan rating (1-5 bintang).
+  <br><img src="docs/review-rating-feature.png" width="600" alt="Fitur Sistem Ulasan dan Rating"><br>
 - **Manajemen Kafe (Owner Dashboard)**: Pemilik kafe dapat mengelola profil kafe, jam operasional, menu, dan melihat statistik kunjungan/ulasan secara *real-time*.
+  <br><img src="docs/owner-dashboard-feature.png" width="600" alt="Fitur Manajemen Kafe (Owner Dashboard)"><br>
 - **Moderasi Komentar (Admin)**: Sistem pelaporan komentar (Report System) untuk memoderasi ulasan yang tidak pantas.
+  <br><img src="docs/comment-moderation-feature.png" width="600" alt="Fitur Moderasi Komentar"><br>
 - **Dukungan Dua Bahasa (Bilingual)**: Tersedia opsi Bahasa Indonesia dan English untuk antarmuka pengguna.
+  <br><img src="docs/bilingual-feature.png" width="300" alt="Fitur Dukungan Dua Bahasa"><br>
 
 ## 💻 Persyaratan Sistem
 
