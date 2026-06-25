@@ -79,18 +79,12 @@
 </head>
 <body class="bg-cream font-sans text-dark min-h-screen">
 
-    <!-- TOP NAVBAR -->
     <nav class="flex items-center justify-between px-7 py-3.5 border-b border-border bg-cream">
         <div class="flex items-center gap-7">
-            <span class="font-semibold text-sm">Sensory Editorial</span>
+            <span class="font-semibold text-sm">SAFE</span>
             <div class="flex gap-1">
-                <a href="#" class="text-sm font-semibold text-dark border-b-2 border-dark pb-0.5 px-2">Branches</a>
+                <a href="/admin/cafes" class="text-sm font-semibold text-dark border-b-2 border-dark pb-0.5 px-2">Branches</a>
             </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <button class="text-muted text-sm">🔔</button>
-            <button class="text-muted text-sm">⚙️</button>
-            <div class="w-8 h-8 rounded-full bg-[#D6C9BD] flex items-center justify-center text-xs font-semibold text-[#4A4037]">JS</div>
         </div>
     </nav>
 
